@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+</head>
+
+<body>
+    <h1><%= title%></h1>
+
+    <a href="/board/write">글쓰기로 이동</a>
+    <br>
+    <br>
+
+    <table border="1">
+        <tr>
+            <td>상품명</td>
+            <td>상품가격</td>
+            <td>상품이미지</td>
+        </tr>
+        <%
+    for(var i=0; i<rows.length; i++)
+    {
+        var oneItem = rows[i];
+    %>
+        <tr>
+            <td><a href="/customer/detail/<%=oneItem.Pname%>"><%=oneItem.Pname%></a></td>
+            <td><%=oneItem.Price%></td>
+            <td><img src="<%=oneItem.Pimage%>" height="200" width="200" /></td>
+        </tr>
+        <%
+    }
+    %>
+    </table>
+</body>
+
+</html>
