@@ -9,7 +9,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var testRouter = require('./routes/test');
 var customer = require('./routes/customer');
-
+var fs = require('fs');
+var ejs = require('ejs');
 var app = express();
 
 // view engine setup
@@ -23,13 +24,17 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(path.join(__dirname, 'public/images')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/test', testRouter);
 app.use('/customer', customer);
 
-
+global.headerFormat = fs.readFileSync(
+    "./views/header.html",
+    "utf8"
+  );
+global.header = ejs.render(headerFormat);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     next(createError(404));

@@ -4,36 +4,61 @@
 <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-
 </head>
 
 <body>
-    <h1><%= title%></h1>
-
-    <a href="/board/write">글쓰기로 이동</a>
-    <br>
-    <br>
-
-    <table border="1">
-        <tr>
-            <td>상품명</td>
-            <td>상품가격</td>
-            <td>상품이미지</td>
-        </tr>
-        <%
+    <div>
+        <%-header%>
+    </div>
+    <div style="text-align: center">
+        <a href="/customer"><img src="/images/logo.png" /></a>
+        <h1 style="color: rgb(105, 65, 46)">당 골 찬</h1>
+    </div>
+    <br><br>
+    <div style="text-align: center">
+        <table class = "tab_table">
+            <tr>
+                <td width=50><a href="/customer/detail/">전체 메뉴</a></td>
+                <td width=50><a href="/customer/detail/">새우장</a></td>
+                <td width=50><a href="/customer/detail/">게장</a></td>
+                <td width=50><a href="/customer/detail/">계란장</a></td>
+                <td width=50><a href="/customer/detail/">김치</a></td>
+                <td width=50>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td width=50>Notice</td>
+                <td width=50>Q&A</td>
+            </tr>
+        </table>
+        <img src="images/main_border.png" style="width: 90%; height: 1%; overflow: hidden;">
+    </div>
+    <br><br><br>
+    <div style="text-align: center">
+        <img src="images/poster.png">
+    </div>
+    <br><br><br><br>
+    <div style="text-align: center; margin: 0;">
+        <table class = "tab_table">
+            <tr><td style="font-size: 23px;">추천 상품</td></tr>
+        </table>
+        <img src="images/main_border.png" style="width: 90%; overflow: hidden;">
+    </div>
+    <br><br><br>
+    <div style="text-align: center">
+        <table class="tab_table" style="padding-left: 10%; padding-right: 10%; font-size: 15px">
+            <%
     for(var i=0; i<rows.length; i++)
     {
         var oneItem = rows[i];
     %>
-        <tr>
-            <td><a href="/customer/detail/<%=oneItem.Pname%>"><%=oneItem.Pname%></a></td>
-            <td><%=oneItem.Price%></td>
-            <td><img src="<%=oneItem.Pimage%>" height="200" width="200" /></td>
-        </tr>
-        <%
+                <td width=50>
+                    <img src="<%=oneItem.Pimage%>" height="190" width="190" /><br><br>
+                    <a href="/customer/detail/<%=oneItem.Pname%>"><%=oneItem.Pname%></a><br>
+                    <%=oneItem.Price%>원
+                </td>
+            <%
     }
     %>
-    </table>
+        </table>
+    </div>
 </body>
 
 </html>
