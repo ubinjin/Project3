@@ -8,12 +8,52 @@
 
 <body>
   <h1><%= title %></h1>
-  <p><img src="<%=row.Pimage%>" /></p>
-  <p><%=row.Pname%></p>
-  <p>판매가격: <%=row.Price%></p>
-  <p>할인가격: <%=saleprice%></p>
+  <p><img src="<%=product.Pimage%>" /></p>
+  <p><%=product.Pname%></p>
+  <p>판매가격: <%=product.Price%></p>
+  <p>할인가격:</p>
   <p>원산지: 국내산</p>
-  <p>출시일: <%=row.Ptime%></p>
+  <p>출시일: <%=product.Ptime%></p>
+  <button onclick="window.location.href = '/customer/detail/<%=product.PID%>/buy'">구매하기</button>
+  <hr>
+  <p>
+    <h1>교환 / 반품</h1>
+  </p>
+  <p> - 식품 특성상 제품 하자를 제외한 개봉 후 반품 및 환불은 불가합니다.</p>
+  <p> - 고객님의 단순 변심으로 인한 교환 및 반품은 어려우며, 발송 중 고객님의 부재로 인한 미수령 후 반송 시 반품은 불가합니다.</p>
+  <p> - 제품에 문제가 있거나 주문한 상품과 동일하지 않은 상품을 받으신 경우 연락바랍니다.</p>
+  <hr>
+  <p>
+    <h1>리뷰</h1>
+  </p>
+
+  <%
+  for(var i=0; i<reviews.length; i++)
+  {
+      var review = reviews[i];
+  %>
+  <hr>
+  <p>작성자: <%=review.Rname%></p>
+  <p>리뷰내용: <%=review.Review%></p>
+  <p>별점: <%=review.Star%></p>
+  <p>시간: <%=review.Rtime%></p>
+  <hr>
+  <%
+  }
+  %>
+  <hr>
+
 </body>
 
 </html>
+
+
+<!-- <form action="/customer/detail/<%=product.PID%>" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="R_RID" id="R_RID" value="<%=deal.P_RID%>" />
+    <input type="hidden" name="R_PID" id="R_PID" value="<%=deal.PID%>" />
+    <input type="hidden" name="R_DID" id="R_DID" value="<%=deal.DID%>" />
+    <p>이미지: <input type="file" name="image" id="image" accept="image/png, image/jpeg" required /></p>
+    <p>리뷰쓰기: <input type="text" name="Review" id="Review" required /></p>
+    <p>별점: <input type="text" name="Star" id="Star" required /></p>
+    <button type="submit">작성</button>
+  </form> -->
