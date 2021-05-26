@@ -9,11 +9,18 @@ var pool = mysql.createPool({
     port: process.env.DB_port,
     user: process.env.DB_user,
     password: process.env.DB_password,
-    database: process.env.DB_database
+    database: process.env.DB_database,
+    dateStrings: process.env.DB_dateStrings
 });
 
-router.get('/', function(req, res, next) {
-    res.redirect('admin/clients_list/1');
+router.get('/clients_list', function(req, res, next) {
+    res.redirect('clients_list/1');
+});
+router.get('/qna_list', function(req, res, next) {
+    res.redirect('qna_list/1');
+});
+router.get('/notice_list', function(req, res, next) {
+    res.redirect('notice_list/1');
 });
 
 /* CLIENT_LIST, DETAILS START */
@@ -49,7 +56,7 @@ router.get('/clients_details/:idx', function(req, res, next) {
     });
 });
 
-router.post('/delete', function(req, res, next) {
+router.post('/client_delete', function(req, res, next) {
     var rid = req.body.RID;
     console.log("고객 삭제, RID : ", JSON.stringify(rid));
     pool.getConnection(function(err, connection) {
@@ -63,7 +70,7 @@ router.post('/delete', function(req, res, next) {
                 res.send("<script>alert('invalid request');history.back();</script>");
             }
             else {
-                res.redirect('/admin');
+                res.redirect('clients_list');
             }
             connection.release();
 
@@ -76,17 +83,16 @@ router.post('/delete', function(req, res, next) {
 /* QNA_LIST , DETAILS START */
 
 router.get('/qna', function(req, res, next) {
-    res.redirect('admin/qna_list/1');
+    res.redirect('/qna_list/1');
 });
-/* CLIENT_LIST, DETAILS START */
 
 router.get('/qna_list/:page', function(req, res, next) {
     pool.getConnection(function(err, connection) {
-        var sqlQNAList = "select * FROM qna_info";
+        var sqlQNAList = "select q.*,Rname FROM qna_info as q join register_info on Q_RID=RID";
         connection.query(sqlQNAList, function(err, rows) {
             if (err) console.error("err : " + err);
             res.render('qna_list', {
-                title: '회원 관리',
+                title: 'Q&A 관리',
                 qnas: rows
             });
             connection.release();
@@ -98,7 +104,7 @@ router.get('/qna_details/:idx', function(req, res, next) {
     var idx = req.params.idx;
     console.log("idx : " + idx)
     pool.getConnection(function(err, connection) {
-        var sqlQNADetail = "select * FROM qna_info where RID=?";
+        var sqlQNADetail = "select q.*,Rname FROM qna_info as q join register_info on Q_RID=RID where Q_RID=?";
         connection.query(sqlQNADetail, [idx], function(err, row) {
             if (err) console.error("err : " + err);
             console.log('QNA Details : ', row);
@@ -109,6 +115,28 @@ router.get('/qna_details/:idx', function(req, res, next) {
         });
         connection.release();
 
+    });
+});
+
+router.post('/qna_delete', function(req, res, next) {
+    var qtime = req.body.Qtime;
+    console.log("질문 삭제, Qtime : ", JSON.stringify(qtime));
+    pool.getConnection(function(err, connection) {
+        var sql = "delete FROM qna_info where Qtime=?";
+        connection.query(sql, [qtime], function(err, result) {
+            if (err) {
+                res.send("<script>alert('invalid request, Check request if FK ref problem');history.back();</script>");
+                console.error("err : " + err);
+            }
+            if (result.affectedRows == 0) {
+                res.send("<script>alert('invalid request');history.back();</script>");
+            }
+            else {
+                res.redirect('qna_list');
+            }
+            connection.release();
+
+        });
     });
 });
 

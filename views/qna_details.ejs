@@ -14,60 +14,67 @@
     </h1>
     <br>
     <br>
-    <form action="/admin/delete" method="POST" onsubmit="">
+    <form action="/admin/qna_delete" method="POST" onsubmit="">
+        <input type="hidden" name="Qtime" id="Qtime" value="<%=qna.Qtime%>">
 
         <table border="1">
             <tr>
-                <td>아이디</td>
+                <td>제목</td>
                 <td>
-                    <input type="hidden" name="RID" id="RID" value="<%=qna.RID%>">
-                    <%=qna.RID%>
+                    <%=qna.QTitle%>
                 </td>
             </tr>
             <tr>
-                <td>이름</td>
+                <td>작성시간</td>
+                <td>
+                    <%=qna.Qtime%>
+                </td>
+            </tr>
+            <tr>
+                <td>작성자</td>
                 <td>
                     <%=qna.Rname%>
                 </td>
             </tr>
             <tr>
-                <td>주소</td>
+                <td>아이디</td>
                 <td>
-                    <%=qna.Address%>
+                    <%=qna.Q_RID%>
                 </td>
             </tr>
             <tr>
-                <td>전화번호</td>
+                <td>작성일</td>
                 <td>
-                    <%=qna.Phone%>
+                    <%=qna.Qtime%>
                 </td>
             </tr>
             <tr>
-                <td>구분</td>
+                <td>질문</td>
                 <td>
-                    <%if(qna.Ucase==="0"){%>
-                        구매자
-                        <%}else{%>
-                            판매자
-                            <%}%>
+                    <%=qna.Question%>
+                        <img src="/<%=qna.Qimage%>" alt="">
                 </td>
             </tr>
             <tr>
-                <td>주민번호</td>
+                <td>조회수</td>
                 <td>
-                    <%=qna.RRN%>
+                    <%=qna.Qhit%>
                 </td>
             </tr>
+        </table>
+        <table border="1">
             <tr>
-                <td>보유 금액</td>
+                <td>판매자 답변</td>
+            </tr>
+            <tr>
                 <td>
-                    <%=qna.Cash%>
+                    <%=qna.Answer%>
                 </td>
             </tr>
         </table>
         <tr>
             <td colspan="2">
-                <button type="submit" name="delete">회원 삭제</button>
+                <button type="submit" name="delete">질문 삭제</button>
         </tr>
     </form>
 </body>
