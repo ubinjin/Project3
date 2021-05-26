@@ -17,34 +17,30 @@
     <table border="1">
         <tr>
             <td>번호</td>
-            <td>구분</td>
-            <td>이름</td>
-            <td>전화번호</td>
-            <td>주소</td>
+            <td>제목</td>
+            <td>작성자</td>
+            <td>작성일</td>
+            <td>조회수</td>
         </tr>
         <%
-            for (var i=0; i<clients.length; i++){
-                var oneItem = clients[i];
+            for (var i=0; i<notices.length; i++){
+                var oneItem = notices[i];
         %>
-            <tr style="cursor:pointer;" onClick="location.href='/admin/clients_details/<%=oneItem.RID%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
+            <tr style="cursor:pointer;" onClick="location.href='/admin/notice_detail/<%=oneItem.Ntime%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
                 <td>
                     <%=i+1%>
                 </td>
                 <td>
-                    <%if(oneItem.Ucase==="0"){%>
-                        구매자
-                        <%}else{%>
-                            판매자
-                            <%}%>
+                    <%=oneItem.NTitle%>
                 </td>
                 <td>
-                    <%=oneItem.Rname%>
+                    관리자
                 </td>
                 <td>
-                    <%=oneItem.Phone%>
+                    <%=oneItem.Ntime%>
                 </td>
                 <td>
-                    <%=oneItem.Address%>
+                    <%=oneItem.Nhit%>
                 </td>
             </tr>
             <%

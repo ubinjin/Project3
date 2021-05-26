@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel='stylesheet' href="/stylesheets/style.css" />
+    <script src="/javascripts/jquery-3.6.0.min.js"></script>
+</head>
+<!-- IF TEMPLATE ADDED, DELETE ABOVE -->
+
+<body>
+    <h1>
+        <%= title %>
+    </h1>
+    <br>
+    <br>
+    <form action="/admin/notice_delete" method="POST" onsubmit="">
+
+        <table border="1">
+            <tr>
+                <td>제목</td>
+                <td>
+                    <input type="hidden" name="Ntime" id="Ntime" value="<%=notice.Ntime%>">
+                    <%=notice.NTitle%>
+                </td>
+            </tr>
+            <tr>
+                <td>작성자</td>
+                <td>
+                    관리자
+                </td>
+            </tr>
+            <tr>
+                <td>작성일</td>
+                <td>
+                    <%=notice.Ntime%>
+                </td>
+            </tr>
+            <tr>
+                <td>조회수</td>
+                <td>
+                    <%=notice.Nhit%>
+                </td>
+            </tr>
+        </table>
+        <tr>
+            <td colspan="2">
+                <button type="submit" name="delete">공지 삭제</button>
+        </tr>
+    </form>
+</body>

@@ -2,7 +2,6 @@ require('dotenv').config();
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
-
 var pool = mysql.createPool({
     connectionLimit: process.env.DB_connectionLimit,
     host: process.env.DB_host,
@@ -25,12 +24,12 @@ router.get('/notice_list', function(req, res, next) {
 
 /* CLIENT_LIST, DETAILS START */
 
-router.get('/clients_list/:page', function(req, res, next) {
+router.get('/client_list/:page', function(req, res, next) {
     pool.getConnection(function(err, connection) {
         var sqlClientsList = "select RID,Rname, Address, Phone, Ucase FROM register_info";
         connection.query(sqlClientsList, function(err, rows) {
             if (err) console.error("err : " + err);
-            res.render('clients_list', {
+            res.render('client_list', {
                 title: '회원 관리',
                 clients: rows
             });
@@ -39,14 +38,14 @@ router.get('/clients_list/:page', function(req, res, next) {
     });
 });
 
-router.get('/clients_details/:idx', function(req, res, next) {
+router.get('/client_detail/:idx', function(req, res, next) {
     var idx = req.params.idx;
     pool.getConnection(function(err, connection) {
         var sqlClientDetail = "select * FROM register_info where RID=?";
         connection.query(sqlClientDetail, [idx], function(err, row) {
             if (err) console.error("err : " + err);
             console.log('클라이언트 정보 : ', JSON.stringify(row));
-            res.render('clients_details', {
+            res.render('client_detail', {
                 title: '고객 정보',
                 clientInfo: row[0]
             });
@@ -66,11 +65,11 @@ router.post('/client_delete', function(req, res, next) {
                 res.send("<script>alert('invalid request, Check request if FK ref problem');history.back();</script>");
                 console.error("err : " + err);
             }
-            if (result.affectedRows == 0) {
+            else if (result.affectedRows == 0) {
                 res.send("<script>alert('invalid request');history.back();</script>");
             }
             else {
-                res.redirect('clients_list');
+                res.send("<script>alert('삭제됐습니다.');window.location='http://localhost:1001/admin/client_list/1';window.reload(true);</script>");
             }
             connection.release();
 
@@ -100,21 +99,24 @@ router.get('/qna_list/:page', function(req, res, next) {
     });
 });
 
-router.get('/qna_details/:idx', function(req, res, next) {
+router.get('/qna_detail/:idx', function(req, res, next) {
     var idx = req.params.idx;
     console.log("idx : " + idx)
     pool.getConnection(function(err, connection) {
         var sqlQNADetail = "select q.*,Rname FROM qna_info as q join register_info on Q_RID=RID where Q_RID=?";
         connection.query(sqlQNADetail, [idx], function(err, row) {
             if (err) console.error("err : " + err);
-            console.log('QNA Details : ', row);
-            res.render('qna_details', {
+            console.log('QNA Detail : ', row);
+            res.render('qna_detail', {
                 title: 'Q&A',
                 qna: row[0]
             });
         });
+        var hit = "update qna_info set Qhit = Qhit +1 where Q_RID =?";
+        connection.query(hit, [idx], function(err, row) {
+            if (err) console.error("err : " + err);
+        });
         connection.release();
-
     });
 });
 
@@ -132,7 +134,7 @@ router.post('/qna_delete', function(req, res, next) {
                 res.send("<script>alert('invalid request');history.back();</script>");
             }
             else {
-                res.redirect('qna_list');
+                res.send("<script>alert('삭제됐습니다.');window.location='http://localhost:1001/admin/qna_list/1';window.reload(true);</script>");
             }
             connection.release();
 
@@ -142,4 +144,65 @@ router.post('/qna_delete', function(req, res, next) {
 
 
 /* QNA_LIST , DETAILS END */
+
+
+/* NOTICE_LIST, DETAILS START */
+
+router.get('/notice_list/:page', function(req, res, next) {
+    pool.getConnection(function(err, connection) {
+        var sqlNoticesList = "select * FROM notice_info";
+        connection.query(sqlNoticesList, function(err, rows) {
+            if (err) console.error("err : " + err);
+            res.render('notice_list', {
+                title: '공지사항 관리',
+                notices: rows
+            });
+            connection.release();
+        });
+    });
+});
+
+router.get('/notice_detail/:Ntime', function(req, res, next) {
+    var idx = req.params.Ntime;
+    pool.getConnection(function(err, connection) {
+        var sqlNoticeDetail = "select * FROM notice_info";
+        connection.query(sqlNoticeDetail, [idx], function(err, row) {
+            if (err) console.error("err : " + err);
+            console.log('클라이언트 정보 : ', JSON.stringify(row));
+            res.render('notice_detail', {
+                title: '공지 정보',
+                notice: row[0]
+            });
+        });
+        var hit = "update notice_info set Nhit = Nhit +1 where Ntime =?";
+        connection.query(hit, [idx], function(err, row) {
+            if (err) console.error("err : " + err);
+        });
+        connection.release();
+    });
+});
+
+router.post('/notice_delete', function(req, res, next) {
+    var rid = req.body.Ntime;
+    console.log("공지 삭제, RID : ", JSON.stringify(rid));
+    pool.getConnection(function(err, connection) {
+        var sql = "delete FROM notice_info where Ntime=?";
+        connection.query(sql, [rid], function(err, result) {
+            if (err) {
+                res.send("<script>alert('invalid request, Check request if FK ref problem');history.back();</script>");
+                console.error("err : " + err);
+            }
+            else if (result.affectedRows == 0) {
+                res.send("<script>alert('invalid request');history.back();</script>");
+            }
+            else {
+                res.send("<script>alert('삭제됐습니다.');window.location='http://localhost:1001/admin/notice_list/1';window.reload(true);</script>");
+            }
+            connection.release();
+
+        });
+    });
+});
+
+/* NOTICE_LIST, DETAILS END */
 module.exports = router;
