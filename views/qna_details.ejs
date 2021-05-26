@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel='stylesheet' href="/stylesheets/style.css" />
+    <script src="/javascripts/jquery-3.6.0.min.js"></script>
+</head>
+<!-- IF TEMPLATE ADDED, DELETE ABOVE -->
+
+<body>
+    <h1>
+        <%= title %>
+    </h1>
+    <br>
+    <br>
+    <form action="/admin/delete" method="POST" onsubmit="">
+
+        <table border="1">
+            <tr>
+                <td>아이디</td>
+                <td>
+                    <input type="hidden" name="RID" id="RID" value="<%=qna.RID%>">
+                    <%=qna.RID%>
+                </td>
+            </tr>
+            <tr>
+                <td>이름</td>
+                <td>
+                    <%=qna.Rname%>
+                </td>
+            </tr>
+            <tr>
+                <td>주소</td>
+                <td>
+                    <%=qna.Address%>
+                </td>
+            </tr>
+            <tr>
+                <td>전화번호</td>
+                <td>
+                    <%=qna.Phone%>
+                </td>
+            </tr>
+            <tr>
+                <td>구분</td>
+                <td>
+                    <%if(qna.Ucase==="0"){%>
+                        구매자
+                        <%}else{%>
+                            판매자
+                            <%}%>
+                </td>
+            </tr>
+            <tr>
+                <td>주민번호</td>
+                <td>
+                    <%=qna.RRN%>
+                </td>
+            </tr>
+            <tr>
+                <td>보유 금액</td>
+                <td>
+                    <%=qna.Cash%>
+                </td>
+            </tr>
+        </table>
+        <tr>
+            <td colspan="2">
+                <button type="submit" name="delete">회원 삭제</button>
+        </tr>
+    </form>
+</body>
