@@ -15,6 +15,7 @@ var pool = mysql.createPool({
 router.get('/', function(req, res, next) {
     res.redirect('admin/clients_list/1');
 });
+
 /* CLIENT_LIST, DETAILS START */
 
 router.get('/clients_list/:page', function(req, res, next) {
@@ -54,7 +55,10 @@ router.post('/delete', function(req, res, next) {
     pool.getConnection(function(err, connection) {
         var sql = "delete FROM register_info where RID=?";
         connection.query(sql, [rid], function(err, result) {
-            if (err) console.error("err : " + err);
+            if (err) {
+                res.send("<script>alert('invalid request, Check request if FK ref problem');history.back();</script>");
+                console.error("err : " + err);
+            }
             if (result.affectedRows == 0) {
                 res.send("<script>alert('invalid request');history.back();</script>");
             }
@@ -69,62 +73,45 @@ router.post('/delete', function(req, res, next) {
 
 /* CLIENT_LIST, DETAILS END */
 
-// router.get('/update', function(req, res, next) {
-//     var idx = req.query.idx;
-//     pool.getConnection(function(err, connection) {
-//         var sql = "select idx, creator_id, title, content, hit, file_path, image_name FROM board where idx=?";
-//         connection.query(sql, [idx], function(err, rows) {
-//             if (err) console.error("err : " + err);
-//             console.log('글 : ' + idx);
-//             res.render('update', {
-//                 title: "글 수정",
-//                 row: rows[0]
-//             });
-//             connection.release();
-//         });
-//     });
-// });
+/* QNA_LIST , DETAILS START */
+
+router.get('/qna', function(req, res, next) {
+    res.redirect('admin/qna_list/1');
+});
+/* CLIENT_LIST, DETAILS START */
+
+router.get('/qna_list/:page', function(req, res, next) {
+    pool.getConnection(function(err, connection) {
+        var sqlQNAList = "select * FROM qna_info";
+        connection.query(sqlQNAList, function(err, rows) {
+            if (err) console.error("err : " + err);
+            res.render('qna_list', {
+                title: '회원 관리',
+                qnas: rows
+            });
+            connection.release();
+        });
+    });
+});
+
+router.get('/qna_details/:idx', function(req, res, next) {
+    var idx = req.params.idx;
+    console.log("idx : " + idx)
+    pool.getConnection(function(err, connection) {
+        var sqlQNADetail = "select * FROM qna_info where RID=?";
+        connection.query(sqlQNADetail, [idx], function(err, row) {
+            if (err) console.error("err : " + err);
+            console.log('QNA Details : ', row);
+            res.render('qna_details', {
+                title: 'Q&A',
+                qna: row[0]
+            });
+        });
+        connection.release();
+
+    });
+});
 
 
-// router.post('/update', upload.single('image'), function(req, res, next) {
-//     var idx = req.body.idx;
-//     var creator_id = req.body.creator_id;
-//     var title = req.body.title;
-//     var content = req.body.content;
-//     var passwd = req.body.passwd;
-//     console.log("result :", idx);
-//     if (req.file) {
-//         var file_path = req.file.path;
-//         var image_name = req.file.originalname;
-//     }
-//     else {
-//         var file_path = "";
-//         var image_name = "";
-//     }
-//     var datas = [creator_id, title, content, file_path, image_name, idx, passwd];
-
-//     pool.getConnection(function(err, connection) {
-//         var sqlStat = "update board set creator_id=?, title=?, content=?,file_path=?,image_name=? where idx=? and passwd=?";
-//         connection.query(sqlStat, datas, function(err, result) {
-//             if (err) console.error("err : " + err);
-//             if (result.affectedRows == 0) {
-//                 res.send("<script>alert('password not match or invalid request');history.back();</script>");
-//             }
-//             else {
-//                 res.redirect('/board/read/' + idx);
-//             }
-//             connection.release();
-//         });
-//     });
-// });
-
-// router.get('/delete', function(req, res, next) {
-//     var idx = req.query.idx;
-//     console.log("idx : " + idx);
-//     res.render('delete', {
-//         title: "게시판 글 삭제",
-//         idx: idx
-//     });
-// });
-
+/* QNA_LIST , DETAILS END */
 module.exports = router;

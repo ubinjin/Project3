@@ -4,11 +4,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+
 var indexRouter = require('./routes/index');
-var adminRouter = require('./routes/admin');
 var usersRouter = require('./routes/users');
 var testRouter = require('./routes/test');
-
+var adminRouter = require('./routes/admin');
+// var admin_clients_Router = require('./routes/admin_clients');
+// var admin_qna_Router = require('./routes/admin_qna');
 var app = express();
 
 // view engine setup
@@ -27,6 +29,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/test', testRouter);
 app.use('/admin', adminRouter);
+// app.use('/admin/clients_list', admin_clients_Router);
+// app.use('/admin/qna', admin_qna_Router);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     next(createError(404));
