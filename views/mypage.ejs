@@ -5,33 +5,154 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
-
+<script type="text/javascript">
+    function ShowTabex(val){
+      for (i=0; i<5; i++) {
+        var tb = document.getElementById('tab_' + i);
+        if (i != val) tb.style.display = "none";
+        else tb.style.display = "block";
+      }
+    }
+</script>
 <body>
     <div>
         <%-header%>
     </div>
-    <div style="text-align: center">
-        <a href="/customer"><img src="/logo.png" /></a>
-        <h1 style="color: rgb(105, 65, 46)">당 골 찬</h1>
-    </div>
+
     <br><br>
-    <div>
-        <h2 style="color: rgb(175, 105, 73)">&nbsp;&nbsp;&nbsp;<%= row_userInfo.Rname %> 님 환영합니다!</h2>
-    </div>
-    <div style="text-align: center">
-        <table class="tab_table" style="padding-left: 10%; padding-right: 10%; font-size: 15px">
-            <%
-    for(var i=0; i<row_dealInfo.length; i++)
-    {
-        var oneItem = row_dealInfo;
-    %>
-                <td width=50>
-                    
+    <table class="mypage_table">
+        <tr>
+            <td class="mypage_button">
+                <span onclick="ShowTabex('0')" style="cursor: pointer;">나의주문현황</span>
+            </td>
+            <td class="mypage_button">
+                <span onclick="ShowTabex('1')" style="cursor: pointer;">쇼핑통장 관리</span>
+            </td>
+            <td class="mypage_button">
+                <span onclick="ShowTabex('2')" style="cursor: pointer;">나의 문의</span>
+            </td>
+            <td class="mypage_button">
+                <span onclick="ShowTabex('3')" style="cursor: pointer;">나의 리뷰</span>
+            </td>
+            <td class="mypage_button">
+                <span onclick="ShowTabex('4')" style="cursor: pointer;">나의 정보관리</span>
+            </td>
+        </tr>
+    </table>
+    <br><br><br><br>
+    <div style="background-color: rgb(236, 236, 236); padding: 15px">
+        <table style="padding: 20px">
+            <tr>
+                <td style="border:2px solid rgb(95, 95, 95); text-align: center; background-color: white; border-radius:5px; padding-right: 50px; padding-left: 50px"
+                    width=100 width>
+                    <%
+                    if (row_userInfo.Ucase == 1) {%>
+                    구매자
+                    <%
+                    } else { %>
+                    판매자
+                    <% } %>
                 </td>
-            <%
+                <td style=" padding-right: 50px; padding-left: 50px">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </td>
+                <td style=" padding-right: 50px; padding-left: 50px">
+                    <%= row_userInfo.Rname %> 님 환영합니다!
+                </td>
+                <td style="text-align:center;  padding-right: 50px; padding-left: 50px;">
+                    주문/배송<br>
+                    <%= row_dealInfo.length %>건
+                </td>
+                <td style="text-align:center;  padding-right: 50px;padding-left: 50px;">
+                    현금<br>
+                    <%= row_userInfo.Cash %>원
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br><br><br>
+    <div id = "tab_0" style="width: 100%; display:block;">
+        <div class="top_div">
+            <h2 style="color: black;">구매목록</h2>
+        </div>
+        <div style="text-align: center;">
+            <table class="tab_table" style="padding-left: 10%; padding-right: 10%; font-size: 15px">
+                <tr style="border-bottom: 1px solid black;">
+                    <td width=30>
+                        사진
+                    </td>
+                    <td width=30>
+                        상품명(옵션)
+                    </td>
+                    <td width=30>
+                        판매가
+                    </td>
+                    <td width=30>
+                        수량
+                    </td>
+                    <td width=30>
+                        구매일자
+                    </td>
+                    <td width=30>
+                        주문상태
+                    </td>
+                </tr>
+                <%
+    if (row_dealInfo.length == 0) {
+            %>
+                <tr>
+                    <td width=50>
+                        구매하신 물품이 없습니다!
+                    </td>
+                </tr>
+                <%
+    }
+    else {
+        var total = 0;
+        for(var i=0; i<row_dealInfo.length; i++) {
+        var oneItem = row_dealInfo[i];
+        total += oneItem.Price * oneItem.Dquantity;
+            %>
+                <tr style="border-bottom-color:lightgray;">
+                    <td width=30>
+                        <img src="/<%=oneItem.Pimage%>" width=100 height=100>
+                    </td>
+                    <td width=30>
+                        <%=oneItem.Pname%>
+                    </td>
+                    <td width=30>
+                        <%=oneItem.Price%>
+                    </td>
+                    <td width=30>
+                        <%=oneItem.Dquantity%>
+                    </td>
+                    <td width=30>
+                        <%=oneItem.Dtime%>
+                    </td>
+                    <td width=30>
+                        <%=oneItem.Dstate%>
+                    </td>
+                </tr>
+                <%
+        }
     }
     %>
-        </table>
+                </tr>
+            </table>
+            <div class="top_div">
+                <h3 style="color: black;">총 주문 금액</h3>
+            </div>
+            <%=total%>원
+        </div>
+    </div>
+    <div id="tab_1" style="width: 100%; display: none;">
+        
+    </div>
+    <div id="tab_2" style="width: 100%; display: none;">
+    </div>
+    <div id="tab_3" style="width: 100%; display: none;">
+    </div>
+    <div id="tab_4" style="width: 100%; display: none;">
     </div>
 </body>
 

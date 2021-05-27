@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<script type="text/javascript">
+    var newURL = window.location.href;
+</script>
+
+<body>
+    <div>
+        <%-header%>
+    </div>
+    <div style="text-align: center">
+        <table class="tab_table">
+            <tr>
+                <td width=50><a href="/customer/tab">전체 메뉴</a></td>
+                <td width=50><a href="/customer/tab/1">새우장</a></td>
+                <td width=50><a href="/customer/tab/2">게장</a></td>
+                <td width=50><a href="/customer/tab/3">계란장</a></td>
+                <td width=50><a href="/customer/tab/4">김치</a></td>
+                <td width=50>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td width=50><a href="/customer/notice">Notice</a></td>
+                <td width=50><a href="/customer/qna">Q&A</a></td>
+            </tr>
+        </table>
+        <img src="/main_border.png" style="width: 90%; height: 1%; overflow: hidden;">
+    </div>
+    <br><br>
+    <h2 style="color: rgb(228, 216, 55); text-align: center;">공지사항</h2>
+    <table class="tab_table">
+        <tr>
+            <td>번호</td>
+            <td>제목</td>
+            <td>작성자</td>
+            <td>작성일</td>
+            <td>조회수</td>
+        </tr>
+        <%
+            for (var i=0; i<notices.length; i++){
+                var oneItem = notices[i];
+        %>
+            <tr style="cursor:pointer;" onClick="location.href='/customer/notice_detail/<%=oneItem.Ntime%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
+                <td>
+                    <%=i+1%>
+                </td>
+                <td>
+                    <%=oneItem.NTitle%>
+                </td>
+                <td>
+                    관리자
+                </td>
+                <td>
+                    <%=oneItem.Ntime%>
+                </td>
+                <td>
+                    <%=oneItem.Nhit%>
+                </td>
+            </tr>
+            <%
+        }
+        %>
+    </table>
+
+</body>
+
+</html>
