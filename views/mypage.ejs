@@ -26,7 +26,7 @@
                 <span onclick="ShowTabex('0')" style="cursor: pointer;">나의주문현황</span>
             </td>
             <td class="mypage_button">
-                <span onclick="ShowTabex('1')" style="cursor: pointer;">쇼핑통장 관리</span>
+                <span onclick="ShowTabex('1')" style="cursor: pointer;">돈 충전</span>
             </td>
             <td class="mypage_button">
                 <span onclick="ShowTabex('2')" style="cursor: pointer;">나의 문의</span>
@@ -57,7 +57,7 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td style=" padding-right: 50px; padding-left: 50px">
-                    <%= row_userInfo.Rname %> 님 환영합니다!
+                    <%= row_userInfo.Rname %> 님 환영합니다! <br>
                 </td>
                 <td style="text-align:center;  padding-right: 50px; padding-left: 50px;">
                     주문/배송<br>
@@ -113,7 +113,7 @@
         var oneItem = row_dealInfo[i];
         total += oneItem.Price * oneItem.Dquantity;
             %>
-                <tr style="border-bottom-color:lightgray;">
+                <tr style="border-bottom-color:rgba(211, 211, 211, 0.755);">
                     <td width=30>
                         <img src="/<%=oneItem.Pimage%>" width=100 height=100>
                     </td>
@@ -145,14 +145,156 @@
             <%=total%>원
         </div>
     </div>
-    <div id="tab_1" style="width: 100%; display: none;">
-        
+    <div id="tab_1" style="width: 50%; display: none; text-align: center;">
+        <table class="mypage_table">
+            <tr>
+                <td>
+                    현재 금액
+                </td>
+                <td>
+                    <%=row_userInfo.Cash%>원
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    충전하기
+                </td>
+                <td>
+                    <form action="/customer/cash_add" method="post">
+                    <input type="text" id="cash" name="cash">
+                    <input type="submit" value="결제">
+                </form>
+                </td>
+            </tr>
+        </table>
     </div>
     <div id="tab_2" style="width: 100%; display: none;">
+        <table style="border-spacing: 15px;">
+            <tr>
+                <td>
+                    제목
+                </td>
+                <td>
+                    질문내용
+                </td>
+                <td>
+                    답변
+                </td>
+                <td>
+                    시간
+                </td>
+                <td>
+                    이미지
+                </td>
+            </tr>
+            <% 
+            for(var i=0; i<row_qnaInfo.length; i++) {
+                var oneItem = row_qnaInfo[i];
+            %>
+            <tr>
+                <td>
+                    <a href="/customer"><%=oneItem.QTitle%></a>
+                </td>
+                <td>
+                    <%=oneItem.Question%>
+                </td>
+                <td>
+                    <%=oneItem.Answer%>
+                </td>
+                <td>
+                    <%=oneItem.Qtime%>
+                </td>
+                <td>
+                    <img src="/<%=oneItem.Qimage%>" width=50 height=50>
+                </td>
+            </tr>
+                <% } %>
+        </table>
     </div>
     <div id="tab_3" style="width: 100%; display: none;">
+        <table style="border-spacing: 15px;">
+            <tr>
+                <td>
+                    상품명
+                </td>
+                <td>
+                    리뷰내용
+                </td>
+                <td>
+                    별점
+                </td>
+                <td>
+                    시간
+                </td>
+                <td>
+                    이미지
+                </td>
+            </tr>
+            <% 
+            for(var i=0; i<row_reviewInfo.length; i++) {
+                var oneItem = row_reviewInfo[i];
+            %>
+            <tr>
+                <td>
+                    <a href="/customer"><%=oneItem.Pname%></a>
+                </td>
+                <td>
+                    <%=oneItem.Review%>
+                </td>
+                <td>
+                    <% for(var j = 0; j < oneItem.Star; j++) { %>
+                        ★
+                    <% } %>
+                </td>
+                <td>
+                    <%=oneItem.Rtime%>
+                </td>
+                <td>
+                    <img src="/<%=oneItem.Rimage%>" width=50 height=50>
+                </td>
+            </tr>
+                <% } %>
+        </table>
     </div>
     <div id="tab_4" style="width: 100%; display: none;">
+        <form action="/customer/register_edit" method="post">
+            <table style="text-align: center;">
+                <tr>
+                    <td>ID</td>
+                    <td>
+                        <p><%=row_userInfo.RID%></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>이름</td>
+                    <td>
+                        <p><input type="text" name="Rname" value="<%=row_userInfo.Rname%>"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>비밀번호</td>
+                    <td>
+                        <p><input type="password" name="password"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>주소</td>
+                    <td>
+                        <p><input type="text" name="Address" value="<%=row_userInfo.Address%>"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>전화번호</td>
+                    <td>
+                        <p><input type="text" name="Phone" value="<%=row_userInfo.Phone%>"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input type="submit" value="수정"></td>
+                </tr>
+            </table>
+        </form>
     </div>
 </body>
 

@@ -128,22 +128,61 @@ router.get('/mypage', function (req, res, next) {
   pool.getConnection(function (err, connection) {
     var userInfo_sql = 'SELECT * FROM register_info where RID=?';
     var userdealInfo_sql = 'select * from product_info as p, deal_info as d where d.P_RID = ? and p.PID = d.D_PID order by Dtime desc';
+    var userqna_sql = 'SELECT * FROM qna_info WHERE Q_RID = ?';
+    var userreview_sql = 'SELECT * FROM review_info as r JOIN product_info as p ON r.R_PID = p.PID WHERE r.R_RID = ?';
     connection.query(userInfo_sql, [user_id], function (err, row_userInfo) {
       connection.query(userdealInfo_sql, [user_id], function (err2, row_dealInfo) {
-        if (err) console.error("err : " + err);
-        if (err2) console.error("err2 : " + err2);
-        console.log("마이페이지 접속 : ", row_userInfo, row_dealInfo);
-        // console.log(saleprice);
-        res.render('mypage', {
-          title: "마이 페이지",
-          row_userInfo: row_userInfo[0],
-          row_dealInfo: row_dealInfo
+        connection.query(userqna_sql, [user_id], function (err3, row_qnaInfo) {
+          connection.query(userreview_sql, [user_id], function (err4, row_reviewInfo) {
+            if (err) console.error("err : " + err);
+            if (err2) console.error("err2 : " + err2);
+            if (err3) console.error("err2 : " + err3);
+            if (err4) console.error("err2 : " + err4);
+            // console.log(saleprice);
+            res.render('mypage', {
+              title: "마이 페이지",
+              row_userInfo: row_userInfo[0],
+              row_dealInfo: row_dealInfo,
+              row_qnaInfo: row_qnaInfo,
+              row_reviewInfo: row_reviewInfo
+            });
+            connection.release();
+          });
         });
-        connection.release();
       });
     });
   });
 });
+
+router.post('/cash_add', function (req, res, next) {
+  var cash = req.body.cash;
+  var user_id = "2016722036";
+  pool.getConnection(function (err, connection) {
+    var cashAdd_sql = 'UPDATE register_info SET Cash = Cash + ? WHERE RID = ?';
+    connection.query(cashAdd_sql, [cash, user_id], function (err, result) {
+      if (err) console.error("err : " + err);
+      res.send("<script type='text/javascript'>alert('충전 완료!');window.location='http://localhost:1001/customer/mypage';window.reload(true);</script>");
+      connection.release();
+    });
+  });
+});
+
+router.post('/register_edit', function (req, res, next) {
+  var user_id = "2016722036";
+  var Rname = req.body.Rname;
+  var password = req.body.password;
+  var Address = req.body.Address;
+  var Phone = req.body.Phone;
+  pool.getConnection(function (err, connection) {
+    var registerEdit_sql = 'UPDATE register_info SET Rname=?, password=?, Address=?, Phone=? WHERE RID = ?';
+    connection.query(registerEdit_sql, [Rname, password, Address, Phone, user_id], function (err, result) {
+      if (err) console.error("err : " + err);
+      res.send("<script type='text/javascript'>alert('수정 완료!');window.location='http://localhost:1001/customer/mypage';window.reload(true);</script>");
+      connection.release();
+    });
+  });
+});
+
 
 router.get('/notice', function (req, res, next) {
   // Session ID 가져오기
