@@ -52,9 +52,11 @@
         }
 %>
             <td width=45>
-                <img src="/<%=oneItem.Pimage%>" height="190" width="190" /><br><br>
-                <a href="/customer/detail/<%=oneItem.PID%>"><%=oneItem.Pname%></a><br>
-                <%=oneItem.Price%>원
+                <a href="/customer/detail/<%=oneItem.PID%>">
+                    <img src="/<%=oneItem.Pimage%>" height="190" width="190" /><br><br>
+                    <%=oneItem.Pname%><br>
+                    <%=oneItem.Price%>원
+                </a>
             </td>
 <%
         if (i % 3 == 2) {

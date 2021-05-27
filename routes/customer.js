@@ -116,16 +116,18 @@ router.get('/detail/:PID', function (req, res) {
 });
 
 router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
+  var now = new Date();
+  now = date_to_str(now);
   /* to deal_info table */
   var Product_idx = req.params.PID;
-  var DID = req.body.P_RID + "_" + req.body.D_PID + "_" + Date(now());
+  var DID = req.body.P_RID + "_" + req.body.D_PID + "_" + now;
   var P_RID = req.body.P_RID;
   var S_RID = req.body.S_RID;
   var D_PID = req.body.D_PID;
-  var Dtime =  Date(now());
+  var Dtime =  now;
   var Dquantity = req.body.Dquantity;
   var Dstate = '결제완료';
-  console.log("날짜~!",  Date(now()));
+  console.log("날짜~!",  now);
   /* to register_info table(update customer's cash) */
   var Rest_cash = req.body.Rest_cash;
   console.log(Rest_cash);
@@ -163,6 +165,8 @@ router.get('/detail/:PID/buy', function (req, res) {
 
 //////////////////////////////////////////// write review //////////////////////////////////////////////////////
 router.post('/detail/:PID/review', upload.single('image'), function (req, res, next) {
+  var now = new Date();
+  now = date_to_str(now);
   var Product_idx = req.params.PID;
   var R_RID = req.body.R_RID;
   var R_PID = req.body.R_PID;
@@ -170,7 +174,7 @@ router.post('/detail/:PID/review', upload.single('image'), function (req, res, n
   var Review = req.body.Review;
   var Star = req.body.Star;
   var Rimage = req.file.path;
-  var Rtime = date;
+  var Rtime = now;
 
   var datas = [R_RID, R_PID, R_DID, Review, Star, Rtime, Rimage];
   pool.getConnection(function (err, connection) {
@@ -226,7 +230,7 @@ router.get('/mypage', function (req, res, next) {
   }
   pool.getConnection(function (err, connection) {
     var userInfo_sql = 'SELECT * FROM register_info where RID=?';
-    var userdealInfo_sql = 'select * from product_info as p, deal_info as d where d.P_RID = ? and p.PID = d.D_PID order by Dtime desc';
+    var userdealInfo_sql = 'SELECT * FROM product_info as p, deal_info as d WHERE d.P_RID = ? and p.PID = d.D_PID order by Dtime desc';
     var userqna_sql = 'SELECT * FROM qna_info WHERE Q_RID = ?';
     var userreview_sql = 'SELECT * FROM review_info as r JOIN product_info as p ON r.R_PID = p.PID WHERE r.R_RID = ?';
     connection.query(userInfo_sql, [user_id], function (err, row_userInfo) {
@@ -396,6 +400,40 @@ router.post('/qna_delete/:page', function (req, res, next) {
     });
   });
 });
+
+function date_to_str(format) {
+
+  var year = format.getFullYear();
+
+  var month = format.getMonth() + 1;
+
+  if (month < 10) 
+      month = '0' + month;
+  
+  var date = format.getDate();
+
+  if (date < 10) 
+      date = '0' + date;
+  
+  var hour = format.getHours();
+
+  if (hour < 10) 
+      hour = '0' + hour;
+  
+  var min = format.getMinutes();
+
+  if (min < 10) 
+      min = '0' + min;
+  
+  var sec = format.getSeconds();
+
+  if (sec < 10) 
+      sec = '0' + sec;
+  
+  return year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
+
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 module.exports = router;
