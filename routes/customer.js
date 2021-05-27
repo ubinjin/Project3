@@ -46,7 +46,7 @@ router.get('/', function (req, res, next) {
 router.get('/tab', function (req, res, next) {
   page = 0;
   pool.getConnection(function (err, connection) {
-    var ProductList_sql = "select Pname, Price, Pimage from product_info";
+    var ProductList_sql = "select Pname, Price, Pimage, PID from product_info";
     connection.query(ProductList_sql, function (err, rows) {
       if (err) console.error("err : " + err);
       // console.log("rows : " + JSON.stringify(rows))
@@ -77,7 +77,7 @@ router.get('/tab/:page', function (req, res, next) {
     where = " where Pcategory='김치'";
   }
   pool.getConnection(function (err, connection) {
-    var ProductList_sql = "select Pname, Price, Pimage from product_info" + where;
+    var ProductList_sql = "select Pname, Price, Pimage, PID from product_info" + where;
     connection.query(ProductList_sql, function (err, rows) {
       if (err) console.error("err : " + err);
       // console.log("rows : " + JSON.stringify(rows));
@@ -118,17 +118,17 @@ router.get('/detail/:PID', function (req, res) {
 router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
   /* to deal_info table */
   var Product_idx = req.params.PID;
-  var DID = req.body.P_RID + "_" + req.body.D_PID + "_" + date;
+  var DID = req.body.P_RID + "_" + req.body.D_PID + "_" + Date(now());
   var P_RID = req.body.P_RID;
   var S_RID = req.body.S_RID;
   var D_PID = req.body.D_PID;
-  var Dtime = date;
+  var Dtime =  Date(now());
   var Dquantity = req.body.Dquantity;
-  var Dstate = '1';
+  var Dstate = '결제완료';
+  console.log("날짜~!",  Date(now()));
   /* to register_info table(update customer's cash) */
   var Rest_cash = req.body.Rest_cash;
   console.log(Rest_cash);
-
   var datas = [DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate, Number(Rest_cash)];
   pool.getConnection(function (err, connection) {
     var InsertdealandUpdateCash_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate) values(?,?,?,?,?,?,?);" +
