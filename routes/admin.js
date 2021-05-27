@@ -2,6 +2,7 @@ require('dotenv').config();
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
+var multer = require('multer');
 var pool = mysql.createPool({
     connectionLimit: process.env.DB_connectionLimit,
     host: process.env.DB_host,
@@ -10,6 +11,19 @@ var pool = mysql.createPool({
     password: process.env.DB_password,
     database: process.env.DB_database,
     dateStrings: process.env.DB_dateStrings
+});
+
+var storage = multer.diskStorage({ // 2
+    destination(req, file, cb) {
+        cb(null, 'upload/');
+    },
+    filename(req, file, cb) {
+        cb(null, `${Date.now()}__${file.originalname}`);
+    },
+});
+
+var upload = multer({
+    storage: storage
 });
 
 router.get('/clients_list', function(req, res, next) {
@@ -165,10 +179,10 @@ router.get('/notice_list/:page', function(req, res, next) {
 router.get('/notice_detail/:Ntime', function(req, res, next) {
     var idx = req.params.Ntime;
     pool.getConnection(function(err, connection) {
-        var sqlNoticeDetail = "select * FROM notice_info";
+        var sqlNoticeDetail = "select * FROM notice_info where Ntime=?";
         connection.query(sqlNoticeDetail, [idx], function(err, row) {
             if (err) console.error("err : " + err);
-            console.log('클라이언트 정보 : ', JSON.stringify(row));
+            console.log('공지사항 정보 : ', JSON.stringify(row));
             res.render('notice_detail', {
                 title: '공지 정보',
                 notice: row[0]
@@ -181,6 +195,50 @@ router.get('/notice_detail/:Ntime', function(req, res, next) {
         connection.release();
     });
 });
+
+
+router.get('/notice_write', function(req, res, next) {
+    res.render('notice_write', {
+        title: '공지 작성'
+    });
+});
+
+
+router.post('/notice_write', upload.single('image'), function(req, res, next) {
+    var Ntime = new Date();
+    var NTitle = req.body.title;
+    var Ntext = req.body.content;
+    var Nhit = 0;
+    if (req.file) {
+        var Nimage = req.file.path;
+        var Nimage_path = req.file.originalname;
+    }
+    else {
+        var Nimage = "";
+        var Nimage_path = "";
+    }
+    var datas = [Ntime, NTitle, Ntext, Nimage, Nimage_path, Nhit];
+    console.log("datas : " + JSON.stringify(datas));
+    pool.getConnection(function(err, connection) {
+        console.log("getConnection error : " + err);
+        var sql = "insert into notice_info(Ntime,NTitle,Ntext,Nimage,Nimage_path,Nhit) values(?,?,?,?,?,?)";
+        connection.query(sql, datas, function(err, result) {
+            if (err) {
+                console.error("err : " + err);
+                res.send("<script>alert('invalid request, Check request if FK ref problem');history.back();</script>");
+            }
+            else if (result.affectedRows == 0) {
+                res.send("<script>alert('invalid request');history.back();</script>");
+            }
+            else {
+                res.send("<script>alert('공지를 추가했습니다.');window.location='http://localhost:1001/admin/notice_list/1';window.reload(true);</script>");
+            }
+            connection.release();
+
+        });
+    });
+});
+
 
 router.post('/notice_delete', function(req, res, next) {
     var rid = req.body.Ntime;

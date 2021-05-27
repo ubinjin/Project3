@@ -8,8 +8,6 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var testRouter = require('./routes/test');
 var adminRouter = require('./routes/admin');
-// var admin_clients_Router = require('./routes/admin_clients');
-// var admin_qna_Router = require('./routes/admin_qna');
 var app = express();
 
 // view engine setup
@@ -19,17 +17,18 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
-    extended: false
+    extended: true
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/upload', express.static(path.join(__dirname + '/upload')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/test', testRouter);
 app.use('/admin', adminRouter);
-// app.use('/admin/clients_list', admin_clients_Router);
-// app.use('/admin/qna', admin_qna_Router);
+
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     next(createError(404));
