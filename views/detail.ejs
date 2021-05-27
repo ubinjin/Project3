@@ -25,6 +25,7 @@
   <hr>
   <p>
     <h1>리뷰</h1>
+    <button onclick="window.location.href = '/customer/detail/<%=product.PID%>/review'">작성</button>
   </p>
 
   <%
@@ -46,14 +47,3 @@
 </body>
 
 </html>
-
-
-<!-- <form action="/customer/detail/<%=product.PID%>" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="R_RID" id="R_RID" value="<%=deal.P_RID%>" />
-    <input type="hidden" name="R_PID" id="R_PID" value="<%=deal.PID%>" />
-    <input type="hidden" name="R_DID" id="R_DID" value="<%=deal.DID%>" />
-    <p>이미지: <input type="file" name="image" id="image" accept="image/png, image/jpeg" required /></p>
-    <p>리뷰쓰기: <input type="text" name="Review" id="Review" required /></p>
-    <p>별점: <input type="text" name="Star" id="Star" required /></p>
-    <button type="submit">작성</button>
-  </form> -->
