@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <div>
+        <%-header%>
+    </div>
+    
+<div style="text-align: center">
+    <table class="tab_table">
+        <tr>
+            <td width=50><a href="/customer/tab">전체 메뉴</a></td>
+            <td width=50><a href="/customer/tab/1">새우장</a></td>
+            <td width=50><a href="/customer/tab/2">게장</a></td>
+            <td width=50><a href="/customer/tab/3">계란장</a></td>
+            <td width=50><a href="/customer/tab/4">김치</a></td>
+            <td width=50>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td width=50><a href="/customer/notice">Notice</a></td>
+            <td width=50><a href="/customer/qna">Q&A</a></td>
+        </tr>
+    </table>
+    <img src="/main_border.png" style="width: 90%; height: 1%; overflow: hidden;">
+</div>
+    <table border="1">
+        <tr>
+            <td>제목</td>
+            <td>
+                <input type="hidden" name="Ntime" id="Ntime" value="<%=notice.Ntime%>">
+                <%=notice.NTitle%>
+            </td>
+        </tr>
+        <tr>
+            <td>작성자</td>
+            <td>
+                관리자
+            </td>
+        </tr>
+        <tr>
+            <td>작성일</td>
+            <td>
+                <%=notice.Ntime%>
+            </td>
+        </tr>
+        <tr>
+            <td>조회수</td>
+            <td>
+                <%=notice.Nhit%>
+            </td>
+        </tr>
+    </table>
+</body>

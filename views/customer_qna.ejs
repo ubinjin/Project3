@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<script type="text/javascript">
+    var newURL = window.location.href;
+</script>
+
+<body>
+    <div>
+        <%-header%>
+    </div>
+    
+<div style="text-align: center">
+    <table class="tab_table">
+        <tr>
+            <td width=50><a href="/customer/tab">전체 메뉴</a></td>
+            <td width=50><a href="/customer/tab/1">새우장</a></td>
+            <td width=50><a href="/customer/tab/2">게장</a></td>
+            <td width=50><a href="/customer/tab/3">계란장</a></td>
+            <td width=50><a href="/customer/tab/4">김치</a></td>
+            <td width=50>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td width=50><a href="/customer/notice">Notice</a></td>
+            <td width=50><a href="/customer/qna">Q&A</a></td>
+        </tr>
+    </table>
+    <img src="/main_border.png" style="width: 90%; height: 1%; overflow: hidden;">
+</div>
+    <br><br>
+    <h2 style="color: rgb(228, 216, 55); text-align: center;">질문과 답변</h2>
+    <table class="tab_table">
+        <tr>
+            <td>번호</td>
+            <td>제목</td>
+            <td>작성자</td>
+            <td>작성일</td>
+            <td>조회수</td>
+        </tr>
+        <%
+            for (var i=0; i<row.length; i++){
+                var oneItem = row[i];
+        %>
+        <tr style="cursor:pointer;" onClick="location.href='/customer/qna_detail/<%=oneItem.Qtime%>' "
+            onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
+            <td>
+                <%=i+1%>
+            </td>
+            <td>
+                <%=oneItem.QTitle%>
+            </td>
+            <td>
+                관리자
+            </td>
+            <td>
+                <%=oneItem.Qtime%>
+            </td>
+            <td>
+                <%=oneItem.Qhit%>
+            </td>
+        </tr>
+        <%
+        }
+        %>
+    </table>
+    <br><br>
+    <div class = "top_div">
+        <h3>Q&A 입력</h3>
+    </div>
+    <br><br>
+    <div style="text-align: center; width: 80; border: black;">
+        <form action="/customer/qna_write" method="post" enctype="multipart/form-data">
+            <table style="text-align: center;">
+                <tr>
+                    <td>제목</td>
+                    <td>
+                        <p><input type="text" name="Qtitle" placeholder="title" width=80%></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>작성자</td>
+                    <td>
+                        <p></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>내용</td>
+                    <td>
+                        <p><textarea name="Question" placeholder="content"></textarea></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>이미지</td>
+                    <td>
+                        <p><input type="file" name="Qimage"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input type="submit"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>
+
+</html>
