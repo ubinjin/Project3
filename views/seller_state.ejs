@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet"
+        type="text/css" />
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <h2>
+        <font color="black">
+            <%= title %>
+        </font>
+    </h2>
+    
+    <form action="/admin/seller_state" method="post" onsubmit="">
+        <table border="1">
+            <tr>
+                <td>썸네일</td>
+                <td>성함</td>
+                <td>주문 가격</td>
+                <td>주문 상세</td>
+                <td>배송지</td>
+                <td>주문 시간</td>
+                <td>상태</td>
+            </tr>
+            <% for(var i=0; i<row.length; i++) { var oneItem = row[i]; %>
+                <tr>
+                    <td>
+                        <img src="/<%=oneItem.Pimage%>" width="100" />
+                    </td>
+                    <td>
+                        <%=oneItem.Rname%>
+                    </td>
+                    <td>
+                        <% var won = oneItem.Dquantity * oneItem.Price%>
+                        <%=won%>원
+                    </td>
+                    <td>
+                        <%=oneItem.Pname%>*<%=oneItem.Dquantity%>EA
+                    </td>
+                    <td>
+                        <%=oneItem.Address%>
+                    </td>
+                    <td>
+                        <%=oneItem.Dtime%>
+                    </td>
+                    <td>
+                        <%
+                        if (oneItem.Dstate == "결제완료"){
+                            %>
+                            <select name="Dstate" id="Dstate">
+                                <option selected>결제완료</option>
+                                <option>배송준비</option>
+                                <option>배송중</option>
+                                <option>배송완료</option>
+                            </select>
+                        <%
+                        }
+                        else if (oneItem.Dstate == "배송준비"){
+                            %>
+                            <select name="Dstate" id="Dstate">
+                                <option selected>배송준비</option>
+                                <option>배송중</option>
+                                <option>배송완료</option>
+                            </select>
+                        <%
+                        }
+                        else if (oneItem.Dstate == "배송중"){
+                            %>
+                            <select name="Dstate" id="Dstate">
+                                <option selected>배송중</option>
+                                <option>배송완료</option>
+                            </select>
+                        <%
+                        }
+                        else {
+                            %>
+                            <input type="hidden" id="Dstate" name="Dstate" value="배송완료"/>
+                        배송완료
+                        <%
+                    }
+                    %>
+                    </td>
+                </tr>
+                <% } %>
+        </table>
+        <button type="submit" name="submit" value="확인" style="margin-left: 75%; border-radius: 15px;">확인</button>
+    </form>
+</body>
+
+</html>

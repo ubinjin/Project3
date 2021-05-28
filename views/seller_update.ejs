@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet"
+        type="text/css" />
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <h2>
+        <font color="black">
+            <%= title %>
+        </font>
+    </h2>
+    <form action="/admin/seller_update/<%=row.PID%>" method="post" onsubmit="return Register_check();" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td>1차 분류</td>
+                <td style=padding-left:250;padding-bottom:0>
+                    <select name="pcategory" id="pcategory">
+                        <option selected><%=row.Pcategory%></option>
+                        <%
+                        if (row.Pcategory != "전체"){
+                            %>
+                            <option>전체</option>
+                        <%
+                        }
+                        if (row.Pcategory != "새우장"){
+                            %>
+                        <option>새우장</option>
+                        <%
+                        }
+                        if (row.Pcategory != "게장"){
+                            %>
+                        <option>게장</option>
+                        <%
+                        }
+                        if (row.Pcategory != "계란장"){
+                            %>
+                        <option>계란장</option>
+                        <%
+                        }
+                        if (row.Pcategory != "김치"){
+                            %>
+                        <option>김치</option>
+                        <%
+                        }
+                        %>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>상품명</td>
+                <td style=padding-left:250;padding-bottom:0><input type="text" name="pname" id="pname" size="15"
+                        maxLength="15" value="<%=row.Pname%>" required></td>
+            </tr>
+            <tr>
+                <td>가격</td>
+                <td style=padding-left:250;padding-bottom:0><input type="text" name="price" id="price" size="15"
+                        maxlength="15" value="<%=row.Price%>" required></td>
+            </tr>
+            <tr>
+                <td>수량</td>
+                <td style=padding-left:250;padding-bottom:0><input type="text" name="stock" id="stock" size="15"
+                        maxlength="15" value="<%=row.Stock%>" required></td>
+            </tr>
+            <tr>
+                <td>할인율</td>
+                <td style=padding-left:250;padding-bottom:0><input type="text" name="salerate" id="salerate" size="15"
+                        maxlength="15" value="<%=row.Salerate%>" required></td>
+            </tr>
+            <tr>
+                <td>썸네일</td>
+                <font color="black">
+                    <td style=padding-left:250;padding-bottom:0><input type="file" name="pimage" id="pimage" accept="*"
+                            style="border-radius: 6px;"></td>
+                </font>
+            </tr>
+            <tr>
+                <td>상품 설명</td>
+            </tr>
+        </table>
+        <textarea id="pdesc" name="pdesc"></textarea>
+        <button type="submit" name="submit" value="상품 수정" style="margin-left: 75%; border-radius: 15px;">상품 수정</button>
+        <!-- <button type="button" onclick="location.href='/login'" style=" border-radius: 15px;">등록 취소</button> -->
+    </form>
+    <form action="/admin/seller_read/<%=row.PID%>" method="get" style="display:inline"><button type='submit'>취소</button></form>
+    <script>
+        function Register_check() {
+            if ($("#pname").val().trim() == "") {
+                var message = "상품명을 입력해 주세요";
+                $("#pname").val("");
+                $("#pname").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#price").val().trim() == "") {
+                var message = "가격을 입력해 주세요";
+                $("#price").val("");
+                $("#price").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#stock").val().trim() == "") {
+                var message = "수량을 입력해 주세요";
+                $("#stock").val("");
+                $("#stock").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#pid").val().trim() == "") {
+                var message = "상품ID를 입력해 주세요";
+                $("#pid").val("");
+                $("#pid").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#pdesc").val().trim() == "") {
+                var message = "상품 설명을 입력해 주세요";
+                $("#pdesc").val("");
+                $("#pdesc").focus();
+                alert(message);
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"></script>
+    <script>
+        new FroalaEditor('textarea');
+    </script>
+</body>
+
+</html>

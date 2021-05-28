@@ -28,6 +28,10 @@ app.use('/users', usersRouter);
 app.use('/test', testRouter);
 app.use('/admin', adminRouter);
 
+app.use(express.static(__dirname + '/join_images'));
+app.use('/admin', express.static('./join_images'));
+app.use('/join_images', express.static('./join_images'));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
