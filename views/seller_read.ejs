@@ -2,32 +2,34 @@
 <html>
 
 <head>
-  <meta charset="utf-8" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
-  <title>
-    <%= title %>
-  </title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 
 <body>
-  <h1>
-    <%= title %>
-  </h1>
-    <img src='/<%=row.Pimage%>' alt="no image"/> 
+    <h1>
+        <%= title %>
+    </h1>
+    <img src='/<%=row.Pimage%>' alt="no image" />
     <p>
-      <%=row.Pname%>
+        <%=row.Pname%>
     </p>
     <p>판매가격:
     </p>
     <p>할인가격:
     </p>
-    설명 <code><%=row.Pdesc%></code>
-    <p>원산지: 국내산</p>
-    <p>출시일: <%=row.Ptime%>
-    </p>
-    <form action="/admin/seller_update/<%=row.PID%>" method="get" style="display:inline"><button type='submit'>상품 수정</button></form>
-    <form action="/admin/seller_read/<%=row.PID%>" method="post" style="display:inline"><button type='submit'>상품 삭제</button></form>
+    설명
+    <%-row.Pdesc%>
+        <p>원산지: 국내산</p>
+        <p>출시일:
+            <%=row.Ptime%>
+        </p>
+        <form action="/admin/seller_update/<%=row.PID%>" method="get" style="display:inline"><button type='submit'>상품 수정</button></form>
+        <form action="/admin/seller_read/<%=row.PID%>" method="post" style="display:inline"><button type='submit'>상품 삭제</button></form>
 </body>
 
 </html>

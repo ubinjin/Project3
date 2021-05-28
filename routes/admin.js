@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 var multer = require('multer');
+var PHE = require("print-html-element");
 var pool = mysql.createPool({
     connectionLimit: process.env.DB_connectionLimit,
     host: process.env.DB_host,
