@@ -38,7 +38,18 @@ var upload = multer({
 });
 
 router.get('/', function(req, res, next) {
-    res.redirect('/admin/seller_list/1');
+    if (req.session.user.Ucase == "0") {
+        res.send("<script>alert('일반 고객님은 관리자 페이지에 접근할 수 없습니다...');window.location='http://localhost:1001/index';window.reload(true);</script>");
+    }
+    else if (req.session.user.Ucase == "1") {
+        res.send("<script>alert('관리자님 환영합니다!');window.location='http://localhost:1001/admin/seller_list/1';window.reload(true);</script>");
+    }
+    else {
+        delete req.session.user;
+        req.session.save(() => {
+            res.send("<script>alert('관리자 페이지에 비정상적인 접근(세션)입니다..');history.back();</script>");
+        });
+    }
 });
 
 router.get('/seller_list/:page', function(req, res, next) {
@@ -68,6 +79,7 @@ router.get('/notice_list', function(req, res, next) {
 /* CLIENT_LIST, DETAILS START */
 
 router.get('/client_list/:page', function(req, res, next) {
+    console.log(req.session.user)
     pool.getConnection(function(err, connection) {
         var sqlClientsList = "select RID,Rname, Address, Phone, Ucase FROM register_info";
         connection.query(sqlClientsList, function(err, rows) {
