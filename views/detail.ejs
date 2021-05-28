@@ -9,14 +9,18 @@
 <body>
   <div>
     <%-header%>
-</div>
-  <p><img src="<%=product.Pimage%>" /></p>
+  </div>
+  <p><img src="/<%=product.Pimage%>" /></p>
   <p><%=product.Pname%></p>
   <p>판매가격: <%=product.Price%></p>
   <p>할인가격:</p>
   <p>원산지: 국내산</p>
   <p>출시일: <%=product.Ptime%></p>
   <button onclick="window.location.href = '/customer/detail/<%=product.PID%>/buy'">구매하기</button>
+  <form action="/customer/cart/add" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="PID" id="PID" value="<%=product.PID%>" />
+    <button type="submit">장바구니</button>
+  </form>
   <hr>
   <p>
     <h1>교환 / 반품</h1>
