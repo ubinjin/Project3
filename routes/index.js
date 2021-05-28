@@ -1,4 +1,3 @@
-// const { json } = require('express');
 require('dotenv').config();
 var express = require('express');
 var router = express.Router();

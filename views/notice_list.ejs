@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel='stylesheet' href="/stylesheets/style.css" />
+    <script src="/javascripts/jquery-3.6.0.min.js"></script>
+</head>
+<!-- IF TEMPLATE ADDED, DELETE ABOVE -->
+
+<body>
+    <h1>
+        <%= title %>
+    </h1>
+    <br>
+    <br>
+    <table border="1">
+        <tr>
+            <td>번호</td>
+            <td>제목</td>
+            <td>작성자</td>
+            <td>작성일</td>
+            <td>조회수</td>
+        </tr>
+        <%
+            for (var i=0; i<notices.length; i++){
+                var oneItem = notices[i];
+        %>
+            <tr style="cursor:pointer;" onClick="location.href='/admin/notice_detail/<%=oneItem.Ntime%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
+                <td>
+                    <%=i+1%>
+                </td>
+                <td>
+                    <%=oneItem.NTitle%>
+                </td>
+                <td>
+                    관리자
+                </td>
+                <td>
+                    <%=oneItem.Ntime%>
+                </td>
+                <td>
+                    <%=oneItem.Nhit%>
+                </td>
+            </tr>
+            <%
+        }
+        %>
+    </table>
+    <button type="button" onclick="write_new_notice()">공지 작성</button>
+</body>
+
+<script type="text/javaScript">
+    function write_new_notice(){ location.href = "../notice_write"; }
+</script>

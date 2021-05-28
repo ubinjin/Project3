@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel='stylesheet' href="/stylesheets/style.css" />
+    <script src="/javascripts/jquery-3.6.0.min.js"></script>
+</head>
+<!-- IF TEMPLATE ADDED, DELETE ABOVE -->
+
+<body>
+    <h1>
+        <%= title %>
+    </h1>
+    <br>
+    <br>
+    <form action="/admin/qna_answer" method="POST" onsubmit="">
+        <input type="hidden" name="Q_RID" id="Q_RID" value="<%=qna.Q_RID%>"/>
+        <input type="hidden" name="Qtime" id="Qtime" value="<%=qna.Qtime%>"/>
+        <table border="1">
+            <tr>
+                <td>제목</td>
+                <td>
+                    <%=qna.QTitle%>
+                </td>
+            </tr>
+            <tr>
+                <td>작성시간</td>
+                <td>
+                    <%=qna.Qtime%>
+                </td>
+            </tr>
+            <tr>
+                <td>작성자</td>
+                <td>
+                    <%=qna.Rname%>
+                </td>
+            </tr>
+            <tr>
+                <td>아이디</td>
+                <td>
+                    <%=qna.Q_RID%>
+                </td>
+            </tr>
+            <tr>
+                <td>작성일</td>
+                <td>
+                    <%=qna.Qtime%>
+                </td>
+            </tr>
+            <tr>
+                <td>질문</td>
+                <td>
+                    <%=qna.Question%>
+                        <img src="/<%=qna.Qimage%>" alt="">
+                </td>
+            </tr>
+            <tr>
+                <td>조회수</td>
+                <td>
+                    <%=qna.Qhit%>
+                </td>
+            </tr>
+        </table>
+        <table border="1">
+            <tr>
+                <td>판매자 답변</td>
+            </tr>
+            <tr>
+                <td>
+                    <textarea type="text" name="content" id="content" cols="30" notices="10"><%=qna.Answer%></textarea>
+                </td>
+            </tr>
+        </table>
+        <tr>
+            <td colspan="2">
+                <button type="submit" name="delete">답변 등록</button>
+        </tr>
+    </form>
+</body>

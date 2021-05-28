@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <meta charset="utf-8">
+    <link rel='stylesheet' href="/stylesheets/style.css" />
+    <script src="/javascripts/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <h1>
+        <%= title %>
+    </h1>
+    <form action="/admin/notice_write" method="POST" onsubmit="return onWriteSubmit()" enctype="multipart/form-data">
+        <table border="1">
+            <tr>
+                <td>작성자</td>
+                <td>관리자</td>
+            </tr>
+            <tr>
+                <td>제목</td>
+                <td><input type="text" id="title" name="title" required/></td>
+            </tr>
+            <tr>
+                <td>내용</td>
+                <td><textarea type="text" name="content" id="content" cols="30" rows="10" required/></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>이미지</td>
+                <td><input type="file" name="image" id="image" accept="image/*" /></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">글쓰기</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <script>
+        function onWriteSubmit() {
+            if ($("#title").val().trim() == "") {
+                var meessage = "제목을 입력해주세요.";
+                $("#title").val("");
+                $("#title").focus();
+                alert(meessage);
+                return false;
+            }
+            if ($("#content").val().trim() == "") {
+                var meessage = "본문 내용을 입력해주세요.";
+                $("#content").val("");
+                $("#content").focus();
+                alert(meessage);
+                return false;
+            }
+        }
+    </script>
+</body>
+
+</html>
