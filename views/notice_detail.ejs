@@ -14,13 +14,12 @@
     </h1>
     <br>
     <br>
-    <form action="/admin/notice_delete" method="POST" onsubmit="">
-
+    <form action="/admin/notice_delete" method="POST">
+        <input type="hidden" name="Ntime" id="Ntime" value="<%=notice.Ntime%>">
         <table border="1">
             <tr>
                 <td>제목</td>
                 <td>
-                    <input type="hidden" name="Ntime" id="Ntime" value="<%=notice.Ntime%>">
                     <%=notice.NTitle%>
                 </td>
             </tr>
@@ -40,7 +39,7 @@
                 <td>본문</td>
                 <td>
                     <%=notice.Ntext%>
-                    <img src="\<%=notice.Nimage%>" alt="">
+                        <img src="\<%=notice.Nimage%>" alt="">
                 </td>
             </tr>
 
@@ -53,7 +52,12 @@
         </table>
         <tr>
             <td colspan="2">
+                <button type="button" onClick="location.href='/admin/notice_update/<%=notice.Ntime%>' " onMouseOver=" window.status = '<%=notice.Ntime%>' " onMouseOut=" window.status = '' ">공지 수정</button>
+            </td>
+            <td colspan="2">
                 <button type="submit" name="delete">공지 삭제</button>
+            </td>
         </tr>
     </form>
+
 </body>

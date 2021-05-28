@@ -14,10 +14,9 @@
     </h1>
     <br>
     <br>
-    <form action="/admin/qna_delete" method="POST" onsubmit="">
-        <input type="hidden" name="Qtime" id="Qtime" value="<%=qna.Qtime%>">
-        <input type="hidden" name="Q_RID" id="Q_RID" value="<%=qna.Q_RID%>">
-
+    <form action="/admin/qna_answer" method="POST" onsubmit="">
+        <input type="hidden" name="Q_RID" id="Q_RID" value="<%=qna.Q_RID%>"/>
+        <input type="hidden" name="Qtime" id="Qtime" value="<%=qna.Qtime%>"/>
         <table border="1">
             <tr>
                 <td>제목</td>
@@ -69,17 +68,13 @@
             </tr>
             <tr>
                 <td>
-                    <%=qna.Answer%>
+                    <textarea type="text" name="content" id="content" cols="30" notices="10"><%=qna.Answer%></textarea>
                 </td>
             </tr>
         </table>
         <tr>
             <td colspan="2">
-                <button type="button" name="answer" onClick="location.href='/admin/qna_answer/<%=qna.Q_RID%>&<%=qna.Qtime%>' " onMouseOver=" window.status = '<%=qna.Qtime%>' " onMouseOut=" window.status = '' ">질문 답변</button>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <button type="submit" name="delete">질문 삭제</button>
+                <button type="submit" name="delete">답변 등록</button>
         </tr>
     </form>
 </body>

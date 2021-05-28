@@ -113,12 +113,12 @@ router.get('/qna_list/:page', function(req, res, next) {
     });
 });
 
-router.get('/qna_detail/:idx', function(req, res, next) {
+router.get('/qna_detail/:idx&:Qtime', function(req, res, next) {
     var idx = req.params.idx;
-    console.log("idx : " + idx)
+    var time = req.params.Qtime;
     pool.getConnection(function(err, connection) {
-        var sqlQNADetail = "select q.*,Rname FROM qna_info as q join register_info on Q_RID=RID where Q_RID=?";
-        connection.query(sqlQNADetail, [idx], function(err, row) {
+        var sqlQNADetail = "select q.*,Rname FROM qna_info as q join register_info on Q_RID=RID where Q_RID=? and Qtime=?";
+        connection.query(sqlQNADetail, [idx,time], function(err, row) {
             if (err) console.error("err : " + err);
             console.log('QNA Detail : ', row);
             res.render('qna_detail', {
@@ -134,12 +134,57 @@ router.get('/qna_detail/:idx', function(req, res, next) {
     });
 });
 
-router.post('/qna_delete', function(req, res, next) {
-    var qtime = req.body.Qtime;
-    console.log("질문 삭제, Qtime : ", JSON.stringify(qtime));
+router.get('/qna_answer/:idx&:Qtime', function(req, res, next) {
+    var idx = req.params.idx;
+    var time = req.params.Qtime;
+    console.log("idx and time: " + idx+time)
     pool.getConnection(function(err, connection) {
-        var sql = "delete FROM qna_info where Qtime=?";
-        connection.query(sql, [qtime], function(err, result) {
+        var sqlQNADetail = "select q.*,Rname FROM qna_info as q join register_info on Q_RID=RID where Q_RID=? and Qtime=?";
+        connection.query(sqlQNADetail, [idx,time], function(err, row) {
+            if (err) console.error("err : " + err);
+            res.render('qna_answer', {
+                title: 'Q&A 답변',
+                qna: row[0]
+            });
+        });
+        connection.release();
+    });
+});
+
+router.post('/qna_answer', function(req, res, next) {
+    var idx = req.body.Q_RID;
+    var qtime = req.body.Qtime;
+    var content = req.body.content;
+    console.log(idx+qtime+content)
+    pool.getConnection(function(err, connection) {
+        console.log("getConnection error : " + err);
+        var sql = "update qna_info set Answer=? where Q_RID=? and Qtime=?";
+        connection.query(sql, [content,idx,qtime], function(err, result) {  
+            if (err) {
+                console.error("err : " + err);
+                res.send("<script>alert('invalid request, Check request if FK ref problem');history.back();</script>");
+            }
+            else if (result.affectedRows == 0) {
+                res.send("<script>alert('invalid request');history.back();</script>");
+            }
+            else {
+                res.send("<script>alert('답변을 달았습니다.');window.location='http://localhost:1001/admin/qna_list/1';window.reload(true);</script>");
+            }
+            connection.release();
+
+        });
+    });
+});
+
+
+
+router.post('/qna_delete', function(req, res, next) {
+    var idx = req.body.Q_RID;
+    var qtime = req.body.Qtime;
+    console.log("질문 삭제, Q_RID : ", JSON.stringify(idx));
+    pool.getConnection(function(err, connection) {
+        var sql = "delete FROM qna_info where Qtime=? and Q_RID=?";
+        connection.query(sql, [qtime,idx], function(err, result) {
             if (err) {
                 res.send("<script>alert('invalid request, Check request if FK ref problem');history.back();</script>");
                 console.error("err : " + err);
@@ -232,6 +277,57 @@ router.post('/notice_write', upload.single('image'), function(req, res, next) {
             }
             else {
                 res.send("<script>alert('공지를 추가했습니다.');window.location='http://localhost:1001/admin/notice_list/1';window.reload(true);</script>");
+            }
+            connection.release();
+
+        });
+    });
+});
+
+router.get('/notice_update/:Ntime', function(req, res, next) {
+    var idx = req.params.Ntime;
+    console.log("Ntime :" + idx);
+    pool.getConnection(function(err, connection) {
+        var sqlNoticeDetail = "select * FROM notice_info where Ntime=?";
+        connection.query(sqlNoticeDetail, [idx], function(err, row) {
+            if (err) console.error("err : " + err);
+            console.log('공지사항 수정 : ', JSON.stringify(row));
+            res.render('notice_update', {
+                title: '공지 수정',
+                notice: row[0]
+            });
+        });
+    });
+});
+
+
+router.post('/notice_update', upload.single('image'), function(req, res, next) {
+    var Ntime = new Date();
+    var NTitle = req.body.title;
+    var Ntext = req.body.content;
+    if (req.file) {
+        var Nimage = req.file.path;
+        var Nimage_path = req.file.originalname;
+    }
+    else {
+        var Nimage = "";
+        var Nimage_path = "";
+    }
+    var datas = [Ntime, NTitle, Ntext, Nimage, Nimage_path];
+    console.log("datas : " + JSON.stringify(datas));
+    pool.getConnection(function(err, connection) {
+        console.log("getConnection error : " + err);
+        var sql = "update notice_info set Ntime=?,NTitle=?,Ntext=?,Nimage=?,Nimage_path=?";
+        connection.query(sql, datas, function(err, result) {
+            if (err) {
+                console.error("err : " + err);
+                res.send("<script>alert('invalid request, Check request if FK ref problem');history.back();</script>");
+            }
+            else if (result.affectedRows == 0) {
+                res.send("<script>alert('invalid request');history.back();</script>");
+            }
+            else {
+                res.send("<script>alert('공지를 수정했습니다.');window.location='http://localhost:1001/admin/notice_list/1';window.reload(true);</script>");
             }
             connection.release();
 
