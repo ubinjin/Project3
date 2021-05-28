@@ -94,7 +94,7 @@ router.post('/seller_register', thumb_nail.single('pimage'), (req, res) => {
             }
             else {
                 console.log("rows : " + JSON.stringify(rows));
-                res.send("<script>alert('상품 등록이 완료되었습니다..');window.location='http://localhost:1001/admin/seller_list';window.reload(true);</script>");
+                res.send("<script>alert('상품 등록이 완료되었습니다..');window.location='http://localhost:1001/admin/seller_list/1';window.reload(true);</script>");
             }
             connection.release();
         });
@@ -141,7 +141,7 @@ router.post('/seller_update/:pid', thumb_nail.single('pimage'), (req, res) => {
             }
             else {
                 console.log("rows : " + JSON.stringify(rows));
-                res.send("<script>alert('상품 수정이 완료되었습니다..');window.location='http://localhost:1001/admin/seller_list';window.reload(true);</script>");
+                res.send("<script>alert('상품 수정이 완료되었습니다..');window.location='http://localhost:1001/admin/seller_list/1';window.reload(true);</script>");
             }
             connection.release();
         });
@@ -179,7 +179,7 @@ router.post('/seller_read/:pid', (req, res) => {
             }
             else {
                 console.log("rows : " + JSON.stringify(rows));
-                res.send("<script>alert('상품 삭제가 완료되었습니다..');window.location='http://localhost:1001/admin/seller_list';window.reload(true);</script>");
+                res.send("<script>alert('상품 삭제가 완료되었습니다..');window.location='http://localhost:1001/admin/seller_list/1';window.reload(true);</script>");
             }
             connection.release();
         });
