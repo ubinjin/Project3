@@ -81,6 +81,8 @@ router.get('/tab/:page', function (req, res, next) {
   } else if (page == 4) {
     where = " where Pcategory='김치' ";
   }
+  else
+    where = " where Pname Like '%" + page + "%' ";
   pool.getConnection(function (err, connection) {
     var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID" + where + "ORDER BY sum desc;" +
       "SELECT * FROM product_info" + where + "ORDER BY Salerate desc;" +
@@ -354,6 +356,23 @@ router.get('/cart', upload.single('image'), function (req, res, next) {
   });
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+router.post('/search', function(req, res) {
+  var search = req.body.search;
+  pool.getConnection(function(err, connection) {
+    var search_sql = "SELECT * FROM product_info WHERE Pname LIKE '%"+ search + "%';";
+    connection.query(search_sql, function (err, result) {
+      if (err) console.error("err : " + err);
+      console.log("결과는? ", result);
+      if (result == undefined) {
+        res.send("<script type='text/javascript'>alert('찾으시는 상품이 없습니다!'); window.location='http://localhost:1001/customer';window.reload(true);</script>");
+      }
+      res.redirect("/tab/" + search);
+      connection.release();
+    });
+  });
+});
+
 
 router.post('/qna_write', image_upload.single('Qimage'), function (req, res, next) {
   var Q_RID = "2016722036";
