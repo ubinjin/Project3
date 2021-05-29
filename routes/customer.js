@@ -96,6 +96,7 @@ router.get('/tab/:page', function (req, res, next) {
 ////////////////////////////////////////////////// watch product detail info ///////////////////////////////////
 router.get('/detail/:PID', function (req, res) {
   var Product_idx = req.params.PID;
+  var Saleprice = 0;
   pool.getConnection(function (err, connection) {
     var Productinfo_sql = 'SELECT * FROM product_info where PID=?';
     var Reviewinfo_sql = 'select reg.Rname, rev.R_RID, rev.R_PID, rev.R_DID, rev.Review, rev.Star, rev.Rtime, rev.Rimage from register_info as reg join review_info as rev on reg.RID = rev.R_RID where rev.R_PID=?';
@@ -103,10 +104,14 @@ router.get('/detail/:PID', function (req, res) {
       if (err) console.error("err : " + err);
       connection.query(Reviewinfo_sql, [Product_idx], function (err, review) {
         if (err) console.error("err : " + err);
+        Saleprice = product[0].Price * (100-product[0].Salerate) / 100;
+        console.log(beauty_date_to_str(product[0].Ptime));
         res.render('detail', {
           title: "상품 조회",
           product: product[0],
-          reviews: review
+          reviews: review,
+          saleprice: Saleprice,
+          date: beauty_date_to_str(product[0].Ptime)
         });
         connection.release();
 
@@ -146,15 +151,19 @@ router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
 
 router.get('/detail/:PID/buy', function (req, res) {
   var Product_idx = req.params.PID;
+  var Saleprice = 0;
   pool.getConnection(function (err, connection) {
     if (err) console.error("커넥션 객체 얻어오기 에러 : ", err);
     var ProductandRegisterinfo_sql = 'select * from product_info as p, register_info as r where p.PID=? and r.RID = 2016722036';
     connection.query(ProductandRegisterinfo_sql, [Product_idx], function (err, product) {
       if (err) console.error(err);
-      console.log("update에서 1개 글 조회 결과 확인 : ", product);
+      //console.log("update에서 1개 글 조회 결과 확인 : ", product);
+      Saleprice = product[0].Price * (100-product[0].Salerate) / 100;
       res.render('buy', {
         title: "결제",
-        product: product[0]
+        product: product[0],
+        saleprice: Saleprice,
+        date: beauty_date_to_str(product[0].Ptime)
       });
       connection.release();
     });
@@ -205,65 +214,49 @@ router.get('/detail/:PID/review', function (req, res) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////// cart info //////////////////////////////////////////////////////
-router.post('/cart/pay', upload.single('image'), function (req, res) {
+router.post('/cart/pay', function (req, res) {
   var now = new Date();
   now = date_to_str(now);
-  /* to deal_info table */
-  var Product_idx = req.params.PID;
-  var DID = req.body.P_RID + "_" + req.body.D_PID + "_" + now;
   var P_RID = req.body.P_RID;
   var S_RID = req.body.S_RID;
-  var D_PID = req.body.D_PID;
+  //var D_PID = req.body.D_PID;
+  var Arr_DID = [];
+  for (var i=0;i<req.body.D_PID.length;i++){
+    Arr_DID[i] = req.body.P_RID + "_" + req.body.D_PID[i] + "_" + now;
+  }
   var Dtime =  now;
-  var Dquantity = req.body.Dquantity;
   var Dstate = '결제완료';
-  console.log("날짜~!",  now);
-  /* to register_info table(update customer's cash) */
   var Rest_cash = req.body.Rest_cash;
-  console.log(Rest_cash);
-  var datas = [DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate, Number(Rest_cash)];
+  var datas = [];
+  for (var i=0;i<req.body.D_PID.length;i++){
+    datas[i] = [Arr_DID[i], P_RID, S_RID, req.body.D_PID[i], Dtime, req.body.Dquantity[i], Dstate, Number(Rest_cash), req.body.D_PID[i]];
+  }
   pool.getConnection(function (err, connection) {
-    var InsertdealandUpdateCash_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate) values(?,?,?,?,?,?,?);" +
-      "update register_info set cash = ? where RID = '2016722036';";
-    connection.query(InsertdealandUpdateCash_multisql, datas, function (err, result) {
-      if (err) console.error(err);
-      console.log(result);
-      res.redirect('/customer/detail/' + Product_idx);
-      connection.release();
-    });
+    var InsertdealandUpdateCashandDeletecart_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate) values(?,?,?,?,?,?,?);" +
+      "update register_info set cash = ? where RID = '2016722036';" +
+      "delete from cart_info where C_PID=?;";
+    for (var i=0;i<datas.length;i++){
+      console.log(datas);
+      connection.query(InsertdealandUpdateCashandDeletecart_multisql, datas[i]);
+    }
+    res.redirect('/customer/cart');
+    connection.release();
   });
 });
-
-// router.post('/seller_state', (req, res) => {
-//   pool.getConnection(function (err, connection) {
-//       var sql_count = "select count(DID) as c from deal_info order by Dtime desc";
-//       var sql_find = "select DID from deal_info order by Dtime desc";
-//       var sql_update = "update deal_info set Dstate=? where DID=?";
-//       connection.query(sql_count, function (err, row) {
-//           connection.query(sql_find, function (err, row2) {
-//               for (var i = 0; i < row[0].c; i++) {
-//                   console.log(req.body.Dstate[i], row2[i].DID);
-//                   connection.query(sql_update, [req.body.Dstate[i], row2[i].DID]);
-//               }
-//           });
-//       });
-//       connection.release();
-//       res.send("<script>alert('주문 상태 변경이 완료되었습니다.');window.location='http://localhost:1001/admin/seller_state/1';window.reload(true);</script>");
-//   });
-// });
-
 
 
 router.post('/cart/add', upload.single('image'), function (req, res) {
   var PID = req.body.PID;
+  var Cquantity = req.body.Qquantity;
   var now = new Date();
   now = date_to_str(now);
-  var datas = [now, 2016722036, PID, Number(0)];
+  console.log(Cquantity);
+  var datas = [now, 2016722036, PID, Cquantity];
   pool.getConnection(function (err, connection) {
     var InsertCart_sql = "insert into cart_info(Ctime, C_RID, C_PID, Cquantity) values(?,?,?,?)";
     connection.query(InsertCart_sql, datas, function (err, result) {
       if (err) console.error(err);
-      console.log(result);
+      // console.log(result);
       res.redirect('/customer/cart');
       connection.release();
     });
@@ -276,7 +269,8 @@ router.post('/cart/delete', upload.single('image'), function (req, res) {
     var DeleteCart_sql = "delete from cart_info where C_PID=?";
     connection.query(DeleteCart_sql, PID, function (err, result) {
       if (err) console.error(err);
-      console.log(result);
+      // console.log(result);
+      console.log("delete");
       res.redirect('/customer/cart');
       connection.release();
     });
@@ -287,27 +281,36 @@ router.get('/cart', upload.single('image'), function (req, res, next) {
   pool.getConnection(function (err, connection) {
     var Cartinfo_sql = "select * from cart_info as c, product_info as p, register_info as r where p.PID = c.C_PID and r.RID = c.C_RID and c.C_RID=2016722036";
     var Priceinfo_sql = "select Price, Salerate from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=2016722036";
-    var PIDinfo_sql = "select PID from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=2016722036";
+    var Quantityinfo_sql = "select Cquantity from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=2016722036";
+    var GetCash_sql = "select Cash from register_info where RID=2016722036";
     var Priceinfo = [];
-    var PIDinfo = [];
+    var Quantityinfo = [];
+    var Cash = 0;
 
     connection.query(Priceinfo_sql, function (err, price) {
       if (err) console.error("err : " + err);
       Priceinfo = price;
-      console.log(Priceinfo);
+      //console.log(Priceinfo);
     });
-    connection.query(PIDinfo_sql, function (err, PID) {
+    connection.query(Quantityinfo_sql, function (err, Quantity) {
       if (err) console.error("err : " + err);
-      PIDinfo = PID;
-      console.log(PIDinfo);
+      Quantityinfo = Quantity;
+      //console.log(Quantityinfo);
+    });
+    connection.query(GetCash_sql, function (err, cash){
+      if (err) console.error("err : " + err);
+      Cash = cash[0].Cash;
+      // console.log(cash[0].Cash);
     });
     connection.query(Cartinfo_sql, function (err, cart) {
       if (err) console.error("err : " + err);
+      console.log(cart[0].Salerate);
       res.render('cart', {
         title: "장바구니",
         cart: cart,
+        cash: Cash,
         price: Priceinfo,
-        pid: PIDinfo
+        quantity: Quantityinfo
       });
       connection.release();
     });
@@ -543,6 +546,24 @@ function date_to_str(format) {
       sec = '0' + sec;
   
   return year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
+
+}
+
+
+function beauty_date_to_str(format) {
+
+  var year = format.getFullYear();
+
+  var month = format.getMonth() + 1;
+
+  if (month < 10) 
+      month = '0' + month;
+  
+  var date = format.getDate();
+
+  if (date < 10) 
+      date = '0' + date;  
+  return year + "-" + month + "-" + date;
 
 }
 
