@@ -3,7 +3,6 @@ var router = express.Router();
 var mysql = require('mysql');
 var multer = require('multer');
 var moment = require('moment');
-var date = moment().format('YYYY-MM-DD HH:MM:SS');
 
 var pool = mysql.createPool({
   connectionLimit: process.env.DB_connectionLimit,
@@ -142,13 +141,13 @@ router.get('/detail/:PID', function (req, res) {
       connection.query(Reviewinfo_sql, [Product_idx], function (err, review) {
         if (err) console.error("err : " + err);
         Saleprice = product[0].Price * (100-product[0].Salerate) / 100;
-        console.log(beauty_date_to_str(product[0].Ptime));
+        //console.log(beauty_date_to_str(product[0].Ptime));
         res.render('detail', {
           title: "상품 조회",
           product: product[0],
           reviews: review,
           saleprice: Saleprice,
-          date: beauty_date_to_str(product[0].Ptime)
+          date: beauty_date_to_str(new Date(product[0].Ptime))
         });
         connection.release();
 
@@ -200,7 +199,7 @@ router.get('/detail/:PID/buy', function (req, res) {
         title: "결제",
         product: product[0],
         saleprice: Saleprice,
-        date: beauty_date_to_str(product[0].Ptime)
+        date: beauty_date_to_str(new Date(product[0].Ptime))
       });
       connection.release();
     });
@@ -292,6 +291,7 @@ router.post('/cart/add', upload.single('image'), function (req, res) {
   pool.getConnection(function (err, connection) {
     var InsertCart_sql = "insert into cart_info(Ctime, C_RID, C_PID, Cquantity) values(?,?,?,?)";
     connection.query(InsertCart_sql, datas, function (err, result) {
+      console.log("cart 추가: ", result);
       if (err) console.error(err);
       // console.log(result);
       res.redirect('/customer/cart');
@@ -316,10 +316,10 @@ router.post('/cart/delete', upload.single('image'), function (req, res) {
 
 router.get('/cart', upload.single('image'), function (req, res, next) {
   pool.getConnection(function (err, connection) {
-    var Cartinfo_sql = "select * from cart_info as c, product_info as p, register_info as r where p.PID = c.C_PID and r.RID = c.C_RID and c.C_RID=2016722036";
-    var Priceinfo_sql = "select Price, Salerate from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=2016722036";
-    var Quantityinfo_sql = "select Cquantity from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=2016722036";
-    var GetCash_sql = "select Cash from register_info where RID=2016722036";
+    var Cartinfo_sql = "select * from cart_info as c, product_info as p, register_info as r where p.PID = c.C_PID and r.RID = c.C_RID and c.C_RID='2016722036'";
+    var Priceinfo_sql = "select Price, Salerate from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID='2016722036'";
+    var Quantityinfo_sql = "select Cquantity from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID='2016722036'";
+    var GetCash_sql = "select Cash from register_info where RID='2016722036'";
     var Priceinfo = [];
     var Quantityinfo = [];
     var Cash = 0;
