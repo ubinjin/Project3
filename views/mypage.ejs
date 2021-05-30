@@ -6,13 +6,13 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
 <script type="text/javascript">
-    function ShowTabex(val){
-      for (i=0; i<5; i++) {
-        var tb = document.getElementById('tab_' + i);
-        if (i != val) tb.style.display = "none";
-        else tb.style.display = "block";
-      }
-    }
+    function ShowTabex(val) {
+        for (i = 0; i < 5; i++) {
+            var tb = document.getElementById('tab_' + i);
+            if (i != val) tb.style.display = "none";
+            else tb.style.display = "block";
+        }
+    };
 </script>
 <body>
     <div>
@@ -46,7 +46,7 @@
                 <td style="border:2px solid rgb(95, 95, 95); text-align: center; background-color: white; border-radius:5px; padding-right: 50px; padding-left: 50px"
                     width=100 width>
                     <%
-                    if (row_userInfo.Ucase == 0) {%>
+                    if (rows[0][0].Ucase == 0) {%>
                     구매자
                     <%
                     } else { %>
@@ -57,27 +57,38 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td style=" padding-right: 50px; padding-left: 50px">
-                    <%= row_userInfo.Rname %> 님 환영합니다! <br>
+                    <%= rows[0][0].Rname %> 님 환영합니다! <br>
                 </td>
                 <td style="text-align:center;  padding-right: 50px; padding-left: 50px;">
                     주문/배송<br>
-                    <%= row_dealInfo.length %>건
+                    <%= rows[1].length %>건
                 </td>
                 <td style="text-align:center;  padding-right: 50px;padding-left: 50px;">
                     현금<br>
-                    <%= row_userInfo.Cash %>원
+                    <%= rows[0][0].Cash %>원
+                </td>
+                <td style="text-align:center;  padding-right: 50px;padding-left: 50px;">
+                    <div class="wraper">
+                        <div class = "recList">
+                            <% for (var k = 0; k < rows[4].length; k++) { %>
+                                <p><a href = "/customer/detail/<%=rows[4][k].rec_PID%>"><%=rows[4][k].Pname%></a></p>
+                            <% } %>
+                        </div>
+                        나의 추천상품<br>
+                        <%= rows[4].length %>개
+                    </div>
                 </td>
             </tr>
         </table>
     </div>
     <br><br><br>
-    <div id = "tab_0" style="width: 100%; display:block;">
+    <div id="tab_0" style="width: 100%; display:block;">
         <div class="top_div">
             <h2 style="color: black;">구매목록</h2>
         </div>
         <div style="text-align: center;">
-            <table class="tab_table" style="padding-left: 10%; padding-right: 10%; font-size: 15px">
-                <tr style="border-bottom: 1px solid black;">
+            <table class="tab_table" style="padding-left: 10%; padding-right: 10%; font-size: 15px" id = "buy_list">
+                <tr style="border-bottom: 1px solid black; border-top: 1px solid black;">
                     <td width=30>
                         사진
                     </td>
@@ -98,7 +109,7 @@
                     </td>
                 </tr>
                 <%
-    if (row_dealInfo.length == 0) {
+    if (rows[1].length == 0) {
             %>
                 <tr>
                     <td width=50>
@@ -109,16 +120,17 @@
     }
     else {
         var total = 0;
-        for(var i=0; i<row_dealInfo.length; i++) {
-        var oneItem = row_dealInfo[i];
+        for(var i=0; i<rows[1].length; i++) {
+        var oneItem = rows[1][i];
         total += oneItem.Price * oneItem.Dquantity;
             %>
                 <tr style="border-bottom-color:rgba(211, 211, 211, 0.755);">
                     <td width=30>
-                        <a href = "/customer/detail/<%=oneItem.PID%>"><img src="/<%=oneItem.Pimage%>" width=100 height=100></a>
+                        <a href="/customer/detail/<%=oneItem.PID%>"><img src="/<%=oneItem.Pimage%>" width=100
+                                height=100></a>
                     </td>
                     <td width=30>
-                        <a href = "/customer/detail/<%=oneItem.PID%>"><%=oneItem.Pname%></a>
+                        <a href="/customer/detail/<%=oneItem.PID%>"><%=oneItem.Pname%></a>
                     </td>
                     <td width=30>
                         <%=oneItem.Price%>
@@ -152,7 +164,7 @@
                     현재 금액
                 </td>
                 <td>
-                    <%=row_userInfo.Cash%>원
+                    <%=rows[0][0].Cash%>원
                 </td>
             </tr>
             <tr>
@@ -161,8 +173,8 @@
                 </td>
                 <td>
                     <form action="/customer/cash_add" method="post">
-                    <input type="text" id="cash" name="cash">
-                    <input type="submit" value="결제">
+                        <input type="text" id="cash" name="cash">
+                        <input type="submit" value="결제">
                     </form>
                 </td>
             </tr>
@@ -188,8 +200,8 @@
                 </td>
             </tr>
             <% 
-            for(var i=0; i<row_qnaInfo.length; i++) {
-                var oneItem = row_qnaInfo[i];
+            for(var i=0; i<rows[2].length; i++) {
+                var oneItem = rows[2][i];
             %>
             <tr>
                 <td>
@@ -205,10 +217,11 @@
                     <a href="/customer/qna_detail/<%=oneItem.Qtime%>"><%=oneItem.Qtime%></a>
                 </td>
                 <td>
-                    <a href="/customer/qna_detail/<%=oneItem.Qtime%>"><img src="/<%=oneItem.Qimage%>" width=50 height=50></a>
+                    <a href="/customer/qna_detail/<%=oneItem.Qtime%>"><img src="/<%=oneItem.Qimage%>" width=50
+                            height=50></a>
                 </td>
             </tr>
-                <% } %>
+            <% } %>
         </table>
     </div>
     <div id="tab_3" style="width: 100%; display: none;">
@@ -231,8 +244,8 @@
                 </td>
             </tr>
             <% 
-            for(var i=0; i<row_reviewInfo.length; i++) {
-                var oneItem = row_reviewInfo[i];
+            for(var i=0; i<rows[3].length; i++) {
+                var oneItem = rows[3][i];
             %>
             <tr>
                 <td>
@@ -243,7 +256,7 @@
                 </td>
                 <td>
                     <% for(var j = 0; j < oneItem.Star; j++) { %>
-                        ★
+                    ★
                     <% } %>
                 </td>
                 <td>
@@ -253,7 +266,7 @@
                     <img src="/<%=oneItem.Rimage%>" width=50 height=50>
                 </td>
             </tr>
-                <% } %>
+            <% } %>
         </table>
     </div>
     <div id="tab_4" style="width: 100%; display: none;">
@@ -262,13 +275,13 @@
                 <tr>
                     <td>ID</td>
                     <td>
-                        <p><%=row_userInfo.RID%></p>
+                        <p><%=rows[0][0].RID%></p>
                     </td>
                 </tr>
                 <tr>
                     <td>이름</td>
                     <td>
-                        <p><input type="text" name="Rname" value="<%=row_userInfo.Rname%>"></p>
+                        <p><input type="text" name="Rname" value="<%=rows[0][0].Rname%>"></p>
                     </td>
                 </tr>
                 <tr>
@@ -280,13 +293,13 @@
                 <tr>
                     <td>주소</td>
                     <td>
-                        <p><input type="text" name="Address" value="<%=row_userInfo.Address%>"></p>
+                        <p><input type="text" name="Address" value="<%=rows[0][0].Address%>"></p>
                     </td>
                 </tr>
                 <tr>
                     <td>전화번호</td>
                     <td>
-                        <p><input type="text" name="Phone" value="<%=row_userInfo.Phone%>"></p>
+                        <p><input type="text" name="Phone" value="<%=rows[0][0].Phone%>"></p>
                     </td>
                 </tr>
                 <tr>

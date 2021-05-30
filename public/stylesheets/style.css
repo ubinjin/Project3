@@ -82,3 +82,35 @@ select {
   appearance: none;
   text-align: center;
 }
+
+.wraper {
+  position: relative;
+  display: inline-block;
+  margin: auto;
+  margin-top: 0px;
+}
+
+.wraper .recList{
+  position: absolute;
+  width: 200px;
+  padding: 0;
+  visibility: hidden;
+  background-color: lightgray;
+  text-align: center;
+  top: 100%;
+  left: 50%;
+  margin-left: -100px;
+}
+
+.wraper .recList::after{
+  content: "";
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  margin: -60px 0 0 -10px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent lightgray transparent;
+}
+
+.wraper:hover .recList{visibility: visible;}

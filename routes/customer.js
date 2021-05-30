@@ -80,8 +80,7 @@ router.get('/tab/:page', function (req, res, next) {
     where = " where Pcategory='계란장' ";
   } else if (page == 4) {
     where = " where Pcategory='김치' ";
-  }
-  else
+  } else
     where = " where Pname Like '%" + page + "%' ";
   pool.getConnection(function (err, connection) {
     var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID" + where + "ORDER BY sum desc;" +
@@ -119,8 +118,7 @@ router.post('/recommend', function (req, res) {
         res.send("<script type='text/javascript'>window.location='" + link + "';</script>");
         //connection.release();
       });
-    } 
-    else {
+    } else {
       var Recommend_sql = "INSERT INTO recommend_info VALUES(?, ?)";
       var Recommend_sql2 = "UPDATE product_info SET Recommend = Recommend + 1 WHERE PID = ?";
       connection.query(Recommend_sql, [user_id, PID], function (err, row) {
@@ -144,7 +142,7 @@ router.get('/detail/:PID', function (req, res) {
       if (err) console.error("err : " + err);
       connection.query(Reviewinfo_sql, [Product_idx], function (err, review) {
         if (err) console.error("err : " + err);
-        Saleprice = product[0].Price * (100-product[0].Salerate) / 100;
+        Saleprice = product[0].Price * (100 - product[0].Salerate) / 100;
         //console.log(beauty_date_to_str(product[0].Ptime));
         res.render('detail', {
           title: "상품 조회",
@@ -198,7 +196,7 @@ router.get('/detail/:PID/buy', function (req, res) {
     connection.query(ProductandRegisterinfo_sql, [Product_idx], function (err, product) {
       if (err) console.error(err);
       //console.log("update에서 1개 글 조회 결과 확인 : ", product);
-      Saleprice = product[0].Price * (100-product[0].Salerate) / 100;
+      Saleprice = product[0].Price * (100 - product[0].Salerate) / 100;
       res.render('buy', {
         title: "결제",
         product: product[0],
@@ -261,21 +259,21 @@ router.post('/cart/pay', function (req, res) {
   var S_RID = req.body.S_RID;
   //var D_PID = req.body.D_PID;
   var Arr_DID = [];
-  for (var i=0;i<req.body.D_PID.length;i++){
+  for (var i = 0; i < req.body.D_PID.length; i++) {
     Arr_DID[i] = req.body.P_RID + "_" + req.body.D_PID[i] + "_" + now;
   }
-  var Dtime =  now;
+  var Dtime = now;
   var Dstate = '결제완료';
   var Rest_cash = req.body.Rest_cash;
   var datas = [];
-  for (var i=0;i<req.body.D_PID.length;i++){
+  for (var i = 0; i < req.body.D_PID.length; i++) {
     datas[i] = [Arr_DID[i], P_RID, S_RID, req.body.D_PID[i], Dtime, req.body.Dquantity[i], Dstate, Number(Rest_cash), req.body.D_PID[i]];
   }
   pool.getConnection(function (err, connection) {
     var InsertdealandUpdateCashandDeletecart_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate) values(?,?,?,?,?,?,?);" +
       "update register_info set cash = ? where RID = '2016722036';" +
       "delete from cart_info where C_PID=?;";
-    for (var i=0;i<datas.length;i++){
+    for (var i = 0; i < datas.length; i++) {
       console.log(datas);
       connection.query(InsertdealandUpdateCashandDeletecart_multisql, datas[i]);
     }
@@ -338,7 +336,7 @@ router.get('/cart', upload.single('image'), function (req, res, next) {
       Quantityinfo = Quantity;
       //console.log(Quantityinfo);
     });
-    connection.query(GetCash_sql, function (err, cash){
+    connection.query(GetCash_sql, function (err, cash) {
       if (err) console.error("err : " + err);
       Cash = cash[0].Cash;
       // console.log(cash[0].Cash);
@@ -359,10 +357,10 @@ router.get('/cart', upload.single('image'), function (req, res, next) {
 });
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-router.post('/search', function(req, res) {
+router.post('/search', function (req, res) {
   var search = req.body.search;
-  pool.getConnection(function(err, connection) {
-    var search_sql = "SELECT * FROM product_info WHERE Pname LIKE '%"+ search + "%';";
+  pool.getConnection(function (err, connection) {
+    var search_sql = "SELECT * FROM product_info WHERE Pname LIKE '%" + search + "%';";
     connection.query(search_sql, function (err, result) {
       if (err) console.error("err : " + err);
       console.log("결과는? ", result);
@@ -402,30 +400,21 @@ router.get('/mypage', function (req, res, next) {
     res.redirect('/');
   }
   pool.getConnection(function (err, connection) {
-    var userInfo_sql = 'SELECT * FROM register_info where RID=?';
-    var userdealInfo_sql = 'SELECT * FROM product_info as p, deal_info as d WHERE d.P_RID = ? and p.PID = d.D_PID order by Dtime desc';
-    var userqna_sql = 'SELECT * FROM qna_info WHERE Q_RID = ?';
-    var userreview_sql = 'SELECT * FROM review_info as r JOIN product_info as p ON r.R_PID = p.PID WHERE r.R_RID = ?';
-    connection.query(userInfo_sql, [user_id], function (err, row_userInfo) {
-      connection.query(userdealInfo_sql, [user_id], function (err2, row_dealInfo) {
-        connection.query(userqna_sql, [user_id], function (err3, row_qnaInfo) {
-          connection.query(userreview_sql, [user_id], function (err4, row_reviewInfo) {
-            if (err) console.error("err : " + err);
-            if (err2) console.error("err2 : " + err2);
-            if (err3) console.error("err2 : " + err3);
-            if (err4) console.error("err2 : " + err4);
-            // console.log(saleprice);
-            res.render('mypage', {
-              title: "마이 페이지",
-              row_userInfo: row_userInfo[0],
-              row_dealInfo: row_dealInfo,
-              row_qnaInfo: row_qnaInfo,
-              row_reviewInfo: row_reviewInfo
-            });
-            connection.release();
-          });
-        });
+    var userInfo_sql = 'SELECT * FROM register_info where RID=?;';
+    var userdealInfo_sql = 'SELECT * FROM product_info as p, deal_info as d WHERE d.P_RID = ? and p.PID = d.D_PID order by Dtime desc;';
+    var userqna_sql = 'SELECT * FROM qna_info WHERE Q_RID = ?;';
+    var userreview_sql = 'SELECT * FROM review_info as r JOIN product_info as p ON r.R_PID = p.PID WHERE r.R_RID = ?;';
+    var recommend_sql = 'select * from recommend_info as r, product_info as p where r.rec_RID = "2016722036" and r.rec_RID = "2016722036" and r.rec_PID = p.PID;';
+    var merged_sql = userInfo_sql + userdealInfo_sql + userqna_sql + userreview_sql + recommend_sql;
+    connection.query(merged_sql, [user_id, user_id, user_id, user_id, user_id, user_id, user_id], function (err, rows) {
+      if (err) console.error("err : " + err);
+      console.log(rows[0][0]);
+      // console.log(saleprice);
+      res.render('mypage', {
+        title: "마이 페이지",
+        rows: rows
       });
+      connection.release();
     });
   });
 });
@@ -614,13 +603,13 @@ function beauty_date_to_str(format) {
 
   var month = format.getMonth() + 1;
 
-  if (month < 10) 
-      month = '0' + month;
-  
+  if (month < 10)
+    month = '0' + month;
+
   var date = format.getDate();
 
-  if (date < 10) 
-      date = '0' + date;  
+  if (date < 10)
+    date = '0' + date;
   return year + "-" + month + "-" + date;
 
 }

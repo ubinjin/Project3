@@ -36,7 +36,8 @@
             form.action = "/customer/recommend";
             form.method = "post";
             form.submit();
-        }
+        };
+
     </script>
     <div>
         <%-header%>
@@ -49,25 +50,25 @@
                     <% } else { %>
                 <td width=50 class="tab_noselect">
                     <% } %>
-                    <a href="/customer/tab" onclick="fnMove()">전체메뉴</a></td>
+                    <a href="/customer/tab">전체메뉴</a></td>
                 <% if (page == 1) { %>
                 <td width=50 class="tab_select">
                     <% } else { %>
                 <td width=50 class="tab_noselect">
                     <% } %>
-                    <a href="/customer/tab/1" onclick="fnMove()">새우장</a></td>
+                    <a href="/customer/tab/1">새우장</a></td>
                 <% if (page == 2) { %>
                 <td width=50 class="tab_select">
                     <% } else { %>
                 <td width=50 class="tab_noselect">
                     <% } %>
-                    <a href="/customer/tab/2" onclick="fnMove()">게장</a></td>
+                    <a href="/customer/tab/2">게장</a></td>
                 <% if (page == 3) { %>
                 <td width=50 class="tab_select">
                     <% } else { %>
                 <td width=50 class="tab_noselect">
                     <% } %>
-                    <a href="/customer/tab/3" onclick="fnMove()">계란장</a></td>
+                    <a href="/customer/tab/3">계란장</a></td>
                 <% if (page == 4) { %>
                 <td width=50 class="tab_select">
                     <% } else { %>
@@ -82,8 +83,8 @@
         <img src="/main_border.png" style="width: 90%; height: 1%; overflow: hidden;">
     </div>
     <% if (page == 0) { %>
-    <div style="align-items:center">
-        <img src="/gallery1.jpg" style="width: 90%; height: auto; overflow: hidden; vertical-align: center;">
+    <div style="align-items:center; text-align: center;">
+        <img src="/gallery1.jpg" style="width: 100%; height: auto; overflow: hidden; vertical-align: center;">
     </div>
     <br><br><br><br>
     <div style="text-align: center; margin: 0;">
