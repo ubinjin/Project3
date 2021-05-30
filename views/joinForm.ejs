@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+        <h2>
+            <font color="black">
+                <%= title %>
+            </font>
+        </h2>
+        <form action="/joinForm" method="post" onsubmit="return JOIN_check();">
+            <table>
+                <tr>
+                    <th align="center">
+                        <font color="black">아이디</font>
+                    </th>
+                <tr></tr>
+                <tr>
+                    <td align="center"><input type="text" name="RID" id="RID" size="12" maxLength="12"></td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <th align="center">
+                        <font color="black">비밀번호</font>
+                    </th>
+                <tr></tr>
+                <tr>
+                    <td align="center"><input type="password" name="password" id="password" size="12" maxlength="12"></td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <th align="center">
+                        <font color="black">비밀번호확인</font>
+                    </th>
+                <tr></tr>
+                <tr>
+                    <td align="center"><input type="password" name="password2" id="password2" size="12" maxlength="12"></td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <th align="center">
+                        <font color="black">이름</font>
+                    </th>
+                <tr></tr>
+                <tr></tr>
+                <td align="center"><input type="text" name="Rname" id="Rname" size="10" maxlength="10"></td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <th align="center">
+                        <font color="black">주소</font>
+                    </th>
+                <tr></tr>
+                <tr></tr>
+                <td align="center"><input type="text" name="Address" id="Address" size="30" maxlength="50"
+                        style="width:80%;border-radius: 15px;"></td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <th align="center">
+                        <font color="black">전화번호</font>
+                    </th>
+                <tr></tr>
+                <tr></tr>
+                <td align="center">
+                    <input type="hidden" name="Phone" id="Phone">
+                    <select name="Phone1" id="Phone1">
+                        <option value="010">010</option>
+                        <option value="011">011</option>
+                        <option value="016">016</option>
+                        <option value="017">017</option>
+                        <option value="018">018</option>
+                        <option value="019">019</option>
+                    </select>
+                    -
+                    <input type="text" name="Phone2" id="Phone2" size="4" maxlength="4">
+                    -
+                    <input type="text" name="Phone3" id="Phone3" size="4" maxlength="4">
+                </td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <th align="center">
+                        <font color="black">주민번호</font>
+                    </th>
+                <tr></tr>
+                <tr>
+                    <td align="center">
+                        <input type="hidden" name="RRN" id="RRN">
+                        <input type="text" name="RRN1" id="RRN1" size="8" maxlength="8"
+                            style="width:40%;border-radius: 15px;">
+                        <font color="black"> - </font><input type="password" name="RRN2" id="RRN2" size="8"
+                            maxlength="7" style="width:40%;border-radius: 15px;">
+                    </td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <button type="submit" name="submit" value="가입"
+                            style="width:40%;border-radius: 15px;">가입</button>
+                        <button type="button" onclick="location.href='/login'"
+                            style="width:40%;border-radius: 15px;">취소</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </center>
+    <script>
+        function JOIN_check() {
+            if ($("#RID").val().trim() == "") {
+                var message = "id를 입력해 주세요";
+                $("#RID").val("");
+                $("#RID").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#password").val().trim() == "") {
+                var message = "비밀번호를 입력해 주세요";
+                $("#password").val("");
+                $("#password").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#password2").val() != $("#password").val()) {
+                var message = "비밀번호가 일치하지 않습니다";
+                $("#password2").val("");
+                $("#password2").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#Rname").val().trim() == "") {
+                var message = "이름을 입력해 주세요";
+                $("#Rname").val("");
+                $("#Rname").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#Address").val().trim() == "") {
+                var message = "주소를 입력해 주세요";
+                $("#Address").val("");
+                $("#Address").focus();
+                alert(message);
+                return false;
+            }
+            if($("#Phone2").val() == "")
+            {
+                alert("전화번호 두번째 자리를 확인해 주세요");
+                $("#Phone2").focus();
+                return;
+            }
+            if($("#Phone3").val() == "")
+            {
+                alert("전화번호 세번째 자리를 확인해 주세요");
+                $("#Phone3").focus();
+                return;
+            }
+            var Phone= $("#Phone1").val() +'-'+ $("#Phone2").val() +'-'+ $("#Phone3").val();
+            $("#Phone").val(Phone);
+
+            if ($("#RRN1").val().trim() == "") {
+                var message = "주민번호 앞자리를 입력해 주세요";
+                $("#RRN1").val("");
+                $("#RRN1").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#RRN1").val().trim().length < 8) {
+                var message = "주민번호 앞자리 8개(YYYY-MM-DD)를 입력해 주세요";
+                $("#RRN1").val("");
+                $("#RRN1").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#RRN2").val().trim() == "") {
+                var message = "주민번호 뒷자리를 입력해 주세요";
+                $("#RRN2").val("");
+                $("#RRN2").focus();
+                alert(message);
+                return false;
+            }
+            var RRN = $("#RRN1").val() + '-' + $("#RRN2").val();
+            $("#RRN").val(RRN);
+
+            alert("축하합니다. 가입이 완료되었습니다.");
+            return true;
+        }
+    </script>
+</body>
+
+</html>
