@@ -105,8 +105,10 @@ router.get('/tab/:page', function (req, res, next) {
 router.post('/recommend', function (req, res) {
   var PID = req.body.PID;
   var opt = req.body.opt;
+  var link = req.body.link;
+  var location = req.body.locatoin;
+  console.log(location);
   var user_id = "2016722036";
-  console.log(PID, opt);
   pool.getConnection(function (err, connection) {
     if (opt == 0) {
       var unRecommend_sql = "DELETE FROM recommend_info WHERE rec_PID = ? and rec_RID = ?";
@@ -114,8 +116,8 @@ router.post('/recommend', function (req, res) {
       connection.query(unRecommend_sql, [PID, user_id], function (err, row) {
         connection.query(unRecommend_sql2, [PID]);
         if (err) console.error("err : " + err);
-        res.redirect('/tab');
-        connection.release();
+        res.send("<script type='text/javascript'>window.location='" + link + "';</script>");
+        //connection.release();
       });
     } 
     else {
@@ -124,8 +126,8 @@ router.post('/recommend', function (req, res) {
       connection.query(Recommend_sql, [user_id, PID], function (err, row) {
         connection.query(Recommend_sql2, [PID]);
         if (err) console.error("err : " + err);
-        res.redirect('/tab');
-        connection.release();
+        res.send("<script type='text/javascript'>window.location='" + link + "';</script>");
+        //connection.release();
       });
     }
   });

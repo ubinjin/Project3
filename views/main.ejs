@@ -5,6 +5,7 @@
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
+
 <body>
     <script type="text/javascript">
         function selectSort() {
@@ -26,10 +27,12 @@
                 else tb.style.display = "block";
             }
         }
+
         function formSubmit(PID, opt) {
             var form = document.formRecommend;
             form.PID.value = PID;
             form.opt.value = opt;
+            form.link.value = window.location.href;
             form.action = "/customer/recommend";
             form.method = "post";
             form.submit();
@@ -41,55 +44,55 @@
     <div style="text-align: center">
         <table class="tab_table">
             <tr>
-                <% if (page == 0) { %> 
+                <% if (page == 0) { %>
                 <td width=50 class="tab_select">
-                <% } else { %>
+                    <% } else { %>
                 <td width=50 class="tab_noselect">
-                <% } %>
-                    <a href="/customer/tab">전체 메뉴</a></td>
-                <% if (page == 1) { %> 
+                    <% } %>
+                    <a href="/customer/tab" onclick="fnMove()">전체메뉴</a></td>
+                <% if (page == 1) { %>
                 <td width=50 class="tab_select">
-                <% } else { %>
+                    <% } else { %>
                 <td width=50 class="tab_noselect">
-                <% } %>
-                    <a href="/customer/tab/1">새우장</a></td>
-                <% if (page == 2) { %> 
+                    <% } %>
+                    <a href="/customer/tab/1" onclick="fnMove()">새우장</a></td>
+                <% if (page == 2) { %>
                 <td width=50 class="tab_select">
-                <% } else { %>
+                    <% } else { %>
                 <td width=50 class="tab_noselect">
-                <% } %>
-                    <a href="/customer/tab/2">게장</a></td>
-                <% if (page == 3) { %> 
+                    <% } %>
+                    <a href="/customer/tab/2" onclick="fnMove()">게장</a></td>
+                <% if (page == 3) { %>
                 <td width=50 class="tab_select">
-                <% } else { %>
+                    <% } else { %>
                 <td width=50 class="tab_noselect">
-                <% } %>
-                    <a href="/customer/tab/3">계란장</a></td>
-                <% if (page == 4) { %> 
+                    <% } %>
+                    <a href="/customer/tab/3" onclick="fnMove()">계란장</a></td>
+                <% if (page == 4) { %>
                 <td width=50 class="tab_select">
-                <% } else { %>
+                    <% } else { %>
                 <td width=50 class="tab_noselect">
-                <% } %>
-                    <a href="/customer/tab/4">김치</a></td>
-                <td width=50 class="tab_noselect">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td width=50 class="tab_noselect"><a href="/customer/notice">Notice</a></td>
-                <td width=50 class="tab_noselect"><a href="/customer/qna">Q&A</a></td>
+                    <% } %>
+                    <a href="/customer/tab/4" onclick="fnMove()">김치</a></td>
+                <td width=50px></td>
+                <td width=50 class="tab_noselect"><a href="/customer/notice">공지사항</a></td>
+                <td width=50 class="tab_noselect"><a href="/customer/qna">질문답변</a></td>
             </tr>
         </table>
         <img src="/main_border.png" style="width: 90%; height: 1%; overflow: hidden;">
     </div>
     <% if (page == 0) { %>
-    <div style="height: 150px; width: 100%;">
-        민규네민규네~
+    <div style="align-items:center">
+        <img src="/gallery1.jpg" style="width: 90%; height: auto; overflow: hidden; vertical-align: center;">
     </div>
     <br><br><br><br>
     <div style="text-align: center; margin: 0;">
         <table class="tab_table">
             <tr>
                 <% if (page == 0) { %>
-                    <td style="font-size: 23px;">전체 상품</td>
+                <td style="font-size: 23px;">전체 상품</td>
                 <% } else if (page < 0 && page > 4) { %>
-                    <td style="font-size: 23px;">검색 상품</td>
+                <td style="font-size: 23px;">검색 상품</td>
                 <% } %>
             </tr>
         </table>
@@ -97,7 +100,7 @@
     </div>
     <% } %>
     <br><br><br>
-    <div style="text-align: right; width: 90%;">
+    <div style="text-align: right; width: 90%;" id="main_div">
         <form action="/customer/search" method="post" style="display:inline;">
             <input type="text" name="search" placeholder="ex) 게장" style="width: 90px; height: 20px">
             <input type="submit" value="검색">
@@ -109,9 +112,10 @@
             <option>추천 순</option>
             <option>리뷰 순</option>
         </select>
-        <form name = "formRecommend">
+        <form name="formRecommend">
             <input type="hidden" name="PID">
             <input type="hidden" name="opt">
+            <input type="hidden" name="link">
         </form>
     </div>
     <div style="text-align: center; display: block;" id="tab_0">
@@ -141,9 +145,11 @@
                         recom = 1;
                 }
                 if (recom == 1) { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)">♥</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } else { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)">♡</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } %>
                 </td>
                 <%      } else {    %>
@@ -159,9 +165,11 @@
                             recom = 1;
                     }
                     if (recom == 1) { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)">♥</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } else { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)">♡</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } %>
                 </td>
                 </td>
@@ -203,9 +211,11 @@
                                             recom = 1;
                                     }
                                     if (recom == 1) { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)">♥</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } else { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)">♡</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } %>
                 </td>
                 <%      } else {    %>
@@ -221,9 +231,11 @@
                                                 recom = 1;
                                         }
                                         if (recom == 1) { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)">♥</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } else { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)">♡</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } %>
                 </td>
                 </td>
@@ -265,9 +277,11 @@
                                             recom = 1;
                                     }
                                     if (recom == 1) { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)">♥</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } else { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)">♡</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } %>
                 </td>
                 <%      } else {    %>
@@ -283,9 +297,11 @@
                                                 recom = 1;
                                         }
                                         if (recom == 1) { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)">♥</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } else { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)">♡</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } %>
                 </td>
                 </td>
@@ -327,9 +343,11 @@
                         recom = 1;
                 }
                 if (recom == 1) { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)">♥</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } else { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)">♡</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } %>
                 </td>
                 <%      } else {    %>
@@ -345,9 +363,11 @@
                             recom = 1;
                     }
                     if (recom == 1) { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)">♥</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } else { %>
-                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)">♡</a>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
                     <% } %>
                 </td>
                 </td>
