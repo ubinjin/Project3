@@ -62,32 +62,28 @@
                 </li>
             </ul>
         </nav>
-
-        <!-- Page Content Holder -->
-        <div id="content">
-
-            <img src='/<%=row.Pimage%>' alt="no image" />
-            <p>
-                <%=row.Pname%>
-                    <% var current_price = 0;
+      <img src='/<%=row.Pimage%>' alt="no image" />
+      <p style="color:black">
+        <%=row.Pname%>
+        <% var current_price = 0;
            current_price = row.Price * (100 - row.Salerate) / 100%>
-            </p>
-            <p>판매가격:
-                <%=row.Price%>
-            </p>
-            <p>할인가격:
-                <%=current_price%>
-            </p>
-            <p>잔여수량:
-                <%=row.Stock%>
-            </p>
-            <p>설명</p>
-            <%-row.Pdesc%>
-                <p>원산지: 국내산</p>
-                <p>출시일:
-                    <%=row.Ptime%>
-                </p>
-                <form action="/admin/seller_update/<%=row.PID%>" method="get" style="display:inline"><button type='submit'>상품
+      </p>
+      <p style="color:black">판매가격: <%=row.Price%>
+      </p>
+      <p style="color:black">할인가격: <%=current_price%>
+      </p>
+      <% if (row.Stock > 5) { %>
+      <p style="color:black">잔여수량: <%=row.Stock%>
+      <% }
+         else { %>
+      <p style="color:red">잔여수량: <%=row.Stock%>
+      <% } %>
+      </p>
+      <p style="color:black">설명</p> <%-row.Pdesc%>
+      <p style="color:black">원산지: 국내산</p>
+      <p style="color:black">출시일: <%=row.Ptime%>
+      </p>
+      <form action="/admin/seller_update/<%=row.PID%>" method="get" style="display:inline"><button type='submit'>상품
           수정</button></form>
                 <form action="/admin/seller_read/<%=row.PID%>" method="post" style="display:inline"><button type='submit'>상품
           삭제</button></form>
