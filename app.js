@@ -38,10 +38,16 @@ var sessionStore = new MySQLStore(options);
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var testRouter = require('./routes/test');
+
+var customer = require('./routes/customer');
+var fs = require('fs');
+var ejs = require('ejs');
+
 var adminRouter = require('./routes/admin');
 var joinFormRouter = require('./routes/joinForm');
 
 var loginRouter = require('./routes/login');
+
 var app = express();
 app.use(
     session({
@@ -63,6 +69,17 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(express.static(path.join(__dirname, 'public/images')));
+app.use('/', customer);
+app.use('/customer', customer);
+
+global.headerFormat = fs.readFileSync(
+    "./views/header.html",
+    "utf8"
+  );
+global.header = ejs.render(headerFormat);
+
 app.use('/upload', express.static(path.join(__dirname + '/upload')));
 
 app.use('/index', indexRouter);
@@ -79,6 +96,7 @@ app.use('/join_images', express.static('./join_images'));
 
 var connection = mysql.createConnection(options); // or mysql.createPool(options);
 var sessionStore = new MySQLStore({} /* session store options */ , connection);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     next(createError(404));
