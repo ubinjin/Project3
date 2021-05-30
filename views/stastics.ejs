@@ -233,13 +233,11 @@
                     let result_for_quarter = [];
                     let quarter = keys[i];
                     var iter = ["10대~20대", "30대~40대", "50대 이상"];
-                    console.log(quarter);
-                    result_for_quarter.push(new Date(quarter.slice(0, 4)));
+                    result_for_quarter.push(new Date(quarter.slice(0, 4), quarter.slice(5, 6) * 2.98));
                     let age_width = Object.keys(sold_at_quarter_with_age[quarter]);
-
+                    console.log(keys);
                     for (var j = 0; j < iter.length; j++) {
                         let age = iter[j];
-                        let month = quarter * 2.98;
                         if (!(age in sold_at_quarter_with_age[quarter])) {
                             result_for_quarter.push(null);
                         } else result_for_quarter.push(sold_at_quarter_with_age[quarter][age]["sold"]);
@@ -247,9 +245,11 @@
                     result_for_quarter.push(sold_at_quarter_all_age[quarter]["전체"]["sold"]);
                     dataRow = result_for_quarter;
                     data.addRow(dataRow);
-                    console.log(result_for_quarter);
                 }
-
+                data.sort({
+                    column: 0,
+                    asce: true
+                });
 
                 var chart = new google.visualization.ChartWrapper({
                     chartType: 'LineChart',
