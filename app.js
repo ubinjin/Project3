@@ -40,6 +40,7 @@ var usersRouter = require('./routes/users');
 var testRouter = require('./routes/test');
 var adminRouter = require('./routes/admin');
 var joinFormRouter = require('./routes/joinForm');
+
 var loginRouter = require('./routes/login');
 var app = express();
 app.use(

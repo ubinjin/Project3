@@ -55,7 +55,6 @@ router.get('/', function(req, res, next) {
 
 router.get('/seller_list/:page', function(req, res, next) {
     pool.getConnection(function(err, connection) {
-        console.log(err);
         var sqlForSelectList = "SELECT * FROM product_info";
         connection.query(sqlForSelectList, function(err, rows) {
             if (err) console.error("err : " + err);
@@ -64,6 +63,7 @@ router.get('/seller_list/:page', function(req, res, next) {
                 title: '판매자 메인페이지',
                 rows: rows,
                 page: req.params.page
+
             });
         });
     });
@@ -112,7 +112,6 @@ router.post('/seller_list', function(req, res, next) {
                     res.send("<script>alert('잘못된 요청으로 인해 값이 변경되지 않습니다.');history.back();</script>");
             });
         }
-        //}
         res.redirect('/admin/seller_list');
         connection.release();
     });
@@ -492,7 +491,6 @@ router.get('/seller_state/:page', thumb_nail.single('pimage'), (req, res, next) 
                 row: rows,
                 page: req.params.page
             });
-            console.log(req.params.page);
             connection.release();
         });
     });
@@ -592,4 +590,22 @@ router.post('/notice_delete', function(req, res, next) {
 });
 
 /* NOTICE_LIST, DETAILS END */
+
+
+router.get('/stastics', function(req, res, next) {
+    //get Deal_info
+    pool.getConnection(function(err, connection) {
+        var sqlStastics = "select d.*, RRN from deal_info as d join register_info as r where d.P_RID=r.RID";
+        connection.query(sqlStastics, function(err, row) {
+            if (err) console.error("err : " + err);
+            console.log('통계 rows : ', JSON.stringify(row));
+            res.render('stastics', {
+                title: '판매 통계',
+                rows: row
+            });
+            connection.release();
+        });
+    });
+});
+
 module.exports = router;
