@@ -13,12 +13,13 @@
     <p><img src="/<%=product.Pimage%>" /></p>
     <p><%=product.Pname%></p>
     <p>판매가격:
-        <input type="hidden" name="Price" id="Price" value="<%=product.Price%>" />
+        <input type="hidden" name="Price" id="Price" value="<%=saleprice%>" />
         <%=product.Price%></div>
         <p>할인가격: <%=saleprice%></p>
         <p>원산지: 국내산</p>
         <p>출시일:
             <%=date%></p>
+        <p><%=product.Stock%></p>
         <hr>
         <p>사이버머니:
             <input type="hidden" name="Cash" id="Cash" value="<%=product.Cash%>" />
@@ -35,7 +36,9 @@
             <button type="submit">결제</button>
 
             <input type="hidden" name="Rest_cash" id="Rest_cash" value=0 />
+            <input type="hidden" name="Rest_stock" id="Rest_stock" value=0 />
             <input type="hidden" name="Pay_price" id="Pay_price" value=0 />
+            <input type="hidden" name="Stock" id="Stock" value="<%=product.Stock%>" />
         </form>
         <form action="/customer/cart/add" method="post" enctype="multipart/form-data">
             장바구니:
@@ -49,15 +52,20 @@
         var quantity = document.getElementById('Dquantity').value;
         var price = document.getElementById('Price').value;
         var cash = document.getElementById('Cash').value;
+        var stock = document.getElementById('Stock').value;
 
         var pay_price = quantity * price;
         var rest_cash = cash - quantity * price;
+        var rest_stock = stock - quantity;
 
         console.log("지불가격:" + pay_price);
         console.log("남은돈:" + rest_cash);
+        console.log("남은수량:" + rest_stock);
+
         document.getElementById('Cash').value = cash;
         document.getElementById('Pay_price').value = pay_price;
         document.getElementById('Rest_cash').value = rest_cash;
+        document.getElementById('Rest_stock').value = rest_stock;
     }
 
     function add_quantity() {
