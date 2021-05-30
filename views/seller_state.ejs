@@ -97,10 +97,11 @@
                            var array_length = 0;
                            if (row.length <= 10) length = row.length;
                            else if (row.length - (page - 1) * 10 < 10) length = row.length;
-                           else if (row.length - (page - 1) * 10 >= 10) length = page * 10;
-                           for(var i = (page-1) * 10; i < length; i++) { 
-                        
+                           else if (row.length - (page - 1) * 10 >= 10) length = page * 10;%>
+                           <input type="hidden" name="page" id="page" value="<%=page%>">
+                           <%for(var i = (page-1) * 10; i < length; i++) { 
                            var oneItem = row[i];
+
                         if (oneItem.Dstate == "결제완료"){
                         %>
                         <tr style="background-color:rgb(248, 211, 194)">
@@ -181,6 +182,7 @@
                                                 </tr>
                                                 <% } %>
                 </table>
+
                 <button type="submit" name="submit" value="확인" style="margin-left: 75%; border-radius: 15px;">확인</button>
             </form>
             <table align="center">
