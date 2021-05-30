@@ -72,10 +72,14 @@
       <img src='/<%=row.Pimage%>' alt="no image" />
       <p>
         <%=row.Pname%>
+        <% var current_price = 0;
+           current_price = row.Price * (100 - row.Salerate) / 100%>
       </p>
-      <p>판매가격:
+      <p>판매가격: <%=row.Price%>
       </p>
-      <p>할인가격:
+      <p>할인가격: <%=current_price%>
+      </p>
+      <p>잔여수량: <%=row.Stock%>
       </p>
       <p>설명</p> <%-row.Pdesc%>
       <p>원산지: 국내산</p>
