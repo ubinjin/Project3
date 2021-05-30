@@ -3,7 +3,7 @@ var router = express.Router();
 var mysql = require('mysql');
 var multer = require('multer');
 var moment = require('moment');
-var date = moment().format('YYYY-MM-DD HH:MM:SS');
+
 var pool = mysql.createPool({
   connectionLimit: process.env.DB_connectionLimit,
   host: process.env.DB_host,
@@ -45,9 +45,14 @@ router.get('/', function (req, res, next) {
 
 router.get('/tab', function (req, res, next) {
   page = 0;
+  var user_id = "2016722036";
   pool.getConnection(function (err, connection) {
-    var ProductList_sql = "select Pname, Price, Pimage, PID from product_info";
-    connection.query(ProductList_sql, function (err, rows) {
+    var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID ORDER BY sum desc;" +
+      "SELECT * FROM product_info ORDER BY Salerate desc;" +
+      "SELECT * FROM product_info ORDER BY Recommend desc;" +
+      "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID ORDER BY star_sum desc;" +
+      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;";
+    connection.query(ProductList_sql, [user_id], function (err, rows) {
       if (err) console.error("err : " + err);
       // console.log("rows : " + JSON.stringify(rows))
       res.render('main', {
@@ -63,35 +68,66 @@ router.get('/tab', function (req, res, next) {
 
 router.get('/tab/:page', function (req, res, next) {
   var page = req.params.page;
-  console.log(page);
+  var user_id = "2016722036";
   var where = "";
   if (page == 0) {
     where = "";
   } else if (page == 1) {
-    where = " where Pcategory='새우장'";
+    where = " where Pcategory='새우장' ";
   } else if (page == 2) {
-    where = " where Pcategory='게장'";
+    where = " where Pcategory='게장' ";
   } else if (page == 3) {
-    where = " where Pcategory='계란장'";
+    where = " where Pcategory='계란장' ";
   } else if (page == 4) {
-    where = " where Pcategory='김치'";
+    where = " where Pcategory='김치' ";
   }
   pool.getConnection(function (err, connection) {
-    var ProductList_sql = "select Pname, Price, Pimage, PID from product_info" + where;
-    connection.query(ProductList_sql, function (err, rows) {
+    var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID" + where + "ORDER BY sum desc;" +
+      "SELECT * FROM product_info" + where + "ORDER BY Salerate desc;" +
+      "SELECT * FROM product_info" + where + "ORDER BY Recommend desc;" +
+      "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID" + where + "ORDER BY star_sum desc;" +
+      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;";
+    connection.query(ProductList_sql, [user_id], function (err, rows) {
       if (err) console.error("err : " + err);
       // console.log("rows : " + JSON.stringify(rows));
       res.render('main', {
         title: '당골찬',
         page: page,
         rows: rows,
-        header
       });
       connection.release();
     });
   });
 });
 
+router.post('/recommend', function (req, res) {
+  var PID = req.body.PID;
+  var opt = req.body.opt;
+  var user_id = "2016722036";
+  console.log(PID, opt);
+  pool.getConnection(function (err, connection) {
+    if (opt == 0) {
+      var unRecommend_sql = "DELETE FROM recommend_info WHERE rec_PID = ? and rec_RID = ?";
+      var unRecommend_sql2 = "UPDATE product_info SET Recommend = Recommend - 1 WHERE PID = ?";
+      connection.query(unRecommend_sql, [PID, user_id], function (err, row) {
+        connection.query(unRecommend_sql2, [PID]);
+        if (err) console.error("err : " + err);
+        res.redirect('/tab');
+        connection.release();
+      });
+    } 
+    else {
+      var Recommend_sql = "INSERT INTO recommend_info VALUES(?, ?)";
+      var Recommend_sql2 = "UPDATE product_info SET Recommend = Recommend + 1 WHERE PID = ?";
+      connection.query(Recommend_sql, [user_id, PID], function (err, row) {
+        connection.query(Recommend_sql2, [PID]);
+        if (err) console.error("err : " + err);
+        res.redirect('/tab');
+        connection.release();
+      });
+    }
+  });
+});
 
 ////////////////////////////////////////////////// watch product detail info ///////////////////////////////////
 router.get('/detail/:PID', function (req, res) {
@@ -105,13 +141,13 @@ router.get('/detail/:PID', function (req, res) {
       connection.query(Reviewinfo_sql, [Product_idx], function (err, review) {
         if (err) console.error("err : " + err);
         Saleprice = product[0].Price * (100-product[0].Salerate) / 100;
-        console.log(beauty_date_to_str(product[0].Ptime));
+        //console.log(beauty_date_to_str(product[0].Ptime));
         res.render('detail', {
           title: "상품 조회",
           product: product[0],
           reviews: review,
           saleprice: Saleprice,
-          date: beauty_date_to_str(product[0].Ptime)
+          date: beauty_date_to_str(new Date(product[0].Ptime))
         });
         connection.release();
 
@@ -129,10 +165,10 @@ router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
   var P_RID = req.body.P_RID;
   var S_RID = req.body.S_RID;
   var D_PID = req.body.D_PID;
-  var Dtime =  now;
+  var Dtime = now;
   var Dquantity = req.body.Dquantity;
   var Dstate = '결제완료';
-  //console.log("날짜~!",  now);
+
   /* to register_info table(update customer's cash) */
   var Rest_cash = req.body.Rest_cash;
   var Rest_stock = req.body.Rest_stock;
@@ -599,29 +635,29 @@ function date_to_str(format) {
 
   var month = format.getMonth() + 1;
 
-  if (month < 10) 
-      month = '0' + month;
-  
+  if (month < 10)
+    month = '0' + month;
+
   var date = format.getDate();
 
-  if (date < 10) 
-      date = '0' + date;
-  
+  if (date < 10)
+    date = '0' + date;
+
   var hour = format.getHours();
 
-  if (hour < 10) 
-      hour = '0' + hour;
-  
+  if (hour < 10)
+    hour = '0' + hour;
+
   var min = format.getMinutes();
 
-  if (min < 10) 
-      min = '0' + min;
-  
+  if (min < 10)
+    min = '0' + min;
+
   var sec = format.getSeconds();
 
-  if (sec < 10) 
-      sec = '0' + sec;
-  
+  if (sec < 10)
+    sec = '0' + sec;
+
   return year + "-" + month + "-" + date + " " + hour + ":" + min + ":" + sec;
 
 }

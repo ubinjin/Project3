@@ -46,7 +46,7 @@
                 <td style="border:2px solid rgb(95, 95, 95); text-align: center; background-color: white; border-radius:5px; padding-right: 50px; padding-left: 50px"
                     width=100 width>
                     <%
-                    if (row_userInfo.Ucase == 1) {%>
+                    if (row_userInfo.Ucase == 0) {%>
                     구매자
                     <%
                     } else { %>
@@ -145,7 +145,7 @@
             <%=total%>원
         </div>
     </div>
-    <div id="tab_1" style="width: 50%; display: none; text-align: center;">
+    <div id="tab_1" style="width: 70%; display: none; text-align: center;">
         <table class="mypage_table">
             <tr>
                 <td>
@@ -157,13 +157,24 @@
             </tr>
             <tr>
                 <td>
+                    카드 번호 입력
+                </td>
+                <td>
+                    <input type="text" id="card" name="card" width=10> - 
+                    <input type="text" id="card" name="card" width=10> - 
+                    <input type="text" id="card" name="card" width=10> - 
+                    <input type="text" id="card" name="card" width=10>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     충전하기
                 </td>
                 <td>
                     <form action="/customer/cash_add" method="post">
                     <input type="text" id="cash" name="cash">
                     <input type="submit" value="결제">
-                </form>
+                    </form>
                 </td>
             </tr>
         </table>
