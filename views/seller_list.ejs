@@ -66,7 +66,7 @@
         <!-- Page Content Holder -->
         <div id="content">
             <form action="/admin/seller_list" method="post" onsubmit="">
-                <table class='table'>
+                <table class='table' style="margin-bottom: 0px;">
                     <tr>
                         <td></td>
                         <td>썸네일</td>
@@ -103,73 +103,89 @@
                                 <%=oneItem.Pcategory%>
                             </td>
                             <% if (oneItem.Stock > 5) { %>
-                            <td style="color:black"><%=oneItem.Stock%>
-                            <% }
+                                <td style="color:black">
+                                    <%=oneItem.Stock%>
+                                        <% }
                                 else { %>
-                            <td style="color:red"><%=oneItem.Stock%>
-                            <% } %>
-                            </td>
-                            <td>
-                                <%=oneItem.Salerate%>%
-                            </td>
+                                            <td style="color:red">
+                                                <%=oneItem.Stock%>
+                                                    <% } %>
+                                            </td>
+                                            <td>
+                                                <%=oneItem.Salerate%>%
+                                            </td>
                         </tr>
                         <% } %>
                 </table>
                 <!-- <input type="submit" value="삭제"/> -->
             </form>
-            <form action="/admin/seller_register" method="get" style="display:inline"><button type='submit'>+추가</button></form>
-            <form action="/admin/seller_state/1" method="get" style="display:inline"><button type='submit'>주문확인</button></form>
-            <table align="center">
-                <tr style="text-align: center">
-                    <% if (rows.length/10 <= 10) array_length = parseInt((rows.length - 1)/10) + 1;
-                       else {
-                            array_page = parseInt((page - 1)/10);
-                            if (rows.length/10 > (array_page + 1) * 10)
-                                array_length = array_page * 10 + 10;
-                            else array_length = parseInt((rows.length-1)/10 + 1);
-                       }
-                       for(var i= array_page * 10 + 1; i < array_length + 1; i++) { 
-                        if (page != 1 && i == array_page * 10 + 1)
-                        { %>
-                        <td><a href="/admin/seller_list/<%=Number(page)-1%>">prev</a></td>
-                        <% } 
-                        else if (page == 1 && i == array_page * 10 + 1) {%>
-                        <td><pre>     </pre></td>
-                        <% } %>
-                        <td><pre>       </pre></td>
-                        <% if (i == page) { %>
-                            <td style = "color: rgb(0, 0, 0)"><a href="/admin/seller_list/<%=i%>"><%=i%></a></td>
-                        <% } 
-                        else { %>
-                            <td style = "color: rgb(199, 199, 199)"><a href="/admin/seller_list/<%=i%>"><%=i%></a></td>
-                        <% }
-                        if (i == array_length && page != parseInt((rows.length - 1)/10) + 1) {%>
-                        <td><pre>       </pre></td>
-                        <td><a href="/admin/seller_list/<%=Number(page)+1%>">next</a></td>
-                        <% } %>
-                       <% } %>
-                </tr>
-            </table>   
 
         </div>
     </div>
-
-    <!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#sidebarCollapse').on('click', function() {
-                $('#sidebar').toggleClass('active');
-                $(this).toggleClass('active');
-            });
-        });
-    </script>
+    <table align="center">
+        <tr style="text-align: center">
+            <% if (rows.length/10 <= 10) array_length = parseInt((rows.length - 1)/10) + 1;
+               else {
+                    array_page = parseInt((page - 1)/10);
+                    if (rows.length/10 > (array_page + 1) * 10)
+                        array_length = array_page * 10 + 10;
+                    else array_length = parseInt((rows.length-1)/10 + 1);
+               }
+               for(var i= array_page * 10 + 1; i < array_length + 1; i++) { 
+                if (page != 1 && i == array_page * 10 + 1)
+                { %>
+                <td><a href="/admin/seller_list/<%=Number(page)-1%>">prev</a></td>
+                <% } 
+                else if (page == 1 && i == array_page * 10 + 1) {%>
+                    <td><pre>     </pre></td>
+                    <% } %>
+                        <td><pre>       </pre></td>
+                        <% if (i == page) { %>
+                            <td style="color: rgb(0, 0, 0)">
+                                <a href="/admin/seller_list/<%=i%>">
+                                    <%=i%>
+                                </a>
+                            </td>
+                            <% } 
+                else { %>
+                                <td style="color: rgb(199, 199, 199)">
+                                    <a href="/admin/seller_list/<%=i%>">
+                                        <%=i%>
+                                    </a>
+                                </td>
+                                <% }
+                if (i == array_length && page != parseInt((rows.length - 1)/10) + 1) {%>
+                                    <td><pre>       </pre></td>
+                                    <td><a href="/admin/seller_list/<%=Number(page)+1%>">next</a></td>
+                                    <% } %>
+                                        <% } %>
+                                            <div id="button-class" style="align-items: flex-end;">
+                                                <td>
+                                                    <form action="/admin/seller_register" method="get" style="display:inline;"><button type='submit'>+추가</button></form>
+                                                </td>
+                                                <td>
+                                                    <form action="/admin/seller_state/1" method="get" style="display:inline;"><button type='submit'>주문확인</button></form>
+                                                </td>
+                                            </div>
+        </tr>
+    </table>
 
 </body>
+
+<!-- jQuery CDN - Slim version (=without AJAX) -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<!-- Popper.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#sidebarCollapse').on('click', function() {
+            $('#sidebar').toggleClass('active');
+            $(this).toggleClass('active');
+        });
+    });
+</script>
 
 </html>

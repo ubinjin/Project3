@@ -134,22 +134,30 @@
                         <td><a href="/admin/client_list/<%=Number(page)-1%>">prev</a></td>
                         <% } 
                         else if (page == 1 && i == array_page * 10 + 1) {%>
-                        <td><pre>     </pre></td>
-                        <% } %>
-                        <td><pre>       </pre></td>
-                        <% if (i == page) { %>
-                            <td style = "color: rgb(0, 0, 0)"><a href="/admin/client_list/<%=i%>"><%=i%></a></td>
-                        <% } 
+                            <td><pre>     </pre></td>
+                            <% } %>
+                                <td><pre>       </pre></td>
+                                <% if (i == page) { %>
+                                    <td style="color: rgb(0, 0, 0)">
+                                        <a href="/admin/client_list/<%=i%>">
+                                            <%=i%>
+                                        </a>
+                                    </td>
+                                    <% } 
                         else { %>
-                            <td style = "color: rgb(199, 199, 199)"><a href="/admin/client_list/<%=i%>"><%=i%></a></td>
-                        <% }
+                                        <td style="color: rgb(199, 199, 199)">
+                                            <a href="/admin/client_list/<%=i%>">
+                                                <%=i%>
+                                            </a>
+                                        </td>
+                                        <% }
                         if (i == array_length && page != parseInt((clients.length - 1)/10) + 1) {%>
-                        <td><pre>       </pre></td>
-                        <td><a href="/admin/client_list/<%=Number(page)+1%>">next</a></td>
-                        <% } %>
-                       <% } %>
+                                            <td><pre>       </pre></td>
+                                            <td><a href="/admin/client_list/<%=Number(page)+1%>">next</a></td>
+                                            <% } %>
+                                                <% } %>
                 </tr>
-            </table> 
+            </table>
 
         </div>
     </div>
