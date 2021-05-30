@@ -220,7 +220,7 @@ router.get('/detail/:PID/buy', function (req, res) {
         title: "결제",
         product: product[0],
         saleprice: Saleprice,
-        date: beauty_date_to_str(product[0].Ptime),
+        date: beauty_date_to_str(new Date(product[0].Ptime)),
         cart_time: Cart_now
       });
       connection.release();
