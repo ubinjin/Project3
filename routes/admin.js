@@ -449,7 +449,7 @@ router.get('/notice_write', function(req, res, next) {
 router.post('/notice_write', upload.single('image'), function(req, res, next) {
     var Ntime = new Date();
     var NTitle = req.body.title;
-    var Ntext = req.body.content;
+    var Ntext = req.body.content2;
     var Nhit = 0;
     if (req.file) {
         var Nimage = req.file.path;
