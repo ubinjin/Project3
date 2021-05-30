@@ -61,7 +61,9 @@ router.get('/seller_list/:page', function(req, res, next) {
             console.log("rows : " + JSON.stringify(rows));
             res.render('seller_list', {
                 title: '판매자 메인페이지',
-                rows: rows
+                rows: rows,
+                page: req.params.page
+
             });
         });
     });
@@ -87,7 +89,8 @@ router.get('/client_list/:page', function(req, res, next) {
             if (err) console.error("err : " + err);
             res.render('client_list', {
                 title: '회원 관리',
-                clients: rows
+                clients: rows,
+                page: req.params.page
             });
             connection.release();
         });
@@ -108,9 +111,7 @@ router.post('/seller_list', function(req, res, next) {
                 if (result.affectedRows == 0)
                     res.send("<script>alert('잘못된 요청으로 인해 값이 변경되지 않습니다.');history.back();</script>");
             });
-            console.log("시발");
         }
-        //}
         res.redirect('/admin/seller_list');
         connection.release();
     });
@@ -226,7 +227,8 @@ router.get('/qna_list/:page', function(req, res, next) {
             if (err) console.error("err : " + err);
             res.render('qna_list', {
                 title: 'Q&A 관리',
-                qnas: rows
+                qnas: rows,
+                page: req.params.page
             });
             connection.release();
         });
@@ -408,7 +410,8 @@ router.get('/notice_list/:page', function(req, res, next) {
             if (err) console.error("err : " + err);
             res.render('notice_list', {
                 title: '공지사항 관리',
-                notices: rows
+                notices: rows,
+                page: req.params.page
             });
             connection.release();
         });
@@ -484,10 +487,10 @@ router.get('/seller_state/:page', thumb_nail.single('pimage'), (req, res, next) 
         var sql = "select * from product_info, deal_info, register_info where P_RID = RID and D_PID = PID order by Dtime desc";
         connection.query(sql, function(err, rows) {
             if (err) console.error(err);
-            console.log("rows : " + JSON.stringify(rows));
             res.render('seller_state', {
                 title: "주문 확인",
-                row: rows
+                row: rows,
+                page: req.params.page
             });
             connection.release();
         });

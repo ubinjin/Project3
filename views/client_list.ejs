@@ -29,6 +29,8 @@
         <nav id="sidebar">
             <div class="sidebar-header">
                 <h3>단골찬</h3>
+                <h3>관리자 메뉴</h3>
+
             </div>
 
             <ul class="list-unstyled components">
@@ -36,7 +38,7 @@
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Seller</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
-                            <a href="/admin/seller_list/1>">상품 목록</a>
+                            <a href="/admin/seller_list/1">상품 목록</a>
                         </li>
                         <li>
                             <a href="/admin/seller_state/1">주문 목록</a>
@@ -58,6 +60,7 @@
                         <li>
                             <a href="/admin/stastics/">판매 통계</a>
                         </li>
+
                     </ul>
                 </li>
             </ul>
@@ -65,16 +68,6 @@
 
         <!-- Page Content Holder -->
         <div id="content">
-
-            <div class="container-fluid">
-
-                <button type="button" id="sidebarCollapse" class="navbar-btn">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-            </div>
-
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
@@ -87,8 +80,14 @@
                     <td>전화번호</td>
                     <td>주소</td>
                 </tr>
-                <%
-                    for (var i=0; i<clients.length; i++){
+                <% var page = page; 
+                           var length = 0;
+                           var array_page = 0;
+                           var array_length = 0;
+                           if (clients.length <= 10) length = clients.length;
+                           else if (clients.length - (page - 1) * 10 < 10) length = clients.length;
+                           else if (clients.length - (page - 1) * 10 >= 10) length = page * 10;
+                           for(var i = (page-1) * 10; i < length; i++) {
                         var oneItem = clients[i];
                 %>
                     <tr style="cursor:pointer;" onClick="location.href='/admin/client_detail/<%=oneItem.RID%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
@@ -96,7 +95,8 @@
                             <%=i+1%>
                         </td>
                         <td>
-                            <%if(oneItem.Ucase==="0"){%>
+                            <%if(oneItem.Ucase=="0"){%>
+
                                 구매자
                                 <%}else{%>
                                     판매자
@@ -119,6 +119,37 @@
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
+            <table align="center">
+                <tr style="text-align: center">
+                    <% if (clients.length/10 <= 10) array_length = parseInt((clients.length - 1)/10) + 1;
+                       else {
+                            array_page = parseInt((page - 1)/10);
+                            if (clients.length/10 > (array_page + 1) * 10)
+                                array_length = array_page * 10 + 10;
+                            else array_length = parseInt((clients.length-1)/10 + 1);
+                       }
+                       for(var i= array_page * 10 + 1; i < array_length + 1; i++) { 
+                        if (page != 1 && i == array_page * 10 + 1)
+                        { %>
+                        <td><a href="/admin/client_list/<%=Number(page)-1%>">prev</a></td>
+                        <% } 
+                        else if (page == 1 && i == array_page * 10 + 1) {%>
+                        <td><pre>     </pre></td>
+                        <% } %>
+                        <td><pre>       </pre></td>
+                        <% if (i == page) { %>
+                            <td style = "color: rgb(0, 0, 0)"><a href="/admin/client_list/<%=i%>"><%=i%></a></td>
+                        <% } 
+                        else { %>
+                            <td style = "color: rgb(199, 199, 199)"><a href="/admin/client_list/<%=i%>"><%=i%></a></td>
+                        <% }
+                        if (i == array_length && page != parseInt((clients.length - 1)/10) + 1) {%>
+                        <td><pre>       </pre></td>
+                        <td><a href="/admin/client_list/<%=Number(page)+1%>">next</a></td>
+                        <% } %>
+                       <% } %>
+                </tr>
+            </table> 
 
         </div>
     </div>

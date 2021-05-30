@@ -9,7 +9,13 @@
     <title>
         <%= title %>
     </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/style5.css' />
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
@@ -18,100 +24,160 @@
             <%= title %>
         </font>
     </h2>
-    <form action="/admin/seller_register" method="post" onsubmit="return Register_check();" enctype="multipart/form-data">
-        <table>
-            <tr>
-                <td>1차 분류</td>
-                <td style=padding-left:250;padding-bottom:0>
-                    <select name="pcategory" id="pcategory">
-                        <option selected>전체</option>
-                        <option>새우장</option>
-                        <option>게장</option>
-                        <option>계란장</option>
-                        <option>김치</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>상품명</td>
-                <td style=padding-left:250;padding-bottom:0><input type="text" name="pname" id="pname" size="15"
-                        maxLength="15"></td>
-            </tr>
-            <tr>
-                <td>가격</td>
-                <td style=padding-left:250;padding-bottom:0><input type="text" name="price" id="price" size="15"
-                        maxlength="15"></td>
-            </tr>
-            <tr>
-                <td>수량</td>
-                <td style=padding-left:250;padding-bottom:0><input type="text" name="stock" id="stock" size="15"
-                        maxlength="15"></td>
-            </tr>
-            <tr>
-                <td>상품ID</td>
-                <td style=padding-left:250;padding-bottom:0><input type="text" name="pid" id="pid" size="15"
-                        maxlength="15"></td>
-            </tr>
-            <tr>
-                <td>썸네일</td>
-                <font color="black">
-                    <td style=padding-left:250;padding-bottom:0><input type="file" name="pimage" id="pimage" accept="*"
-                            style="border-radius: 6px;"></td>
-                </font>
-            </tr>
-            <tr>
-                <td>상품 설명</td>
-            </tr>
-        </table>
-        <textarea id="pdesc" name="pdesc"></textarea>
-        <button type="submit" name="submit" value="상품 등록" style="margin-left: 75%; border-radius: 15px;">상품 등록</button>
-        <button type="button" onclick="location.href='/login'" style=" border-radius: 15px;">등록 취소</button>
-    </form>
-    <script>
-        function Register_check() {
-            if ($("#pname").val().trim() == "") {
-                var message = "상품명을 입력해 주세요";
-                $("#pname").val("");
-                $("#pname").focus();
-                alert(message);
-                return false;
-            }
-            if ($("#price").val().trim() == "") {
-                var message = "가격을 입력해 주세요";
-                $("#price").val("");
-                $("#price").focus();
-                alert(message);
-                return false;
-            }
-            if ($("#stock").val().trim() == "") {
-                var message = "수량을 입력해 주세요";
-                $("#stock").val("");
-                $("#stock").focus();
-                alert(message);
-                return false;
-            }
-            if ($("#pid").val().trim() == "") {
-                var message = "상품ID를 입력해 주세요";
-                $("#pid").val("");
-                $("#pid").focus();
-                alert(message);
-                return false;
-            }
-            if ($("#pdesc").val().trim() == "") {
-                var message = "상품 설명을 입력해 주세요";
-                $("#pdesc").val("");
-                $("#pdesc").focus();
-                alert(message);
-                return false;
-            }
-            return true;
-        }
+    <div class="wrapper">
+        <!-- Sidebar Holder -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>단골찬</h3>
+                <h3>관리자 메뉴</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Seller</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li>
+                            <a href="/admin/seller_list/1">상품 목록</a>
+                        </li>
+                        <li>
+                            <a href="/admin/seller_state/1">주문 목록</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Administrator</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a href="/admin/client_list/1">고객 관리</a>
+                        </li>
+                        <li>
+                            <a href="/admin/notice_list/1">공지 관리</a>
+                        </li>
+                        <li>
+                            <a href="/admin/qna_list/1">Q&A 관리</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content Holder -->
+        <div id="content">
+
+                <form action="/admin/seller_register" method="post" onsubmit="return Register_check();" enctype="multipart/form-data">
+                    <table>
+                        <tr>
+                            <td>1차 분류</td>
+                            <td style=padding-left:250;padding-bottom:0>
+                                <select name="pcategory" id="pcategory">
+                                    <option selected>전체</option>
+                                    <option>새우장</option>
+                                    <option>게장</option>
+                                    <option>계란장</option>
+                                    <option>김치</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>상품명</td>
+                            <td style=padding-left:250;padding-bottom:0><input type="text" name="pname" id="pname" size="15"
+                                    maxLength="15"></td>
+                        </tr>
+                        <tr>
+                            <td>가격</td>
+                            <td style=padding-left:250;padding-bottom:0><input type="text" name="price" id="price" size="15"
+                                    maxlength="15"></td>
+                        </tr>
+                        <tr>
+                            <td>수량</td>
+                            <td style=padding-left:250;padding-bottom:0><input type="text" name="stock" id="stock" size="15"
+                                    maxlength="15"></td>
+                        </tr>
+                        <tr>
+                            <td>상품ID</td>
+                            <td style=padding-left:250;padding-bottom:0><input type="text" name="pid" id="pid" size="15"
+                                    maxlength="15"></td>
+                        </tr>
+                        <tr>
+                            <td>썸네일</td>
+                            <font color="black">
+                                <td style=padding-left:250;padding-bottom:0><input type="file" name="pimage" id="pimage" accept="*"
+                                        style="border-radius: 6px;"></td>
+                            </font>
+                        </tr>
+                        <tr>
+                            <td>상품 설명</td>
+                        </tr>
+                    </table>
+                    <textarea id="pdesc" name="pdesc"></textarea>
+                    <button type="submit" name="submit" value="상품 등록" style="margin-left: 75%; border-radius: 15px;">상품 등록</button>
+                    <button type="button" onclick="location.href='/login'" style=" border-radius: 15px;">등록 취소</button>
+                </form>
+                <script>
+                    function Register_check() {
+                        if ($("#pname").val().trim() == "") {
+                            var message = "상품명을 입력해 주세요";
+                            $("#pname").val("");
+                            $("#pname").focus();
+                            alert(message);
+                            return false;
+                        }
+                        if ($("#price").val().trim() == "") {
+                            var message = "가격을 입력해 주세요";
+                            $("#price").val("");
+                            $("#price").focus();
+                            alert(message);
+                            return false;
+                        }
+                        if ($("#stock").val().trim() == "") {
+                            var message = "수량을 입력해 주세요";
+                            $("#stock").val("");
+                            $("#stock").focus();
+                            alert(message);
+                            return false;
+                        }
+                        if ($("#pid").val().trim() == "") {
+                            var message = "상품ID를 입력해 주세요";
+                            $("#pid").val("");
+                            $("#pid").focus();
+                            alert(message);
+                            return false;
+                        }
+                        if ($("#pdesc").val().trim() == "") {
+                            var message = "상품 설명을 입력해 주세요";
+                            $("#pdesc").val("");
+                            $("#pdesc").focus();
+                            alert(message);
+                            return false;
+                        }
+                        return true;
+                    }
+                </script>
+                <script type="text/javascript"
+                    src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"></script>
+                <script>
+                    new FroalaEditor('textarea');
+                </script>
+
+        </div>
+    </div>
+
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+                $(this).toggleClass('active');
+            });
+        });
     </script>
-    <script type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"></script>
-    <script>
-        new FroalaEditor('textarea');
-    </script>
+   
 </body>
 
 </html>
