@@ -81,7 +81,7 @@
                     </tr>
                     <tr>
                         <td>내용</td>
-                        <td><textarea type="text" name="content" id="content" cols="30" rows="10" required/></textarea>
+                        <td><textarea type="text" name="content2" id="content2" cols="30" rows="10"></textarea>
                         </td>
                     </tr>
                     <tr>
@@ -118,13 +118,15 @@
                 alert(meessage);
                 return false;
             }
-            if ($("#content").val().trim() == "") {
+            if ($("#content2").val().trim() == "") {
                 var meessage = "본문 내용을 입력해주세요.";
-                $("#content").val("");
-                $("#content").focus();
+                $("#content2").val("");
+                $("#content2").focus();
                 alert(meessage);
                 return false;
             }
+            alert("공지 작성이 완료되었습니다.");
+            return true;
         }
     </script>
     <script type="text/javascript">

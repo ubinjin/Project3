@@ -168,7 +168,6 @@ router.get('/client_detail/:idx', function(req, res, next) {
             });
         });
         connection.release();
-
     });
 });
 
@@ -297,6 +296,7 @@ router.get('/qna_answer/:idx&:Qtime', function(req, res, next) {
     pool.getConnection(function(err, connection) {
         var sqlQNADetail = "select q.*,Rname FROM qna_info as q join register_info on Q_RID=RID where Q_RID=? and Qtime=?";
         connection.query(sqlQNADetail, [idx, time], function(err, row) {
+            console.log(row);
             if (err) console.error("err : " + err);
             res.render('qna_answer', {
                 title: 'Q&A 답변',
@@ -373,7 +373,6 @@ router.post('/seller_read/:pid', (req, res) => {
         });
     });
 });
-
 
 router.post('/qna_delete', function(req, res, next) {
     var idx = req.body.Q_RID;

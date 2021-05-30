@@ -65,7 +65,7 @@
 
 
             <form action="/admin/seller_list" method="post" onsubmit="">
-                <table>
+                <table class='table'>
                     <tr>
                         <td></td>
                         <td>썸네일</td>
@@ -101,8 +101,12 @@
                             <td>
                                 <%=oneItem.Pcategory%>
                             </td>
-                            <td>
-                                <%=oneItem.Stock%>
+                            <% if (oneItem.Stock > 5) { %>
+                            <td style="color:black"><%=oneItem.Stock%>
+                            <% }
+                                else { %>
+                            <td style="color:red"><%=oneItem.Stock%>
+                            <% } %>
                             </td>
                             <td>
                                 <%=oneItem.Salerate%>%
