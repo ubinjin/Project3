@@ -588,4 +588,22 @@ router.post('/notice_delete', function(req, res, next) {
 });
 
 /* NOTICE_LIST, DETAILS END */
+
+
+router.get('/stastics', function(req, res, next) {
+    //get Deal_info
+    pool.getConnection(function(err, connection) {
+        var sqlStastics = "select d.*, RRN from deal_info as d join register_info as r where d.P_RID=r.RID";
+        connection.query(sqlStastics, function(err, row) {
+            if (err) console.error("err : " + err);
+            console.log('통계 rows : ', JSON.stringify(row));
+            res.render('stastics', {
+                title: '판매 통계',
+                rows: row
+            });
+            connection.release();
+        });
+    });
+});
+
 module.exports = router;
