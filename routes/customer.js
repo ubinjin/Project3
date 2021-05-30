@@ -170,24 +170,42 @@ router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
   var Dtime = now;
   var Dquantity = req.body.Dquantity;
   var Dstate = '결제완료';
-  console.log("날짜~!", now);
+
   /* to register_info table(update customer's cash) */
   var Rest_cash = req.body.Rest_cash;
-  console.log(Rest_cash);
-  var datas = [DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate, Number(Rest_cash)];
-  pool.getConnection(function (err, connection) {
-    var InsertdealandUpdateCash_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate) values(?,?,?,?,?,?,?);" +
-      "update register_info set cash = ? where RID = '2016722036';";
-    connection.query(InsertdealandUpdateCash_multisql, datas, function (err, result) {
-      if (err) console.error(err);
-      console.log(result);
-      res.redirect('/customer/detail/' + Product_idx);
-      connection.release();
-    });
-  });
+  var Rest_stock = req.body.Rest_stock;
+  var Stock = req.body.Stock;
+  console.log(Stock);
+  console.log(Rest_stock);
+  //console.log(Rest_cash);
+  var datas = [DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate, Number(Rest_cash), Number(Rest_stock), D_PID];
+  if(Dquantity > 0){
+    if(Rest_stock >= 0){
+      pool.getConnection(function (err, connection) {
+        var InsertdealandUpdateCash_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate) values(?,?,?,?,?,?,?);" +
+          "update register_info set cash = ? where RID = '2016722036';" + 
+          "update product_info set stock = ? where PID = ?;";
+        connection.query(InsertdealandUpdateCash_multisql, datas, function (err, result) {
+          if (err) console.error(err);
+         //console.log(result);
+          res.redirect('/customer/detail/' + Product_idx);
+          connection.release();
+        });
+      });
+    }
+    else{
+      res.send("<script>alert('현재 상품은 수량이 "+ Stock +"개 남아 "+ Dquantity +"개를 구매할 수 없습니다.');window.location='http://localhost:1001/customer/detail/"+ Product_idx + "/buy';window.reload(true);</script>");
+    }
+
+  }
+  else{
+    res.send("<script>alert('수량을 추가하세요!');window.location='http://localhost:1001/customer/detail/"+ Product_idx + "/buy';window.reload(true);</script>");
+  }
 });
 
 router.get('/detail/:PID/buy', function (req, res) {
+  var Cart_now = new Date();
+  Cart_now = date_to_str(Cart_now);
   var Product_idx = req.params.PID;
   var Saleprice = 0;
   pool.getConnection(function (err, connection) {
@@ -195,13 +213,15 @@ router.get('/detail/:PID/buy', function (req, res) {
     var ProductandRegisterinfo_sql = 'select * from product_info as p, register_info as r where p.PID=? and r.RID = 2016722036';
     connection.query(ProductandRegisterinfo_sql, [Product_idx], function (err, product) {
       if (err) console.error(err);
-      //console.log("update에서 1개 글 조회 결과 확인 : ", product);
-      Saleprice = product[0].Price * (100 - product[0].Salerate) / 100;
+      console.log("update에서 1개 글 조회 결과 확인 : ", product);
+      console.log(Cart_now);
+      Saleprice = product[0].Price * (100-product[0].Salerate) / 100;
       res.render('buy', {
         title: "결제",
         product: product[0],
         saleprice: Saleprice,
-        date: beauty_date_to_str(new Date(product[0].Ptime))
+        date: beauty_date_to_str(product[0].Ptime),
+        cart_time: Cart_now
       });
       connection.release();
     });
@@ -255,51 +275,99 @@ router.get('/detail/:PID/review', function (req, res) {
 router.post('/cart/pay', function (req, res) {
   var now = new Date();
   now = date_to_str(now);
+  var D_PID = req.body.D_PID;
+  var Dquantity = req.body.Dquantity;
+  var Ctime = req.body.Ctime;
+  var Stock = req.body.Stock;
+  var Price = req.body.Price;
+  var Cash = req.body.Cash;
   var P_RID = req.body.P_RID;
   var S_RID = req.body.S_RID;
-  //var D_PID = req.body.D_PID;
+  var Arr_D_PID = [];
+  var Arr_Dquantity = [];
+  var Arr_Ctime = [];
+  var Arr_Stock = [];
+  var Arr_Price = [];
+  var Arr_Cash = [];
+  if(req.body.D_PID instanceof Array){
+    console.log("배열이다.");
+    Arr_D_PID = D_PID;
+    Arr_Dquantity = Dquantity;
+    Arr_Ctime = Ctime;
+    Arr_Stock = Stock;
+    Arr_Price = Price;
+    Arr_Cash = Cash;
+  }
+  else{
+    console.log("변수다.");
+    Arr_D_PID.push(D_PID);
+    Arr_Dquantity.push(Dquantity);
+    Arr_Ctime.push(Ctime);
+    Arr_Stock.push(Stock);
+    Arr_Price.push(Price);
+    Arr_Cash.push(Cash);
+  }
+  //console.log(Arr_Cash);
+  // var Arr_Ctime = [];
+  for (var i=0;i<req.body.D_PID.length;i++){
+    Arr_Ctime[i] = date_to_str(new Date(Arr_Ctime[i]));
+  }
   var Arr_DID = [];
-  for (var i = 0; i < req.body.D_PID.length; i++) {
-    Arr_DID[i] = req.body.P_RID + "_" + req.body.D_PID[i] + "_" + now;
+  for (var i=0;i<req.body.D_PID.length;i++){
+    Arr_DID[i] = P_RID + "_" +Arr_D_PID[i] + "_" + Arr_Ctime[i];
   }
   var Dtime = now;
   var Dstate = '결제완료';
-  var Rest_cash = req.body.Rest_cash;
+  var Rest_cash = 0;
+  var pay_price = 0;
+  for (var i=0;i<Arr_D_PID.length;i++){
+    pay_price += Number(Arr_Dquantity[i] * Arr_Price[i]);
+    Arr_Stock[i] = Arr_Stock[i] - Arr_Dquantity[i];
+    
+  }
+  console.log(pay_price);
+  Rest_cash = Arr_Cash - pay_price;
   var datas = [];
-  for (var i = 0; i < req.body.D_PID.length; i++) {
-    datas[i] = [Arr_DID[i], P_RID, S_RID, req.body.D_PID[i], Dtime, req.body.Dquantity[i], Dstate, Number(Rest_cash), req.body.D_PID[i]];
+  for (var i=0;i<Arr_D_PID.length;i++){
+    datas[i] = [Arr_DID[i], P_RID, S_RID, Arr_D_PID[i], Dtime, Arr_Dquantity[i], Dstate, Number(Rest_cash), Arr_D_PID[i], Arr_Stock[i], Arr_D_PID[i]];
+    console.log(datas[i]);
   }
   pool.getConnection(function (err, connection) {
     var InsertdealandUpdateCashandDeletecart_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate) values(?,?,?,?,?,?,?);" +
       "update register_info set cash = ? where RID = '2016722036';" +
-      "delete from cart_info where C_PID=?;";
-    for (var i = 0; i < datas.length; i++) {
-      console.log(datas);
+      "delete from cart_info where C_PID=?;" +
+      "update product_info set stock = ? where PID = ?;";
+    for (var i=0;i<datas.length;i++){
       connection.query(InsertdealandUpdateCashandDeletecart_multisql, datas[i]);
     }
-    res.redirect('/customer/cart');
+    //res.redirect('/customer/mypage');
+    res.send("<script>alert('결제 완료!');window.location='http://localhost:1001/customer/mypage';window.reload(true);</script>");
     connection.release();
   });
 });
-
 
 router.post('/cart/add', upload.single('image'), function (req, res) {
   var PID = req.body.PID;
   var Cquantity = req.body.Qquantity;
   var now = new Date();
   now = date_to_str(now);
-  console.log(Cquantity);
+  //console.log(req.body);
   var datas = [now, 2016722036, PID, Cquantity];
-  pool.getConnection(function (err, connection) {
-    var InsertCart_sql = "insert into cart_info(Ctime, C_RID, C_PID, Cquantity) values(?,?,?,?)";
-    connection.query(InsertCart_sql, datas, function (err, result) {
-      console.log("cart 추가: ", result);
-      if (err) console.error(err);
-      // console.log(result);
-      res.redirect('/customer/cart');
-      connection.release();
+  console.log(Cquantity);
+  if(Cquantity > 0){
+    pool.getConnection(function (err, connection) {
+      var InsertCart_sql = "insert into cart_info(Ctime, C_RID, C_PID, Cquantity) values(?,?,?,?)";
+      connection.query(InsertCart_sql, datas, function (err, result) {
+        if (err) console.error(err);
+        // console.log(result);
+        res.redirect('/customer/cart');
+        connection.release();
+      });
     });
-  });
+  }
+  else{
+    res.send("<script>alert('수량을 추가하세요!');window.location='http://localhost:1001/customer/detail/"+ PID + "/buy';window.reload(true);</script>");
+  }
 });
 
 router.post('/cart/delete', upload.single('image'), function (req, res) {
@@ -318,23 +386,30 @@ router.post('/cart/delete', upload.single('image'), function (req, res) {
 
 router.get('/cart', upload.single('image'), function (req, res, next) {
   pool.getConnection(function (err, connection) {
-    var Cartinfo_sql = "select * from cart_info as c, product_info as p, register_info as r where p.PID = c.C_PID and r.RID = c.C_RID and c.C_RID='2016722036'";
-    var Priceinfo_sql = "select Price, Salerate from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID='2016722036'";
-    var Quantityinfo_sql = "select Cquantity from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID='2016722036'";
-    var GetCash_sql = "select Cash from register_info where RID='2016722036'";
+    var Cartinfo_sql = "select * from cart_info as c, product_info as p, register_info as r where p.PID = c.C_PID and r.RID = c.C_RID and c.C_RID=2016722036";
+    var Priceinfo_sql = "select Price, Salerate from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=2016722036";
+    var Quantityinfo_sql = "select Cquantity from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=2016722036";
+    var Stockinfo_sql = "select Stock from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=2016722036";
+    var GetCash_sql = "select Cash from register_info where RID=2016722036";
     var Priceinfo = [];
     var Quantityinfo = [];
+    var Stockinfo=[];
     var Cash = 0;
-
+    var Pay_price = 0;
     connection.query(Priceinfo_sql, function (err, price) {
       if (err) console.error("err : " + err);
       Priceinfo = price;
-      //console.log(Priceinfo);
+      console.log(Priceinfo);
     });
     connection.query(Quantityinfo_sql, function (err, Quantity) {
       if (err) console.error("err : " + err);
       Quantityinfo = Quantity;
-      //console.log(Quantityinfo);
+      console.log(Quantityinfo);
+    });
+    connection.query(Stockinfo_sql, function (err, Stock) {
+      if (err) console.error("err : " + err);
+      Stockinfo = Stock;
+      console.log(Stockinfo);
     });
     connection.query(GetCash_sql, function (err, cash) {
       if (err) console.error("err : " + err);
@@ -343,13 +418,14 @@ router.get('/cart', upload.single('image'), function (req, res, next) {
     });
     connection.query(Cartinfo_sql, function (err, cart) {
       if (err) console.error("err : " + err);
-      console.log(cart[0].Salerate);
       res.render('cart', {
         title: "장바구니",
         cart: cart,
         cash: Cash,
         price: Priceinfo,
-        quantity: Quantityinfo
+        quantity: Quantityinfo,
+        stock: Stockinfo,
+        pay_price: Pay_price
       });
       connection.release();
     });
