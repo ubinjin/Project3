@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 var multer = require('multer');
+const { json } = require('body-parser');
 var pool = mysql.createPool({
     connectionLimit: process.env.DB_connectionLimit,
     host: process.env.DB_host,
@@ -548,20 +549,23 @@ router.post('/notice_update', upload.single('image'), function(req, res, next) {
 
 
 router.post('/seller_state', (req, res) => {
+    var page = req.body.page;
+    var j = 0;
     pool.getConnection(function(err, connection) {
-        var sql_count = "select count(DID) as c from deal_info order by Dtime desc";
         var sql_find = "select DID from deal_info order by Dtime desc";
         var sql_update = "update deal_info set Dstate=? where DID=?";
-        connection.query(sql_count, function(err, row) {
-            connection.query(sql_find, function(err, row2) {
-                for (var i = 0; i < row[0].c; i++) {
-                    console.log(req.body.Dstate[i], row2[i].DID);
-                    connection.query(sql_update, [req.body.Dstate[i], row2[i].DID]);
-                }
-            });
+        connection.query(sql_find, function(err, row2) {
+            for (var i = (page-1) * 10; i < (page-1) * 10 + req.body.Dstate.length; i++) {
+                console.log(req.body.Dstate[j], row2[i].DID);
+                connection.query(sql_update, [req.body.Dstate[j], row2[i].DID]);
+                j++;
+            }
         });
+        // var next_location="\""+"<script>alert('주문 상태 변경이 완료되었습니다.');http://localhost:1001/admin/seller_state/" + page+";window.reload(true);</script>"+"\"";
+        var next_location="<script>alert('주문 상태 변경이 완료되었습니다.');window.location='http://localhost:1001/admin/seller_state/" + page+"';window.reload(true);</script>";
+        console.log(next_location.toString())
         connection.release();
-        res.send("<script>alert('주문 상태 변경이 완료되었습니다.');window.location='http://localhost:1001/admin/seller_state/1';window.reload(true);</script>");
+        res.send(next_location.toString());
     });
 });
 
