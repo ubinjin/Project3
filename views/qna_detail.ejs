@@ -74,8 +74,8 @@
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
             <form action="/admin/qna_delete" method="POST" onsubmit="">
-                <input type="hidden" name="Qtime" id="Qtime" value="<%=qna.Qtime%>"/>
-                <input type="hidden" name="Q_RID" id="Q_RID" value="<%=qna.Q_RID%>"/>
+                <input type="hidden" name="Qtime" id="Qtime" value="<%=qna.Qtime%>" />
+                <input type="hidden" name="Q_RID" id="Q_RID" value="<%=qna.Q_RID%>" />
 
                 <table border="1">
                     <tr>
@@ -128,7 +128,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <%=qna.Answer%>
+                            <pre><%=qna.Answer%></pre>
                         </td>
                     </tr>
                 </table>
