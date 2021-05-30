@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="utf-8" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
     <title>
         <%= title %>
@@ -15,6 +14,12 @@
     <script src="/javascripts/jquery-3.6.0.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
 
 </head>
 
@@ -81,12 +86,11 @@
                     </tr>
                     <tr>
                         <td>제목</td>
-                        <td><input type="text" id="title" name="title" required/></td>
+                        <td><input type="text" id="title" name="title" required></td>
                     </tr>
                     <tr>
                         <td>내용</td>
-                        <td><textarea type="text" name="content2" id="content2" cols="30" rows="10"></textarea>
-                        </td>
+                        <td><textarea class="form-control" type="text" name="content2" id="content2" cols="30" rows="10"></textarea></td>
                     </tr>
                     <tr>
                         <td>이미지</td>
@@ -106,42 +110,33 @@
         </div>
     </div>
 
-    <!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-
-    <script>
-        function onWriteSubmit() {
-            if ($("#title").val().trim() == "") {
-                var meessage = "제목을 입력해주세요.";
-                $("#title").val("");
-                $("#title").focus();
-                alert(meessage);
-                return false;
-            }
-            if ($("#content2").val().trim() == "") {
-                var meessage = "본문 내용을 입력해주세요.";
-                $("#content2").val("");
-                $("#content2").focus();
-                alert(meessage);
-                return false;
-            }
-            alert("공지 작성이 완료되었습니다.");
-            return true;
-        }
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#sidebarCollapse').on('click', function() {
-                $('#sidebar').toggleClass('active');
-                $(this).toggleClass('active');
-            });
-        });
-    </script>
-
 </body>
+
+<script>
+    function onWriteSubmit() {
+        if ($("#title").val().trim() == "") {
+            var meessage = "제목을 입력해주세요.";
+            $("#title").val("");
+            $("#title").focus();
+            alert(meessage);
+            return false;
+        }
+        if ($("#content2").val().trim() == "") {
+            var meessage = "본문 내용을 입력해주세요.";
+            $("#content2").val("");
+            $("#content2").focus();
+            alert(meessage);
+            return false;
+        }
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#sidebarCollapse').on('click', function() {
+            $('#sidebar').toggleClass('active');
+            $(this).toggleClass('active');
+        });
+    });
+</script>
 
 </html>
