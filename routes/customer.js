@@ -132,10 +132,11 @@ router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
   var Dtime =  now;
   var Dquantity = req.body.Dquantity;
   var Dstate = '결제완료';
+  console.log(req.body);
   //console.log("날짜~!",  now);
   /* to register_info table(update customer's cash) */
-  var Rest_cash = req.body.Rest_cash;
-  var Rest_stock = req.body.Rest_stock;
+  var Rest_cash = Number(req.body.Cash) - Number(req.body.Price) * Number(req.body.Dquantity); 
+  var Rest_stock = Number(req.body.Stock) - Number(req.body.Dquantity);
   var Stock = req.body.Stock;
   console.log(Stock);
   console.log(Rest_stock);
@@ -150,7 +151,7 @@ router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
         connection.query(InsertdealandUpdateCash_multisql, datas, function (err, result) {
           if (err) console.error(err);
          //console.log(result);
-          res.redirect('/customer/detail/' + Product_idx);
+         res.send("<script>alert('결제 완료!');window.location='http://localhost:1001/customer/mypage';window.reload(true);</script>");
           connection.release();
         });
       });
@@ -199,18 +200,19 @@ router.post('/detail/:PID/review', upload.single('image'), function (req, res, n
   var Product_idx = req.params.PID;
   var R_RID = req.body.R_RID;
   var R_PID = req.body.R_PID;
-  var R_DID = req.body.R_DID;;
+  var R_DID = req.body.R_DID;
   var Review = req.body.Review;
   var Star = req.body.Star;
   var Rimage = req.file.path;
   var Rtime = now;
-
+  console.log(req.body);
   var datas = [R_RID, R_PID, R_DID, Review, Star, Rtime, Rimage];
   pool.getConnection(function (err, connection) {
     var InsertReview_sql = "insert into review_info(R_RID, R_PID, R_DID, Review, Star, Rtime, Rimage) values(?,?,?,?,?,?,?)";
     connection.query(InsertReview_sql, datas, function (err, review) {
       if (err) console.error("err : " + err);
-      res.redirect('/customer/detail/' + Product_idx);
+      //res.redirect('/customer/detail/' + Product_idx);
+      res.send("<script>alert('작성 완료!');window.location='http://localhost:1001/customer/detail/" + Product_idx + "' ;window.reload(true);</script>");
     });
   });
 });
