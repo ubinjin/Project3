@@ -12,7 +12,7 @@
     </div>
     <h1><%= title %></h1>
 
-    <input type="hidden" name="Cash" id="Cash" value="<%=cash%>" />
+
     <p><%=cash%></p>
     <table border="1">
         <tr>
@@ -28,6 +28,7 @@
         for(var i=0; i<cart.length; i++)
         {
             var option = cart[i];
+            pay_price += Number(option.Cquantity) * Number(option.Price * (100 - option.Salerate) / 100);
         %>
         <tr>
             <td><%= i+1%></td>
@@ -36,7 +37,6 @@
             <td><%=option.Price%></td>
             <td><%=option.Price * (100 - option.Salerate) / 100 %></td>
             <td><%=option.Cquantity%></td>
-
             <td>
                 <form action="/customer/cart/delete" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="PID" id="PID" value="<%=option.PID%>" />
@@ -56,47 +56,17 @@
             %>
         <input type="hidden" name="D_PID" id="D_PID" value="<%=option.PID%>" />
         <input type="hidden" name="Dquantity" id="Dquantity" value="<%=option.Cquantity%>" />
+        <input type="hidden" name="Ctime" id="Ctime" value="<%=option.Ctime%>" />
+        <input type="hidden" name="Stock" id="Stock" value="<%=option.Stock%>" />
+        <input type="hidden" name="Price" id="Price" value="<%=option.Price * (100 - option.Salerate) / 100%>" />
         <%
         }
         %>
+        <input type="hidden" name="Cash" id="Cash" value="<%=cash%>" />
         <input type="hidden" name="P_RID" id="P_RID" value="2016722036" />
         <input type="hidden" name="S_RID" id="S_RID" value="2016722966" />
-        <button type="button" onclick="cal_price()">가격조회</button>
-        <button type="submit">결제</button>
-        <input type="hidden" name="Rest_cash" id="Rest_cash" value="0" />
-        <input type="hidden" name="Pay_price" id="Pay_price" value="0" />
+        <button type="submit"><%=pay_price%>원 결제</button>
     </form>
 </body>
-<script language="javascript">
-    function cal_price() {
-        var cash = document
-            .getElementById('Cash')
-            .value;
-        var _price = "<%= JSON.stringify(price) %>";
-        _price = _price.replaceAll('&#34;', '\"');
-        _price = JSON.parse(_price);
-        var _quantity = "<%= JSON.stringify(quantity) %>";
-        _quantity = _quantity.replaceAll('&#34;', '\"');
-        _quantity = JSON.parse(_quantity);
-
-        var pay_price = 0;
-        for (var i = 0; i < _quantity.length; i++) {
-            pay_price += Number(_price[i].Price) * Number(_quantity[i].Cquantity);
-        }
-        console.log(pay_price);
-
-        var rest_cash = cash - pay_price;
-
-        console.log("지불가격:" + pay_price);
-        console.log("남은돈:" + rest_cash);
-
-        document
-            .getElementById('Pay_price')
-            .value = pay_price;
-        document
-            .getElementById('Rest_cash')
-            .value = rest_cash;
-    }
-</script>
 
 </html>
