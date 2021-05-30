@@ -99,7 +99,7 @@ select {
   text-align: center;
   top: 100%;
   left: 50%;
-  margin-left: -100px;
+  margin-left: -70px;
 }
 
 .wraper .recList::after{
