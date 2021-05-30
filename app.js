@@ -1,18 +1,63 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const mysql = require("mysql");
+var session = require("express-session");
+var MySQLStore = require("express-mysql-session")(session);
+// MYSQL-SESSION setup starts
+var connection = mysql.createConnection({
+    connectionLimit: process.env.DB_connectionLimit,
+    host: process.env.DB_host,
+    port: process.env.DB_port,
+    user: process.env.DB_user,
+    password: process.env.DB_password,
+    database: process.env.DB_database,
+    dateStrings: process.env.DB_dateStrings
+});
+var options = {
+    connectionLimit: process.env.DB_connectionLimit,
+    host: process.env.DB_host,
+    port: process.env.DB_port,
+    user: process.env.DB_user,
+    password: process.env.DB_password,
+    database: process.env.DB_database,
+    dateStrings: process.env.DB_dateStrings
+};
 
+const {
+    request,
+    response
+} = require('./app');
+
+var sessionStore = new MySQLStore(options);
+
+// MYSQL-SESSION setup end
 var indexRouter = require('./routes/index');
-// var adminRouter = require('./routes/admin');
 var usersRouter = require('./routes/users');
 var testRouter = require('./routes/test');
+
 var customer = require('./routes/customer');
 var fs = require('fs');
 var ejs = require('ejs');
-var app = express();
 
+var adminRouter = require('./routes/admin');
+var joinFormRouter = require('./routes/joinForm');
+
+var loginRouter = require('./routes/login');
+
+var app = express();
+app.use(
+    session({
+        key: "session_cookie_name",
+        secret: "session_cookie_secret",
+        store: sessionStore,
+        resave: false,
+        saveUninitialized: false,
+    })
+);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -20,14 +65,13 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
-    extended: false
+    extended: true
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(express.static(path.join(__dirname, 'public/images')));
 app.use('/', customer);
-app.use('/users', usersRouter);
-app.use('/test', testRouter);
 app.use('/customer', customer);
 
 global.headerFormat = fs.readFileSync(
@@ -35,6 +79,24 @@ global.headerFormat = fs.readFileSync(
     "utf8"
   );
 global.header = ejs.render(headerFormat);
+
+app.use('/upload', express.static(path.join(__dirname + '/upload')));
+
+app.use('/index', indexRouter);
+app.use('/users', usersRouter);
+app.use('/test', testRouter);
+app.use('/login', loginRouter);
+app.use('/admin', adminRouter);
+app.use('/joinForm', joinFormRouter);
+
+app.use(express.static(__dirname + '/join_images'));
+app.use('/admin', express.static('./join_images'));
+app.use('/join_images', express.static('./join_images'));
+
+
+var connection = mysql.createConnection(options); // or mysql.createPool(options);
+var sessionStore = new MySQLStore({} /* session store options */ , connection);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     next(createError(404));
