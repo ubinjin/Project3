@@ -183,7 +183,7 @@
                 </form>
                 <table align="center">
                     <tr style="text-align: center">
-                        <% if (row.length/10 <= 10) array_length = parseInt(row.length/10) + 1;
+                        <% if (row.length/10 <= 10) array_length = parseInt((row.length - 1)/10) + 1;
                            else {
                                 array_page = parseInt((page - 1)/10);
                                 if (row.length/10 > (array_page + 1) * 10)
@@ -205,7 +205,7 @@
                             else { %>
                                 <td style = "color: rgb(199, 199, 199)"><a href="/admin/seller_state/<%=i%>"><%=i%></a></td>
                             <% }
-                            if (i == array_length && page != parseInt(row.length/10) + 1) {%>
+                            if (i == array_length && page != parseInt((row.length - 1)/10) + 1) {%>
                             <td><pre>       </pre></td>
                             <td><a href="/admin/seller_state/<%=Number(page)+1%>">next</a></td>
                             <% } %>

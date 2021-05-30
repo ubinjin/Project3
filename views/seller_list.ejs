@@ -116,7 +116,7 @@
             <form action="/admin/seller_state/1" method="get" style="display:inline"><button type='submit'>주문확인</button></form>
             <table align="center">
                 <tr style="text-align: center">
-                    <% if (rows.length/10 <= 10) array_length = parseInt(rows.length/10) + 1;
+                    <% if (rows.length/10 <= 10) array_length = parseInt((rows.length - 1)/10) + 1;
                        else {
                             array_page = parseInt((page - 1)/10);
                             if (rows.length/10 > (array_page + 1) * 10)
@@ -138,7 +138,7 @@
                         else { %>
                             <td style = "color: rgb(199, 199, 199)"><a href="/admin/seller_list/<%=i%>"><%=i%></a></td>
                         <% }
-                        if (i == array_length && page != parseInt(rows.length/10) + 1) {%>
+                        if (i == array_length && page != parseInt((rows.length - 1)/10) + 1) {%>
                         <td><pre>       </pre></td>
                         <td><a href="/admin/seller_list/<%=Number(page)+1%>">next</a></td>
                         <% } %>

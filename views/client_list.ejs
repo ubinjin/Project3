@@ -117,7 +117,7 @@
             <!-- 여기에 넣으세요 -->
             <table align="center">
                 <tr style="text-align: center">
-                    <% if (clients.length/10 <= 10) array_length = parseInt(clients.length/10) + 1;
+                    <% if (clients.length/10 <= 10) array_length = parseInt((clients.length - 1)/10) + 1;
                        else {
                             array_page = parseInt((page - 1)/10);
                             if (clients.length/10 > (array_page + 1) * 10)
@@ -139,7 +139,7 @@
                         else { %>
                             <td style = "color: rgb(199, 199, 199)"><a href="/admin/client_list/<%=i%>"><%=i%></a></td>
                         <% }
-                        if (i == array_length && page != parseInt(clients.length/10) + 1) {%>
+                        if (i == array_length && page != parseInt((clients.length - 1)/10) + 1) {%>
                         <td><pre>       </pre></td>
                         <td><a href="/admin/client_list/<%=Number(page)+1%>">next</a></td>
                         <% } %>
