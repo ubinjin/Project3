@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/style5.css' />
+
+    <script src="/javascripts/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <h2>
+        <font color="black">
+            <%= title %>
+        </font>
+    </h2>
+    <form action="/login" method="POST" onsubmit="return onLoginSubmit()">
+        <input type="text" name="id" id="id" required/>
+        <input type="password" name="passwd" id="passwd" required/>
+        <button type="submit" name="login">로그인</button>
+    </form>
+
+</body>
+
+<script>
+    function onLoginSubmit() {
+        if ($("#id").val().trim() == "") {
+            var meessage = "이름을 입력해주세요.";
+            $("#id").val("");
+            $("#id").focus();
+            alert(meessage);
+            return false;
+        }
+        if ($("#passwd").val().trim() == "") {
+            var meessage = "비밀번호를 입력해주세요.";
+            $("#passwd").val("");
+            $("#passwd").focus();
+            alert(meessage);
+            return false;
+        }
+    }
+</script>
