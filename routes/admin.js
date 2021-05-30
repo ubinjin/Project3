@@ -64,6 +64,7 @@ router.get('/seller_list/:page', function(req, res, next) {
                 page: req.params.page
 
             });
+            connection.release();
         });
     });
 });
