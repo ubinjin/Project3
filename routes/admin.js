@@ -3,7 +3,6 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 var multer = require('multer');
-var PHE = require("print-html-element");
 var pool = mysql.createPool({
     connectionLimit: process.env.DB_connectionLimit,
     host: process.env.DB_host,
@@ -310,7 +309,7 @@ router.post('/qna_answer', function(req, res, next) {
     var idx = req.body.Q_RID;
     var qtime = req.body.Qtime;
     var content = req.body.content;
-    console.log(idx + qtime + content)
+
     pool.getConnection(function(err, connection) {
         console.log("getConnection error : " + err);
         var sql = "update qna_info set Answer=? where Q_RID=? and Qtime=?";
@@ -503,20 +502,22 @@ router.get('/notice_update/:Ntime', function(req, res, next) {
         var sqlNoticeDetail = "select * FROM notice_info where Ntime=?";
         connection.query(sqlNoticeDetail, [idx], function(err, row) {
             if (err) console.error("err : " + err);
+            console.log(row[0]);
             console.log('공지사항 수정 : ', JSON.stringify(row));
             res.render('notice_update', {
                 title: '공지 수정',
                 notice: row[0]
             });
+            connection.release();
         });
     });
 });
 
 
 router.post('/notice_update', upload.single('image'), function(req, res, next) {
-    var Ntime = new Date();
+    var Ntime = req.body.time;
     var NTitle = req.body.title;
-    var Ntext = req.body.content;
+    var Ntext = req.body.content2;
     if (req.file) {
         var Nimage = req.file.path;
         var Nimage_path = req.file.originalname;
@@ -525,11 +526,11 @@ router.post('/notice_update', upload.single('image'), function(req, res, next) {
         var Nimage = "";
         var Nimage_path = "";
     }
-    var datas = [Ntime, NTitle, Ntext, Nimage, Nimage_path];
+    var datas = [NTitle, Ntext, Nimage, Nimage_path, Ntime];
     console.log("datas : " + JSON.stringify(datas));
     pool.getConnection(function(err, connection) {
         console.log("getConnection error : " + err);
-        var sql = "update notice_info set Ntime=?,NTitle=?,Ntext=?,Nimage=?,Nimage_path=?";
+        var sql = "update notice_info set NTitle=?,Ntext=?,Nimage=?,Nimage_path=? where Ntime=?";
         connection.query(sql, datas, function(err, result) {
             if (err) {
                 console.error("err : " + err);
@@ -542,8 +543,6 @@ router.post('/notice_update', upload.single('image'), function(req, res, next) {
                 res.send("<script>alert('공지를 수정했습니다.');window.location='http://localhost:1001/admin/notice_list/1';window.reload(true);</script>");
             }
             connection.release();
-
-
         });
     });
 });
