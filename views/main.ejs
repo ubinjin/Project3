@@ -83,10 +83,25 @@
         <img src="/main_border.png" style="width: 90%; height: 1%; overflow: hidden;">
     </div>
     <% if (page == 0) { %>
-    <div style="align-items:center; text-align: center;">
-        <img src="/gallery1.jpg" style="width: 100%; height: auto; overflow: hidden; vertical-align: center;">
+    <div class="slidiv" id="slide">
+        <input type="radio" name="pos" id="pos1" checked>
+        <input type="radio" name="pos" id="pos2">
+        <input type="radio" name="pos" id="pos3">
+        <input type="radio" name="pos" id="pos4">
+        <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+        <p class="pos">
+            <label for="pos1"></label>
+            <label for="pos2"></label>
+            <label for="pos3"></label>
+            <label for="pos4"></label>
+        </p>
     </div>
-    <br><br><br><br>
+    <br><br>
     <div style="text-align: center; margin: 0;">
         <table class="tab_table">
             <tr>

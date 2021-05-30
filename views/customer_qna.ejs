@@ -4,6 +4,7 @@
 <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='bootstrap-3.3.2-dist/css/bootstrap.min.css'
 </head>
 <script type="text/javascript">
     var newURL = window.location.href;
@@ -70,36 +71,36 @@
         <h3>Q&A 입력</h3>
     </div>
     <br><br>
-    <div style="text-align: center; width: 80; border: black;">
+    <div style="text-align: left; width: 100%; border: black;">
         <form action="/customer/qna_write" method="post" enctype="multipart/form-data">
-            <table style="text-align: center;">
+            <table class="top_table">
                 <tr>
                     <td>제목</td>
                     <td>
-                        <p><input type="text" name="Qtitle" placeholder="title" width=80%></p>
+                        <input type="text" name="Qtitle">
                     </td>
                 </tr>
                 <tr>
-                    <td>작성자</td>
+                    <td>작성자</td>     
                     <td>
-                        <p></p>
+                        나야나
                     </td>
                 </tr>
                 <tr>
                     <td>내용</td>
                     <td>
-                        <p><textarea name="Question" placeholder="content"></textarea></p>
+                        <textarea name="Question"></textarea>
                     </td>
                 </tr>
                 <tr>
                     <td>이미지</td>
                     <td>
-                        <p><input type="file" name="Qimage"></p>
+                        <input type="file" name="Qimage">
                     </td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
-                    <td><input type="submit"></td>
+                    <td><input type="submit" value="전송"> </td>
                 </tr>
             </table>
         </form>
