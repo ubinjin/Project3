@@ -8,7 +8,11 @@
 
 <body>
     <div>
+        <% if (name != "비회원") { %>
+        <%-header2%>
+        <% } else { %>
         <%-header%>
+        <% } %>
     </div>
     <h1><%= title %></h1>
 
