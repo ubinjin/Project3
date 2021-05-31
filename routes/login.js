@@ -15,9 +15,24 @@ var pool = mysql.createPool({
 });
 
 router.get('/', function(req, res, next) {
-    res.render('login', {
-        title: "로그인 페이지",
-    });
+    if (req.session.user) {
+        if (req.session.user.Ucase == "0")
+            res.send("<script>;window.location='http://localhost:1001/tab';window.reload(true);</script>");
+        else if (req.session.user.Ucase == "1")
+            res.send("<script>;window.location='http://localhost:1001/admin';window.reload(true);</script>");
+        else {
+            delete req.session.user;
+            req.session.save(() => {
+                res.redirect('/login');
+            });
+            res.send("<script>alert('비정상적인 접근(세션)입니다..');history.back();</script>");
+        }
+    }
+    else {
+        res.render('login', {
+            title: "로그인 페이지",
+        });
+    }
 });
 
 router.post("/", function(req, res, next) {
@@ -54,7 +69,7 @@ router.post("/", function(req, res, next) {
                     // res.json({stu_id :in_stu_id});
                     req.session.user = {
                         id: in_id,
-                        pw: in_passwd,
+                        pw: hashPassword,
                         name: results[0].Rname,
                         Ucase: results[0].Ucase,
                         authorized: true
@@ -64,9 +79,7 @@ router.post("/", function(req, res, next) {
                         //0 구매자
                         console.log(results[0].Ucase);
                         if (results[0].Ucase == "0") {
-                            res.redirect('/customer');
-
-
+                            res.redirect('/');
                         }
                         else if (results[0].Ucase == "1") {
                             res.redirect('/admin');
