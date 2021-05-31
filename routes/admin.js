@@ -83,7 +83,7 @@ router.get('/notice_list', function(req, res, next) {
 /* CLIENT_LIST, DETAILS START */
 
 router.get('/client_list/:page', function(req, res, next) {
-    console.log(req.session.user)
+    console.log(req.session.user);
     pool.getConnection(function(err, connection) {
         var sqlClientsList = "select RID,Rname, Address, Phone, Ucase FROM register_info";
         connection.query(sqlClientsList, function(err, rows) {
