@@ -71,7 +71,7 @@ router.get('/tab', function (req, res, next) {
     });
   }
   let user_id = req.session.user.id;
-  // console.log("user: ", req.session.user.name);
+  console.log("user: ", req.session.user.name);
 
   pool.getConnection(function (err, connection) {
     var ProductList_sql = "SELECT * FROM product_info as p left join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID ORDER BY sum desc;" +
