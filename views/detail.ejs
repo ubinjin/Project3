@@ -10,48 +10,90 @@
   <div>
     <%-header%>
   </div>
-  <div style="text-align: left; float:left; "><img src="/<%=product.Pimage%>" width=300px height=300px />
+  <div style="text-align: center;">
+    <table align="center" style="margin-left: auto; margin-right: auto;" width='1000px'>
+      <tr>
+        <td rowspan="6" align "center"><img style="border: 1px solid#e9e9e9;" src="/<%=product.Pimage%>" width=500px
+            height=400px /></td>
+        <td width=300px align="left" style="color:darkgoldenrod">
+          <h1 style="font-size: 30px"><%=product.Pname%></h1>
+        </td>
+      </tr>
+      <tr>
+        <td align="left">
+          <div style="font-size: 40px; color: #e9e9e9;"><strike><%=product.Price%>원</strike></div>
+          <div style="font-size: 40px"><strong style="color: red;"><%=product.Salerate%>%</strong>
+            <strong><%=saleprice%>원</strong></div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <hr style="border-style:dotted">
+        </td>
+      </tr>
+      <tr>
+        <td align="left">
+          <div style="font-size: 20px">원산지: 국내산</div>
+        </td>
+      </tr>
+      <tr>
+        <td align="left">
+          <div style="font-size: 20px">출시일: <%=date%></div>
+        </td>
+      </tr>
+      <tr>
+        <td align="left" colspan=" 2"><button
+            style="border-radius: 10px; font-size:20px; background-color: white; border-color: darkgoldenrod; font-size:10px; padding: 10px 10px;"
+            onclick="window.location.href = '/customer/detail/<%=product.PID%>/buy'">구매하기</button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <hr>
+        </td>
+      </tr>
+      <tr>
+        <td align="left" colspan=" 2">
+          <strong style="font-size:20px;">교환 및 반품</strong>
+          <p> - 식품 특성상 제품 하자를 제외한 개봉 후 반품 및 환불은 불가합니다.</p>
+          <p> - 고객님의 단순 변심으로 인한 교환 및 반품은 어려우며, 발송 중 고객님의 부재로 인한 미수령 후 반송 시 반품은 불가합니다.</p>
+          <p> - 제품에 문제가 있거나 주문한 상품과 동일하지 않은 상품을 받으신 경우 연락바랍니다.</p>
+        </td>
+      </tr>
+      <tr>
+        <td align="left" colspan=" 2">
+          <hr>
+          <strong style="font-size:20px;">리뷰</strong>
+        </td>
+      </tr>
+      <%
+      for(var i=0; i<reviews.length; i++)
+      {
+          var review = reviews[i];
+      %>
+      <tr>
+        <td align="left">
+          <hr>
+          <br>
+          <p><%=review.Rname%></p>
+          <p><%=review.Star%><strong style="font-size:1px;"><%=review.Rtime%></strong></p>
+          <br>
+          <p><%=review.Review%></p>
+          <br>
+          <hr>
+        </td>
+        <td>
+          <img style="border: 1px solid#e9e9e9;" src="/<%=review.Rimage%>" width=100px height=100px />
+        </td>
+        <br>
+      </tr>
+      <%
+      }
+      %>
+      <hr>
+    </table>
+    <button onclick="window.location.href = '/customer/detail/<%=product.PID%>/review'">작성</button>
   </div>
-  <div sytle="text-align: right;">
-    <div style="color: brown;">
-      <h1><%=product.Pname%></h1>
-    </div>
-    <div style="font-size:30px">판매가격: <%=product.Price%></div>
-    <div style="font-size:30px">할인가격: <%=saleprice%></div>
-    <hr>
-    <div style="font-size:30px">원산지: 국내산</div>
-    <div style="font-size:30px">출시일: <%=date%></div>
-    <div><button onclick="window.location.href = '/customer/detail/<%=product.PID%>/buy'">구매하기</button>
-    </div>
-  </div>
-  <hr>
-  <section>
-    <p>
-      <h1>교환 / 반품</h1>
-    </p>
-    <p> - 식품 특성상 제품 하자를 제외한 개봉 후 반품 및 환불은 불가합니다.</p>
-    <p> - 고객님의 단순 변심으로 인한 교환 및 반품은 어려우며, 발송 중 고객님의 부재로 인한 미수령 후 반송 시 반품은 불가합니다.</p>
-    <p> - 제품에 문제가 있거나 주문한 상품과 동일하지 않은 상품을 받으신 경우 연락바랍니다.</p>
-    <hr>
-  </section>
-  <h1>리뷰</h1>
-  <button onclick="window.location.href = '/customer/detail/<%=product.PID%>/review'">작성</button>
-
-  <%
-  for(var i=0; i<reviews.length; i++)
-  {
-      var review = reviews[i];
-  %>
-  <hr>
-  <p>작성자: <%=review.Rname%></p>
-  <p>리뷰내용: <%=review.Review%></p>
-  <p>별점: <%=review.Star%></p>
-  <p>시간: <%=review.Rtime%></p>
-  <hr>
-  <%
-  }
-  %>
-  <hr>
 
 </body>
 

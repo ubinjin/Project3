@@ -24,7 +24,7 @@
         <%=product_deal.Ptime%></p>
     <hr>
     <form action="/customer/detail/<%=product_deal.PID%>/review" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="R_RID" id="R_RID" value="2016722036" />
+        <input type="hidden" name="R_RID" id="R_RID" value="<%=user_id%>" />
         <input type="hidden" name="R_PID" id="R_PID" value="<%=product_deal.PID%>" />
         <input type="hidden" name="R_DID" id="R_DID" value="<%=product_deal.DID%>" />
         <p>이미지:

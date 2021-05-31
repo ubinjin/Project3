@@ -35,13 +35,14 @@
             <button type="button" onclick="sub_quantity()">-</button>
             <input readonly type="text" name="Dquantity" id="Dquantity" value=0 required="required" />
             <button type="button" onclick="add_quantity()">+</button>
-            <button type="submit">결제</button>
+            <p>전화번호:<input type="text" name="DphoneNum" id="PhoneNum" value="<%=product.Adress%>" required /></p>
+            <p>배송지:<input type="text" name="Daddress" id="Daddress" value="<%=product.Phone%>" required /></p>
             <input type="hidden" name="Cash" id="Cash" value="<%=product.Cash%>" />
             <input type="hidden" name="Price" id="Price" value="<%=saleprice%>" />
             <input type="hidden" name="Stock" id="Stock" value="<%=product.Stock%>" />
+            <button type="submit">결제</button>
         </form>
         <form action="/customer/cart/add" method="post" enctype="multipart/form-data">
-            장바구니:
             <input type="hidden" name="PID" id="PID" value="<%=product.PID%>" />
             <input type="hidden" name="Qquantity" id="Qquantity" value=0 />
             <input type="hidden" name="Stock" id="Stock" value="<%=product.Stock%>" />

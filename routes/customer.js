@@ -37,7 +37,6 @@ var image_upload = multer({
   }),
 });
 
-
 router.get('/', function (req, res, next) {
   if (req.session.user == undefined) {
     req.session.user = {
@@ -49,6 +48,7 @@ router.get('/', function (req, res, next) {
     };
     pool.getConnection(function (err, connection) {
       var nonmember_sql = 'insert into register_info values(?, ?, ?, ?, ?, ?, ?, ?)';
+
       connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, req.session.user.id, 0], function (err, res) {});
     });
   }
@@ -81,6 +81,7 @@ router.get('/tab', function (req, res, next) {
       "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;";
       connection.query(ProductList_sql, [user_id, user_id], function (err, rows) {
       if (err) console.error("err : " + err);
+      console
       // console.log("rows : " + JSON.stringify(rows))
       res.render('main', {
         title: '당골찬',
@@ -194,6 +195,7 @@ router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
   var now = new Date();
   var user_id = req.session.user.id;
   now = date_to_str(now);
+  console.log(req.body);
   /* to deal_info table */
   var Product_idx = req.params.PID;
   var DID = req.body.P_RID + "_" + req.body.D_PID + "_" + now;
@@ -203,6 +205,8 @@ router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
   var Dtime = now;
   var Dquantity = req.body.Dquantity;
   var Dstate = '결제완료';
+  var Daddress = req.body.Daddress;
+  var DphoneNum = req.body.DphoneNum;
   /* to register_info table(update customer's cash) */
   var Rest_cash = Number(req.body.Cash) - Number(req.body.Price) * Number(req.body.Dquantity);
   var Rest_stock = Number(req.body.Stock) - Number(req.body.Dquantity);
@@ -211,13 +215,13 @@ router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
   console.log(Rest_stock);
   //console.log(Rest_cash);
 
-  var datas = [DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate, Number(Rest_cash), user_id, Number(Rest_stock), D_PID];
-  if (Rest_cash >= 0) {
-    if (Dquantity > 0) {
-      if (Rest_stock >= 0) {
+  var datas = [DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate, Daddress, DphoneNum, Number(Rest_cash), user_id, Number(Rest_stock), D_PID];
+  if(Rest_cash >= 0){
+    if(Dquantity > 0){
+      if(Rest_stock >= 0){
         pool.getConnection(function (err, connection) {
-          var InsertdealandUpdateCash_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate) values(?,?,?,?,?,?,?);" +
-            "update register_info set cash = ? where RID = ?;" +
+          var InsertdealandUpdateCash_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate, Daddress, Dphone) values(?,?,?,?,?,?,?,?,?);" +
+            "update register_info set cash = ? where RID = ?;" + 
             "update product_info set stock = ? where PID = ?;";
           connection.query(InsertdealandUpdateCash_multisql, datas, function (err, result) {
             if (err) console.error(err);
@@ -301,9 +305,12 @@ router.get('/detail/:PID/review', function (req, res) {
     var ProductandDealinfo_sql = 'select * from product_info as p, deal_info as d where d.P_RID = ? and p.PID = d.D_PID and D_PID = ?';
     connection.query(ProductandDealinfo_sql, [user_id, Product_idx], function (err, rows) {
       if (err) console.error(err);
+      console.log(user_id);
+      console.log(rows);
       res.render('write_review', {
         title: "리뷰 작성",
         product_deal: rows[rows.length - 1],
+        user_id: user_id
         name: req.session.user.name
       });
       connection.release();
