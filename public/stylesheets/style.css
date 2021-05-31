@@ -126,8 +126,8 @@ select {
 }
 
 .slidiv {
-  width: 1575px;
-  height: 629px;
+  height: 720px;
+  width: 100%;
   transition: 1s;
   border: 1px solid #000;
   align-items: center;
@@ -136,8 +136,8 @@ select {
 }
 
 .slidiv:hover {
-  width: 1575px;
-  height: 629px;
+  height: 720px;
+  width: 100%;
   background: rgb(255, 255, 255);
   color: #fff;
   align-items: center;
@@ -159,8 +159,8 @@ li {
 }
 
 #slide {
-  height: 629px;
-  width: 1575px;
+  height: 720px;
+  width: 100%;
   position: relative;
   overflow: hidden;
   text-align: center;

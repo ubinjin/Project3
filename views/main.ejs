@@ -40,7 +40,11 @@
 
     </script>
     <div>
+        <% if (rows[5].Rname != "비회원") { %>
         <%-header%>
+        <% } else { %>
+        <%-header2%>
+        <% } %>
     </div>
     <div style="text-align: center">
         <table class="tab_table">

@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 var multer = require('multer');
-var moment = require('moment');
 
 var pool = mysql.createPool({
   connectionLimit: process.env.DB_connectionLimit,
@@ -81,15 +80,16 @@ router.get('/tab', function (req, res, next) {
       "SELECT * FROM product_info ORDER BY Salerate desc;" +
       "SELECT * FROM product_info ORDER BY Recommend desc;" +
       "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID ORDER BY star_sum desc;" +
-      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;";
-    connection.query(ProductList_sql, [user_id], function (err, rows) {
+      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;" + 
+      "SELECT * FROM register_info WHERE RID=?;";
+    connection.query(ProductList_sql, [user_id, user_id], function (err, rows) {
       if (err) console.error("err : " + err);
+      console
       // console.log("rows : " + JSON.stringify(rows))
       res.render('main', {
         title: '당골찬',
         page: page,
         rows: rows,
-        header
       });
       connection.release();
     });
@@ -117,8 +117,9 @@ router.get('/tab/:page', function (req, res, next) {
       "SELECT * FROM product_info" + where + "ORDER BY Salerate desc;" +
       "SELECT * FROM product_info" + where + "ORDER BY Recommend desc;" +
       "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID" + where + "ORDER BY star_sum desc;" +
-      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;";
-    connection.query(ProductList_sql, [user_id], function (err, rows) {
+      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;" + 
+      "SELECT * FROM register_info WHERE RID=?;";
+    connection.query(ProductList_sql, [user_id, user_id], function (err, rows) {
       if (err) console.error("err : " + err);
       // console.log("rows : " + JSON.stringify(rows));
       res.render('main', {
