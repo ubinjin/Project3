@@ -3,7 +3,9 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 var multer = require('multer');
-const { json } = require('body-parser');
+const {
+    json
+} = require('body-parser');
 var pool = mysql.createPool({
     connectionLimit: process.env.DB_connectionLimit,
     host: process.env.DB_host,
@@ -37,10 +39,10 @@ var storage = multer.diskStorage({ // 양준혁 관리자 머터
 var upload = multer({
     storage: storage
 });
-
 router.get('/', function(req, res, next) {
+    console.log("landed");
     if (req.session.user.Ucase == "0") {
-        res.send("<script>alert('일반 고객님은 관리자 페이지에 접근할 수 없습니다...');window.location='http://localhost:1001/index';window.reload(true);</script>");
+        res.send("<script>alert('일반 고객님은 관리자 페이지에 접근할 수 없습니다...');window.location='http://localhost:1001/tab';window.reload(true);</script>");
     }
     else if (req.session.user.Ucase == "1") {
         res.send("<script>alert('관리자님 환영합니다!');window.location='http://localhost:1001/admin/seller_list/1';window.reload(true);</script>");
@@ -83,7 +85,7 @@ router.get('/notice_list', function(req, res, next) {
 /* CLIENT_LIST, DETAILS START */
 
 router.get('/client_list/:page', function(req, res, next) {
-    console.log(req.session.user)
+    console.log(req.session.user);
     pool.getConnection(function(err, connection) {
         var sqlClientsList = "select RID,Rname, Address, Phone, Ucase FROM register_info";
         connection.query(sqlClientsList, function(err, rows) {
@@ -557,14 +559,14 @@ router.post('/seller_state', (req, res) => {
         var sql_find = "select DID from deal_info order by Dtime desc";
         var sql_update = "update deal_info set Dstate=? where DID=?";
         connection.query(sql_find, function(err, row2) {
-            for (var i = (page-1) * 10; i < (page-1) * 10 + req.body.Dstate.length; i++) {
+            for (var i = (page - 1) * 10; i < (page - 1) * 10 + req.body.Dstate.length; i++) {
                 console.log(req.body.Dstate[j], row2[i].DID);
                 connection.query(sql_update, [req.body.Dstate[j], row2[i].DID]);
                 j++;
             }
         });
         // var next_location="\""+"<script>alert('주문 상태 변경이 완료되었습니다.');http://localhost:1001/admin/seller_state/" + page+";window.reload(true);</script>"+"\"";
-        var next_location="<script>alert('주문 상태 변경이 완료되었습니다.');window.location='http://localhost:1001/admin/seller_state/" + page+"';window.reload(true);</script>";
+        var next_location = "<script>alert('주문 상태 변경이 완료되었습니다.');window.location='http://localhost:1001/admin/seller_state/" + page + "';window.reload(true);</script>";
         console.log(next_location.toString())
         connection.release();
         res.send(next_location.toString());
