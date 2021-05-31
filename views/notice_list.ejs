@@ -71,14 +71,17 @@
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
-            <table border="1">
+            <table class="table">
+                <thead class="thead-dark" style="text-align: center;">
                 <tr>
-                    <td>번호</td>
-                    <td>제목</td>
-                    <td>작성자</td>
-                    <td>작성일</td>
-                    <td>조회수</td>
+                    <th scope="col">번호</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col">작성일</th>
+                    <th scope="col">조회수</th>
                 </tr>
+                </thead>
+                <tbody style="text-align: center;">
                 <% var page = page; 
                            var length = 0;
                            var array_page = 0;
@@ -90,9 +93,9 @@
                         var oneItem = notices[i];
                 %>
                     <tr style="cursor:pointer;" onClick="location.href='/admin/notice_detail/<%=oneItem.Ntime%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
-                        <td>
+                        <th scope="row">
                             <%=i+1%>
-                        </td>
+                        </th>
                         <td>
                             <%=oneItem.NTitle%>
                         </td>
@@ -109,12 +112,13 @@
                     <%
                 }
                 %>
+            </tbody>
             </table>
             <button type="button" onclick="write_new_notice()">공지 작성</button>
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
-            <table align="center">
+            <table style = "margin-left:auto;margin-right:auto">
                 <tr style="text-align: center">
                     <% if (notices.length/10 <= 10) array_length = parseInt((notices.length - 1)/10) + 1;
                        else {

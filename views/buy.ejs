@@ -8,6 +8,7 @@
 
 <body>
     <div>
+
         <% if (name != "비회원") { %>
         <%-header2%>
         <% } else { %>
@@ -28,6 +29,7 @@
         <p>사이버머니:
             <%=product.Cash%></p>
         <form action="/customer/detail/<%=product.PID%>/buy" method="post" enctype="multipart/form-data">
+
             <input type="hidden" name="P_RID" id="P_RID" value="<%=user_id%>" />
             <input type="hidden" name="S_RID" id="S_RID" value="admin" />
             <input type="hidden" name="D_PID" id="D_PID" value="<%=product.PID%>" />

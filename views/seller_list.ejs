@@ -16,7 +16,6 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
 
 </head>
-
 <body>
     <h2>
         <font color="black">
@@ -66,16 +65,23 @@
         <!-- Page Content Holder -->
         <div id="content">
             <form action="/admin/seller_list" method="post" onsubmit="">
-                <table class='table' style="margin-bottom: 0px;">
+                <table class='table' style="margin-bottom: 0px;font-size:17px">
+                    <thead class="thead-dark" style="text-align: center;"></thead>
+                    <style>
+                        td.tdc {
+                            vertical-align: middle;
+                        }
+                    </style>
                     <tr>
                         <td></td>
-                        <td>썸네일</td>
-                        <td>상품명</td>
-                        <td>상품 가격</td>
-                        <td>분류</td>
-                        <td>재고</td>
-                        <td>할인율</td>
+                        <th scope="col">썸네일</th>
+                        <th scope="col">상품명</th>
+                        <th scope="col">상품 가격</th>
+                        <th scope="col">분류</th>
+                        <th scope="col">재고</th>
+                        <th scope="col">할인율</th>
                     </tr>
+                    </thead>
                     <% var page = page; 
                            var length = 0;
                            var array_page = 0;
@@ -84,35 +90,35 @@
                            else if (rows.length - (page - 1) * 10 < 10) length = rows.length;
                            else if (rows.length - (page - 1) * 10 >= 10) length = page * 10;
                            for(var i= (page-1) * 10; i<length; i++) { var oneItem=rows[i]; %>
-                        <tr>
+                            <tr>
                             <td>
                                 <!-- <input name="box_chk" type="checkbox" value="<%=oneItem.PID%>"> -->
                             </td>
-                            <td>
-                                <img src="/<%=oneItem.Pimage%>" width="100" />
+                            <td class='tdc'>
+                                <a href="/admin/seller_read/<%=oneItem.PID%>"><img src="/<%=oneItem.Pimage%>" width="100" /></a>
                             </td>
-                            <td>
+                            <td class='tdc'>
                                 <a href="/admin/seller_read/<%=oneItem.PID%>">
                                     <%=oneItem.Pname%>
                                 </a>
                             </td>
-                            <td>
-                                <%=oneItem.Price%>원
+                            <td class='tdc'>
+                                <a href="/admin/seller_read/<%=oneItem.PID%>"><%=Number(oneItem.Price).toLocaleString('en')%>원</a>
                             </td>
-                            <td>
-                                <%=oneItem.Pcategory%>
+                            <td class='tdc'>
+                                <a href="/admin/seller_read/<%=oneItem.PID%>"><%=oneItem.Pcategory%></a>
                             </td>
                             <% if (oneItem.Stock > 5) { %>
-                                <td style="color:black">
-                                    <%=oneItem.Stock%>
+                                <td class='tdc' style="color:black">
+                                    <a href="/admin/seller_read/<%=oneItem.PID%>"><%=oneItem.Stock%></a>
                                         <% }
                                 else { %>
-                                            <td style="color:red">
-                                                <%=oneItem.Stock%>
+                                            <td class='tdc' style="color:red">
+                                                <a href="/admin/seller_read/<%=oneItem.PID%>"><%=oneItem.Stock%></a>
                                                     <% } %>
                                             </td>
-                                            <td>
-                                                <%=oneItem.Salerate%>%
+                                            <td class='tdc'>
+                                                <a href="/admin/seller_read/<%=oneItem.PID%>"><%=oneItem.Salerate%>%</a>
                                             </td>
                         </tr>
                         <% } %>
@@ -122,7 +128,8 @@
 
         </div>
     </div>
-    <table align="center">
+    <table style = "margin-left:auto;margin-right:auto">
+
         <tr style="text-align: center">
             <% if (rows.length/10 <= 10) array_length = parseInt((rows.length - 1)/10) + 1;
                else {

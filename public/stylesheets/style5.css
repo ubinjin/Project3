@@ -150,6 +150,9 @@ a.article, a.article:hover {
 #content {
     width: 100%;
     transition: all 0.3s;
+    background-image: url(/logo_admin2.png);
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 #sidebarCollapse {

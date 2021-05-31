@@ -47,7 +47,9 @@ var adminRouter = require('./routes/admin');
 var joinFormRouter = require('./routes/joinForm');
 
 var loginRouter = require('./routes/login');
+
 var logoutRouter = require('./routes/logout');
+
 var app = express();
 app.use(
     session({
@@ -73,6 +75,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/images')));
 app.use('/', customer);
 app.use('/customer', customer);
+
 global.headerFormat = fs.readFileSync(
     "./views/header.html",
     "utf8"
