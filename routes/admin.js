@@ -134,7 +134,7 @@ router.post('/seller_register', thumb_nail.single('pimage'), (req, res) => {
     var ptime = new Date();
     var pimage = req.file;
     if (req.file == null)
-        res.send("<script>alert('상품 이미지를 넣어주세요.');history.back();</script>");
+        pimage = null;
     else pimage = req.file.filename;
     var datas = [pid, pcategory, pname, price, stock, pdesc, ptime, pimage];
     console.log("body : " + JSON.stringify(datas));
@@ -246,7 +246,7 @@ router.post('/seller_update/:pid', thumb_nail.single('pimage'), (req, res) => {
     var pimage = req.file;
     var salerate = req.body.salerate;
     if (req.file == null)
-        res.send("<script>alert('상품 이미지를 넣어주세요.');history.back();</script>");
+        pimage = null;
     else pimage = req.file.filename;
     var datas = [pcategory, pname, price, stock, pdesc, ptime, pimage, salerate, req.params.pid];
     console.log(req.params.pid);
