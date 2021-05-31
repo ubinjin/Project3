@@ -76,7 +76,7 @@ router.get('/tab', function (req, res, next) {
   console.log("user: ", req.session.user.id);
 
   pool.getConnection(function (err, connection) {
-    var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID ORDER BY sum desc;" +
+    var ProductList_sql = "SELECT * FROM product_info as p left join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID ORDER BY sum desc;" +
       "SELECT * FROM product_info ORDER BY Salerate desc;" +
       "SELECT * FROM product_info ORDER BY Recommend desc;" +
       "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID ORDER BY star_sum desc;" +
@@ -113,7 +113,7 @@ router.get('/tab/:page', function (req, res, next) {
   } else
     where = " where Pname Like '%" + page + "%' ";
   pool.getConnection(function (err, connection) {
-    var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID" + where + "ORDER BY sum desc;" +
+    var ProductList_sql = "SELECT * FROM product_info as p left join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID" + where + "ORDER BY sum desc;" +
       "SELECT * FROM product_info" + where + "ORDER BY Salerate desc;" +
       "SELECT * FROM product_info" + where + "ORDER BY Recommend desc;" +
       "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID" + where + "ORDER BY star_sum desc;" +
@@ -637,14 +637,15 @@ router.get('/qna', function (req, res) {
     res.redirect('/');
   }
   pool.getConnection(function (err, connection) {
-    var userInfo_sql = 'SELECT * FROM qna_info';
+    var userInfo_sql = 'select * from qna_info as q join (select RID, Rname from register_info) as r on q.Q_RID=RID;';
     connection.query(userInfo_sql, function (err, row) {
       if (err) console.error("err : " + err);
       // console.log("질문답변 접속 : ", row);
       // console.log(saleprice);
       res.render('customer_qna', {
         title: "질문과 답변",
-        row: row
+        row: row,
+        my_name: req.session.user.name
       });
       connection.release();
     });

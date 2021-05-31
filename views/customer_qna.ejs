@@ -53,7 +53,7 @@
                 <%=oneItem.QTitle%>
             </td>
             <td>
-                관리자
+                <%=oneItem.Rname%>
             </td>
             <td>
                 <%=oneItem.Qtime%>
@@ -71,36 +71,36 @@
         <h3>Q&A 입력</h3>
     </div>
     <br><br>
-    <div style="text-align: left; width: 100%; border: black;">
-        <form action="/customer/qna_write" method="post" enctype="multipart/form-data">
-            <table class="top_table">
-                <tr>
+    <div style="width: 100%; border: black; margin: 0; margin-inline:unset">
+        <form action="/customer/qna_write" method="post" enctype="multipart/form-data" style="align-content: right;">
+            <table class="top_table" style="width: 50%; padding: 25px; border-spacing: 20px">
+                <tr style="border-top: black solid 1px;">
                     <td>제목</td>
-                    <td>
-                        <input type="text" name="Qtitle">
+                    <td style="width:70%">
+                        <input type="text" name="Qtitle" style="width: 100%">
                     </td>
                 </tr>
-                <tr>
+                <tr style="border-top: black solid 1px;">
                     <td>작성자</td>     
                     <td>
-                        나야나
+                        <%=my_name%>
                     </td>
                 </tr>
-                <tr>
+                <tr style="border-top: black solid 1px;">
                     <td>내용</td>
                     <td>
-                        <textarea name="Question"></textarea>
+                        <textarea name="Question" style="width: 100%; height: 100px"></textarea>
                     </td>
                 </tr>
-                <tr>
+                <tr style="border-top: black solid 1px;">
                     <td>이미지</td>
                     <td>
                         <input type="file" name="Qimage">
                     </td>
                 </tr>
-                <tr>
+                <tr style="border-bottom: black solid 1px;">
                     <td>&nbsp;</td>
-                    <td><input type="submit" value="전송"> </td>
+                    <td><input type="submit" value="전송"  style="width: 50%;"> </td>
                 </tr>
             </table>
         </form>
