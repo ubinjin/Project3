@@ -38,100 +38,96 @@ var image_upload = multer({
 });
 
 
-router.get('/', function(req, res, next) {
-    if (req.session.user == undefined) {
-        req.session.user = {
-            id: req.sessionID,
-            pw: '0',
-            name: "비회원",
-            Ucase: 0,
-            authorized: true
-        };
-        pool.getConnection(function(err, connection) {
-            var nonmember_sql = 'insert into register_info values(?, ?, ?, ?, ?, ?, ?, ?)';
-            connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, '-', 0], function(err, res) {
-                console.log("비회원 넣음", res);
-            });
-        });
-    }
-    res.redirect('/tab');
+router.get('/', function (req, res, next) {
+  if (req.session.user == undefined) {
+    req.session.user = {
+      id: req.sessionID,
+      pw: '0',
+      name: "비회원",
+      Ucase: 0,
+      authorized: true
+    };
+    pool.getConnection(function (err, connection) {
+      var nonmember_sql = 'insert into register_info values(?, ?, ?, ?, ?, ?, ?, ?)';
+      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, req.session.user.id, 0], function(err,res) {
+      });
+    });
+  }
+  res.redirect('/tab');
 });
 
-router.get('/tab', function(req, res, next) {
-    let page = 0;
-    if (req.session.user == undefined) {
-        req.session.user = {
-            id: req.sessionID,
-            pw: '0',
-            name: "비회원",
-            Ucase: 0,
-            authorized: true
-        };
-        pool.getConnection(function(err, connection) {
-            var nonmember_sql = 'insert into register_info values(?, ?, ?, ?, ?, ?, ?, ?)';
-            connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, '-', 0]);
-        });
-    }
-    let user_id = req.session.user.id;
-    console.log("user: ", req.session.user.id);
+router.get('/tab', function (req, res, next) {
+  let page = 0;
+  if (req.session.user == undefined) {
+    req.session.user = {
+      id: req.sessionID,
+      pw: '0',
+      name: "비회원",
+      Ucase: 0,
+      authorized: true
+    };
+    pool.getConnection(function (err, connection) {
+      var nonmember_sql = 'insert into register_info values(?, ?, ?, ?, ?, ?, ?, ?)';
+      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, req.session.user.id, 0], function(err, res) {
+      });
+    });
+  }
+  let user_id = req.session.user.id;
+  console.log("user: ", req.session.user.id);
 
-    pool.getConnection(function(err, connection) {
-        var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID ORDER BY sum desc;" +
-            "SELECT * FROM product_info ORDER BY Salerate desc;" +
-            "SELECT * FROM product_info ORDER BY Recommend desc;" +
-            "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID ORDER BY star_sum desc;" +
-            "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;";
-        connection.query(ProductList_sql, [user_id], function(err, rows) {
-            if (err) console.error("err : " + err);
-            // console.log("rows : " + JSON.stringify(rows))
-            res.render('main', {
-                title: '당골찬',
-                page: page,
-                rows: rows,
-                header
-            });
-            connection.release();
-        });
+  pool.getConnection(function (err, connection) {
+    var ProductList_sql = "SELECT * FROM product_info as p left join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID ORDER BY sum desc;" +
+      "SELECT * FROM product_info ORDER BY Salerate desc;" +
+      "SELECT * FROM product_info ORDER BY Recommend desc;" +
+      "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID ORDER BY star_sum desc;" +
+      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;" + 
+      "SELECT * FROM register_info WHERE RID=?;";
+    connection.query(ProductList_sql, [user_id, user_id], function (err, rows) {
+      if (err) console.error("err : " + err);
+      console
+      // console.log("rows : " + JSON.stringify(rows))
+      res.render('main', {
+        title: '당골찬',
+        page: page,
+        rows: rows,
+      });
+      connection.release();
     });
 });
 
-router.get('/tab/:page', function(req, res, next) {
-    var page = req.params.page;
-    var user_id = req.session.user.id;
-    var where = "";
-    if (page == 0) {
-        where = "";
-    }
-    else if (page == 1) {
-        where = " where Pcategory='새우장' ";
-    }
-    else if (page == 2) {
-        where = " where Pcategory='게장' ";
-    }
-    else if (page == 3) {
-        where = " where Pcategory='계란장' ";
-    }
-    else if (page == 4) {
-        where = " where Pcategory='김치' ";
-    }
-    else
-        where = " where Pname Like '%" + page + "%' ";
-    pool.getConnection(function(err, connection) {
-        var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID" + where + "ORDER BY sum desc;" +
-            "SELECT * FROM product_info" + where + "ORDER BY Salerate desc;" +
-            "SELECT * FROM product_info" + where + "ORDER BY Recommend desc;" +
-            "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID" + where + "ORDER BY star_sum desc;" +
-            "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;";
-        connection.query(ProductList_sql, [user_id], function(err, rows) {
-            if (err) console.error("err : " + err);
-            // console.log("rows : " + JSON.stringify(rows));
-            res.render('main', {
-                title: '당골찬',
-                page: page,
-                rows: rows,
-            });
-            connection.release();
-        });
+
+router.get('/tab/:page', function (req, res, next) {
+  var page = req.params.page;
+  var user_id = req.session.user.id;
+  var where = "";
+  if (page == 0) {
+    where = "";
+  } else if (page == 1) {
+    where = " where Pcategory='새우장' ";
+  } else if (page == 2) {
+    where = " where Pcategory='게장' ";
+  } else if (page == 3) {
+    where = " where Pcategory='계란장' ";
+  } else if (page == 4) {
+    where = " where Pcategory='김치' ";
+  } else
+    where = " where Pname Like '%" + page + "%' ";
+  pool.getConnection(function (err, connection) {
+    var ProductList_sql = "SELECT * FROM product_info as p left join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID" + where + "ORDER BY sum desc;" +
+      "SELECT * FROM product_info" + where + "ORDER BY Salerate desc;" +
+      "SELECT * FROM product_info" + where + "ORDER BY Recommend desc;" +
+      "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID" + where + "ORDER BY star_sum desc;" +
+      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;" + 
+      "SELECT * FROM register_info WHERE RID=?;";
+    connection.query(ProductList_sql, [user_id, user_id], function (err, rows) {
+      if (err) console.error("err : " + err);
+      // console.log("rows : " + JSON.stringify(rows));
+      res.render('main', {
+        title: '당골찬',
+        page: page,
+        rows: rows,
+      });
+      connection.release();
     });
 });
 
@@ -634,25 +630,25 @@ router.get('/notice_detail/:Ntime', function(req, res, next) {
     });
 });
 
-router.get('/qna', function(req, res) {
-    // Session ID 가져오기
-    var user_id = req.session.user.id;
-    if (user_id == null) {
-        res.send('<script type="text/javascript">alert("로그인 후 이용 바랍니다.");</script>');
-        res.redirect('/');
-    }
-    pool.getConnection(function(err, connection) {
-        var userInfo_sql = 'SELECT * FROM qna_info';
-        connection.query(userInfo_sql, function(err, row) {
-            if (err) console.error("err : " + err);
-            // console.log("질문답변 접속 : ", row);
-            // console.log(saleprice);
-            res.render('customer_qna', {
-                title: "질문과 답변",
-                row: row
-            });
-            connection.release();
-        });
+router.get('/qna', function (req, res) {
+  // Session ID 가져오기
+  var user_id = req.session.user.id;
+  if (user_id == null) {
+    res.send('<script type="text/javascript">alert("로그인 후 이용 바랍니다.");</script>');
+    res.redirect('/');
+  }
+  pool.getConnection(function (err, connection) {
+    var userInfo_sql = 'select * from qna_info as q join (select RID, Rname from register_info) as r on q.Q_RID=RID;';
+    connection.query(userInfo_sql, function (err, row) {
+      if (err) console.error("err : " + err);
+      // console.log("질문답변 접속 : ", row);
+      // console.log(saleprice);
+      res.render('customer_qna', {
+        title: "질문과 답변",
+        row: row,
+        my_name: req.session.user.name
+      });
+      connection.release();
     });
 });
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
