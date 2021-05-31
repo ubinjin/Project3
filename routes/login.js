@@ -28,7 +28,7 @@ router.post("/", function(req, res, next) {
     var hashPassword = crypto.createHash("sha512").update(in_passwd + salt).digest("hex");
     if (req.session.user) {
         if (req.session.user.Ucase == "0")
-            res.send("<script>alert('이미 로그인된 고객님입니다.. 먼저 로그아웃 해주세요');window.location='http://localhost:1001/index';window.reload(true);</script>");
+            res.send("<script>alert('이미 로그인된 고객님입니다.. 먼저 로그아웃 해주세요');window.location='http://localhost:1001/tab';window.reload(true);</script>");
         else if (req.session.user.Ucase == "1")
             res.send("<script>alert('이미 로그인된 관리자입니다.. 먼저 로그아웃 해주세요');window.location='http://localhost:1001/admin/seller_list/1';window.reload(true);</script>");
         else {
@@ -65,6 +65,8 @@ router.post("/", function(req, res, next) {
                         console.log(results[0].Ucase);
                         if (results[0].Ucase == "0") {
                             res.redirect('/customer');
+
+
                         }
                         else if (results[0].Ucase == "1") {
                             res.redirect('/admin');

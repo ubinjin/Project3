@@ -24,8 +24,8 @@
         <p>사이버머니:
             <%=product.Cash%></p>
         <form action="/customer/detail/<%=product.PID%>/buy" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="P_RID" id="P_RID" value="2016722036" />
-            <input type="hidden" name="S_RID" id="S_RID" value="2016722966" />
+            <input type="hidden" name="P_RID" id="P_RID" value="<%=user_id%>" />
+            <input type="hidden" name="S_RID" id="S_RID" value="admin" />
             <input type="hidden" name="D_PID" id="D_PID" value="<%=product.PID%>" />
             수량:
             <button type="button" onclick="sub_quantity()">-</button>
@@ -40,6 +40,7 @@
             장바구니:
             <input type="hidden" name="PID" id="PID" value="<%=product.PID%>" />
             <input type="hidden" name="Qquantity" id="Qquantity" value=0 />
+            <input type="hidden" name="Stock" id="Stock" value="<%=product.Stock%>" />
             <button type="submit">장바구니</button>
         </form>
 </body>

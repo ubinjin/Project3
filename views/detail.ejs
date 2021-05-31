@@ -10,17 +10,19 @@
   <div>
     <%-header%>
   </div>
-  <div>
-    <div class="content1 s-horizon"><img src="/<%=product.Pimage%>" /></div>
-    <div class="content1 s-horizon">
-      <p><%=product.Pname%></p>
-      <p>판매가격: <%=product.Price%></p>
-      <p>할인가격: <%=saleprice%></p>
-      <p>원산지: 국내산</p>
-      <p>출시일: <%=date%></p>
-      <p>설명: <%-product.Pdesc%></p>
+  <div style="text-align: left; float:left; "><img src="/<%=product.Pimage%>" width=300px height=300px />
+  </div>
+  <div sytle="text-align: right;">
+    <div style="color: brown;">
+      <h1><%=product.Pname%></h1>
     </div>
-    <div><button onclick="window.location.href = '/customer/detail/<%=product.PID%>/buy'">구매하기</button></div>
+    <div style="font-size:30px">판매가격: <%=product.Price%></div>
+    <div style="font-size:30px">할인가격: <%=saleprice%></div>
+    <hr>
+    <div style="font-size:30px">원산지: 국내산</div>
+    <div style="font-size:30px">출시일: <%=date%></div>
+    <div><button onclick="window.location.href = '/customer/detail/<%=product.PID%>/buy'">구매하기</button>
+    </div>
   </div>
   <hr>
   <section>
@@ -31,12 +33,9 @@
     <p> - 고객님의 단순 변심으로 인한 교환 및 반품은 어려우며, 발송 중 고객님의 부재로 인한 미수령 후 반송 시 반품은 불가합니다.</p>
     <p> - 제품에 문제가 있거나 주문한 상품과 동일하지 않은 상품을 받으신 경우 연락바랍니다.</p>
     <hr>
-    <p>
-      <h1>리뷰</h1>
-      <button onclick="window.location.href = '/customer/detail/<%=product.PID%>/review'">작성</button>
-    </p>
   </section>
-
+  <h1>리뷰</h1>
+  <button onclick="window.location.href = '/customer/detail/<%=product.PID%>/review'">작성</button>
 
   <%
   for(var i=0; i<reviews.length; i++)
