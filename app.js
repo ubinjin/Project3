@@ -27,10 +27,10 @@ var options = {
     dateStrings: process.env.DB_dateStrings
 };
 
-const {
-    request,
-    response
-} = require('./app');
+// const {
+//     request,
+//     response
+// } = require('./app');
 
 var sessionStore = new MySQLStore(options);
 
