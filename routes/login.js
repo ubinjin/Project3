@@ -11,15 +11,22 @@ var pool = mysql.createPool({
     user: process.env.DB_user,
     password: process.env.DB_password,
     database: process.env.DB_database,
+    multipleStatements: true,
     dateStrings: process.env.DB_dateStrings
 });
 
 router.get('/', function(req, res, next) {
     if (req.session.user) {
-        if (req.session.user.Ucase == "0")
-            res.send("<script>;window.location='http://localhost:1001/tab';window.reload(true);</script>");
+        if (req.session.user.Ucase == "0") {
+            if (req.session.user.name === "비회원") {
+                res.render('login', {
+                    title: "로그인 페이지",
+                });
+            }
+            else res.send("<script>alert('이미 로그인된 고객님입니다.. 먼저 로그아웃 해주세요');window.location='http://localhost:1001/tab';window.reload(true);</script>");
+        }
         else if (req.session.user.Ucase == "1")
-            res.send("<script>;window.location='http://localhost:1001/admin';window.reload(true);</script>");
+            res.send("<script>alert('이미 로그인된 고객님입니다.. 먼저 로그아웃 해주세요');window.location='http://localhost:1001/admin';window.reload(true);</script>");
         else {
             delete req.session.user;
             req.session.save(() => {
@@ -36,14 +43,15 @@ router.get('/', function(req, res, next) {
 });
 
 router.post("/", function(req, res, next) {
-    var in_id = req.body.id;
-    var in_passwd = req.body.passwd;
-    console.log(in_id)
-    var salt = Math.round((new Date().valueOf() + Math.random())) + "";
-    var hashPassword = crypto.createHash("sha512").update(in_passwd + salt).digest("hex");
+
+    console.log(req.session.user);
     if (req.session.user) {
-        if (req.session.user.Ucase == "0")
+        if (req.session.user.name === "비회원") {
+            next();
+        }
+        else if (req.session.user.Ucase == "0") {
             res.send("<script>alert('이미 로그인된 고객님입니다.. 먼저 로그아웃 해주세요');window.location='http://localhost:1001/tab';window.reload(true);</script>");
+        }
         else if (req.session.user.Ucase == "1")
             res.send("<script>alert('이미 로그인된 관리자입니다.. 먼저 로그아웃 해주세요');window.location='http://localhost:1001/admin/seller_list/1';window.reload(true);</script>");
         else {
@@ -54,7 +62,16 @@ router.post("/", function(req, res, next) {
             res.send("<script>alert('비정상적인 접근(세션)입니다..');history.back();</script>");
         }
     }
-    else if (in_id && in_passwd) {
+    else next();
+});
+router.post("/", function(req, res, next) {
+    var in_id = req.body.id;
+    var in_passwd = req.body.passwd;
+    var not_member_ID = req.session.id;
+    var not_member_name = req.session.name;
+    var salt = Math.round((new Date().valueOf() + Math.random())) + "";
+    var hashPassword = crypto.createHash("sha512").update(in_passwd + salt).digest("hex");
+    if (in_id && in_passwd) {
         pool.getConnection(function(err, connection) {
             var sqlForIDPW = "select * from register_info where RID =? and password = ?";
             connection.query(sqlForIDPW, [in_id, in_passwd], function(error, results, fields) {
@@ -79,6 +96,18 @@ router.post("/", function(req, res, next) {
                         //0 구매자
                         console.log(results[0].Ucase);
                         if (results[0].Ucase == "0") {
+                            if (not_member_name == "비회원") {
+                                console.log(not_member_ID);
+                                console.log(JSON.stringify(rows));
+                                var sqlForRegDeletion = "delete from register_info where RID=?"; //기존 비회원 register 삭제
+                                var sqlForCartPaste = "update cart_info set C_RID=? where C_RID=?"; //회원이 담은것으로 변경
+                                var merged_sql = sqlForRegDeletion + sqlForCartPaste;
+                                //update만 하는것으로 수정
+                                connection.query(merged_sql, [not_member_ID, in_id, not_member_ID], function(error, results, fields) {
+                                    console.log(err);
+                                    console.log(results);
+                                });
+                            }
                             res.redirect('/');
                         }
                         else if (results[0].Ucase == "1") {
@@ -94,6 +123,7 @@ router.post("/", function(req, res, next) {
                     //res.redirect('/login?e=' + encodeURIComponent('Incorrect username or password'));
                 }
             });
+            connection.release();
         });
     }
     else {
