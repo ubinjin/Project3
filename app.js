@@ -77,7 +77,7 @@ app.use('/customer', customer);
 global.headerFormat = fs.readFileSync(
     "./views/header.html",
     "utf8"
-  );
+);
 global.header = ejs.render(headerFormat);
 
 app.use('/upload', express.static(path.join(__dirname + '/upload')));
@@ -86,6 +86,24 @@ app.use('/index', indexRouter);
 app.use('/users', usersRouter);
 app.use('/test', testRouter);
 app.use('/login', loginRouter);
+app.route(/^\/admin(?:\/(.*))?$/).all(function(req, res, next) {
+    var path = req.params[0];
+    console.log(path);
+
+    if (req.session.user) {
+        if (req.session.user.Uname == "0")
+            next();
+        else
+            return res.redirect('/');
+    }
+    else {
+        var fullUrl = req.protocol + '://' + req.headers.host + req.originalUrl;
+        console.log(fullUrl);
+        console.log('로그인 정보 없음 리다이렉트');
+        console.log('http://' + req.headers.host);
+        return res.redirect('http://' + req.headers.host);
+    }
+});
 app.use('/admin', adminRouter);
 app.use('/joinForm', joinFormRouter);
 
