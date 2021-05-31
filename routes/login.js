@@ -105,9 +105,9 @@ router.post("/", function(req, res, next) {
                                 console.log(not_member_ID);
                                 var sqlForRegDeletion = "delete from register_info where RID=?;"; //기존 비회원 register 삭제
                                 var sqlForCartPaste = "update cart_info set C_RID=? where C_RID=?;"; //회원이 담은것으로 변경
-                                var merged_sql = sqlForRegDeletion + sqlForCartPaste;
+                                var merged_sql = sqlForCartPaste + sqlForRegDeletion;
                                 //update만 하는것으로 수정
-                                connection.query(merged_sql, [not_member_ID, in_id, not_member_ID], function(error, results, fields) {
+                                connection.query(merged_sql, [in_id, not_member_ID, not_member_ID], function(error, results, fields) {
                                     console.log(err);
                                     console.log(results);
                                 });
