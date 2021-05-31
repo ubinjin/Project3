@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 var multer = require('multer');
-var moment = require('moment');
 
 var pool = mysql.createPool({
   connectionLimit: process.env.DB_connectionLimit,
@@ -49,8 +48,8 @@ router.get('/', function (req, res, next) {
     };
     pool.getConnection(function (err, connection) {
       var nonmember_sql = 'insert into register_info values(?, ?, ?, ?, ?, ?, ?, ?)';
-      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, req.session.user.id, 0], function(err,res) {
-      });
+
+      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, req.session.user.id, 0], function (err, res) {});
     });
   }
   res.redirect('/tab');
@@ -68,21 +67,19 @@ router.get('/tab', function (req, res, next) {
     };
     pool.getConnection(function (err, connection) {
       var nonmember_sql = 'insert into register_info values(?, ?, ?, ?, ?, ?, ?, ?)';
-      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, req.session.user.id, 0], function(err, res) {
-      });
+      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, req.session.user.id, 0], function (err, res) {});
     });
   }
   let user_id = req.session.user.id;
-  console.log("user: ", req.session.user.id);
+  console.log("user: ", req.session.user.name);
 
   pool.getConnection(function (err, connection) {
-    var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID ORDER BY sum desc;" +
+    var ProductList_sql = "SELECT * FROM product_info as p left join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID ORDER BY sum desc;" +
       "SELECT * FROM product_info ORDER BY Salerate desc;" +
       "SELECT * FROM product_info ORDER BY Recommend desc;" +
       "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID ORDER BY star_sum desc;" +
-      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;" + 
-      "SELECT * FROM register_info WHERE RID=?;";
-    connection.query(ProductList_sql, [user_id, user_id], function (err, rows) {
+      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;";
+      connection.query(ProductList_sql, [user_id, user_id], function (err, rows) {
       if (err) console.error("err : " + err);
       console
       // console.log("rows : " + JSON.stringify(rows))
@@ -90,11 +87,13 @@ router.get('/tab', function (req, res, next) {
         title: '당골찬',
         page: page,
         rows: rows,
+        name: req.session.user.name
       });
       connection.release();
     });
   });
 });
+
 
 router.get('/tab/:page', function (req, res, next) {
   var page = req.params.page;
@@ -113,12 +112,11 @@ router.get('/tab/:page', function (req, res, next) {
   } else
     where = " where Pname Like '%" + page + "%' ";
   pool.getConnection(function (err, connection) {
-    var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID" + where + "ORDER BY sum desc;" +
+    var ProductList_sql = "SELECT * FROM product_info as p left join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID" + where + "ORDER BY sum desc;" +
       "SELECT * FROM product_info" + where + "ORDER BY Salerate desc;" +
       "SELECT * FROM product_info" + where + "ORDER BY Recommend desc;" +
       "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID" + where + "ORDER BY star_sum desc;" +
-      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;" + 
-      "SELECT * FROM register_info WHERE RID=?;";
+      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;";
     connection.query(ProductList_sql, [user_id, user_id], function (err, rows) {
       if (err) console.error("err : " + err);
       // console.log("rows : " + JSON.stringify(rows));
@@ -126,74 +124,40 @@ router.get('/tab/:page', function (req, res, next) {
         title: '당골찬',
         page: page,
         rows: rows,
+        name: req.session.user.name
       });
       connection.release();
     });
   });
-});
 
-router.get('/tab/:page', function (req, res, next) {
-  var page = req.params.page;
-  var user_id = req.session.user.id;
-  var where = "";
-  if (page == 0) {
-    where = "";
-  } else if (page == 1) {
-    where = " where Pcategory='새우장' ";
-  } else if (page == 2) {
-    where = " where Pcategory='게장' ";
-  } else if (page == 3) {
-    where = " where Pcategory='계란장' ";
-  } else if (page == 4) {
-    where = " where Pcategory='김치' ";
-  } else
-    where = " where Pname Like '%" + page + "%' ";
-  pool.getConnection(function (err, connection) {
-    var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID" + where + "ORDER BY sum desc;" +
-      "SELECT * FROM product_info" + where + "ORDER BY Salerate desc;" +
-      "SELECT * FROM product_info" + where + "ORDER BY Recommend desc;" +
-      "SELECT * FROM product_info as p left join (SELECT count(*) as star_sum, R_PID FROM review_info GROUP BY R_PID) as r on R_PID = PID" + where + "ORDER BY star_sum desc;" +
-      "SELECT p.PID as PID, r.rec_RID as RID FROM product_info as p join (SELECT * FROM recommend_info WHERE rec_RID = ?) as r on p.PID = r.rec_PID;";
-    connection.query(ProductList_sql, [user_id], function (err, rows) {
-      if (err) console.error("err : " + err);
-      // console.log("rows : " + JSON.stringify(rows));
-      res.render('main', {
-        title: '당골찬',
-        page: page,
-        rows: rows,
-      });
-      connection.release();
+  router.post('/recommend', function (req, res) {
+    var PID = req.body.PID;
+    var opt = req.body.opt;
+    var link = req.body.link;
+    var location = req.body.locatoin;
+    console.log(location);
+    var user_id = req.session.user.id;
+    pool.getConnection(function (err, connection) {
+      if (opt == 0) {
+        var unRecommend_sql = "DELETE FROM recommend_info WHERE rec_PID = ? and rec_RID = ?";
+        var unRecommend_sql2 = "UPDATE product_info SET Recommend = Recommend - 1 WHERE PID = ?";
+        connection.query(unRecommend_sql, [PID, user_id], function (err, row) {
+          connection.query(unRecommend_sql2, [PID]);
+          if (err) console.error("err : " + err);
+          res.send("<script type='text/javascript'>window.location='" + link + "';</script>");
+          //connection.release();
+        });
+      } else {
+        var Recommend_sql = "INSERT INTO recommend_info VALUES(?, ?)";
+        var Recommend_sql2 = "UPDATE product_info SET Recommend = Recommend + 1 WHERE PID = ?";
+        connection.query(Recommend_sql, [user_id, PID], function (err, row) {
+          connection.query(Recommend_sql2, [PID]);
+          if (err) console.error("err : " + err);
+          res.send("<script type='text/javascript'>window.location='" + link + "';</script>");
+          //connection.release();
+        });
+      }
     });
-  });
-});
-
-router.post('/recommend', function (req, res) {
-  var PID = req.body.PID;
-  var opt = req.body.opt;
-  var link = req.body.link;
-  var location = req.body.locatoin;
-  console.log(location);
-  var user_id = req.session.user.id;
-  pool.getConnection(function (err, connection) {
-    if (opt == 0) {
-      var unRecommend_sql = "DELETE FROM recommend_info WHERE rec_PID = ? and rec_RID = ?";
-      var unRecommend_sql2 = "UPDATE product_info SET Recommend = Recommend - 1 WHERE PID = ?";
-      connection.query(unRecommend_sql, [PID, user_id], function (err, row) {
-        connection.query(unRecommend_sql2, [PID]);
-        if (err) console.error("err : " + err);
-        res.send("<script type='text/javascript'>window.location='" + link + "';</script>");
-        //connection.release();
-      });
-    } else {
-      var Recommend_sql = "INSERT INTO recommend_info VALUES(?, ?)";
-      var Recommend_sql2 = "UPDATE product_info SET Recommend = Recommend + 1 WHERE PID = ?";
-      connection.query(Recommend_sql, [user_id, PID], function (err, row) {
-        connection.query(Recommend_sql2, [PID]);
-        if (err) console.error("err : " + err);
-        res.send("<script type='text/javascript'>window.location='" + link + "';</script>");
-        //connection.release();
-      });
-    }
   });
 });
 
@@ -217,7 +181,8 @@ router.get('/detail/:PID', function (req, res) {
           product: product[0],
           reviews: review,
           saleprice: Saleprice,
-          date: beauty_date_to_str(new Date(product[0].Ptime))
+          date: beauty_date_to_str(new Date(product[0].Ptime)),
+          name: req.session.user.name
         });
         connection.release();
 
@@ -260,21 +225,18 @@ router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
             "update product_info set stock = ? where PID = ?;";
           connection.query(InsertdealandUpdateCash_multisql, datas, function (err, result) {
             if (err) console.error(err);
-           //console.log(result);
-           res.send("<script>alert('결제 완료!');window.location='http://localhost:1001/customer/mypage';window.reload(true);</script>");
+            //console.log(result);
+            res.send("<script>alert('결제 완료!');window.location='http://localhost:1001/customer/mypage';window.reload(true);</script>");
             connection.release();
           });
         });
+      } else {
+        res.send("<script>alert('현재 상품은 수량이 " + Stock + "개 남아 " + Dquantity + "개를 구매할 수 없습니다.');window.location='http://localhost:1001/customer/detail/" + Product_idx + "/buy';window.reload(true);</script>");
       }
-      else{
-        res.send("<script>alert('현재 상품은 수량이 "+ Stock +"개 남아 "+ Dquantity +"개를 구매할 수 없습니다.');window.location='http://localhost:1001/customer/detail/"+ Product_idx + "/buy';window.reload(true);</script>");
-      }
+    } else {
+      res.send("<script>alert('수량을 추가하세요!');window.location='http://localhost:1001/customer/detail/" + Product_idx + "/buy';window.reload(true);</script>");
     }
-    else{
-      res.send("<script>alert('수량을 추가하세요!');window.location='http://localhost:1001/customer/detail/"+ Product_idx + "/buy';window.reload(true);</script>");
-    }
-  }
-  else{
+  } else {
     res.send("<script>alert('돈을 충전하세요!');window.location='http://localhost:1001/customer/mypage';window.reload(true);</script>");
   }
 
@@ -300,7 +262,8 @@ router.get('/detail/:PID/buy', function (req, res) {
         saleprice: Saleprice,
         date: beauty_date_to_str(new Date(product[0].Ptime)),
         cart_time: Cart_now,
-        user_id: user_id
+        user_id: user_id,
+        name: req.session.user.name
       });
       connection.release();
     });
@@ -348,6 +311,7 @@ router.get('/detail/:PID/review', function (req, res) {
         title: "리뷰 작성",
         product_deal: rows[rows.length - 1],
         user_id: user_id
+        name: req.session.user.name
       });
       connection.release();
     });
@@ -413,7 +377,7 @@ router.post('/cart/pay', function (req, res) {
   Rest_cash = Arr_Cash - pay_price;
   var datas = [];
 
-  for (var i=0;i<Arr_D_PID.length;i++){
+  for (var i = 0; i < Arr_D_PID.length; i++) {
     datas[i] = [Arr_DID[i], P_RID, S_RID, Arr_D_PID[i], Dtime, Arr_Dquantity[i], Dstate, Number(Rest_cash), user_id, Arr_D_PID[i], Arr_Stock[i], Arr_D_PID[i]];
     console.log(datas[i]);
   }
@@ -443,8 +407,8 @@ router.post('/cart/add', upload.single('image'), function (req, res) {
   var datas = [now, req.session.user.id, PID, Cquantity];
   console.log(Cquantity);
   console.log(req.body);
-  if(Rest_stock > 0){
-    if(Cquantity > 0){
+  if (Rest_stock > 0) {
+    if (Cquantity > 0) {
       pool.getConnection(function (err, connection) {
         var InsertCart_sql = "insert into cart_info(Ctime, C_RID, C_PID, Cquantity) values(?,?,?,?)";
         connection.query(InsertCart_sql, datas, function (err, result) {
@@ -454,13 +418,11 @@ router.post('/cart/add', upload.single('image'), function (req, res) {
           connection.release();
         });
       });
+    } else {
+      res.send("<script>alert('수량을 추가하세요!');window.location='http://localhost:1001/customer/detail/" + PID + "/buy';window.reload(true);</script>");
     }
-    else{
-      res.send("<script>alert('수량을 추가하세요!');window.location='http://localhost:1001/customer/detail/"+ PID + "/buy';window.reload(true);</script>");
-    }
-  }
-  else{
-    res.send("<script>alert('현재 상품은 수량이 "+ Stock +"개 남아 "+ Cquantity +"개를 구매할 수 없습니다.');window.location='http://localhost:1001/customer/detail/"+ PID + "/buy';window.reload(true);</script>");
+  } else {
+    res.send("<script>alert('현재 상품은 수량이 " + Stock + "개 남아 " + Cquantity + "개를 구매할 수 없습니다.');window.location='http://localhost:1001/customer/detail/" + PID + "/buy';window.reload(true);</script>");
   }
 
 });
@@ -523,7 +485,8 @@ router.get('/cart', upload.single('image'), function (req, res, next) {
         quantity: Quantityinfo,
         stock: Stockinfo,
         pay_price: Pay_price,
-        user_id: user_id
+        user_id: user_id,
+        name: req.session.user.name
       });
       connection.release();
     });
@@ -569,9 +532,13 @@ router.post('/qna_write', image_upload.single('Qimage'), function (req, res, nex
 /* GET my page. */
 router.get('/mypage', function (req, res, next) {
   // Session ID 가져오기
-  var user_id = req.session.user.id;
+  var user_id = req.session;
+  if (req.session.user != undefined)
+    user_id = req.session.user.id;
+  else
+    user_id = null;
   if (user_id == null) {
-    res.send('<script type="text/javascript">alert("로그인 후 이용 바랍니다.");</script>');
+    res.send('<script type="text/javascript">alert("로그인 후 이용 바랍니다.");window.location="http://localhost:1001/customer/";window.reload(true);</script>');
   }
   pool.getConnection(function (err, connection) {
     var userInfo_sql = 'SELECT * FROM register_info where RID = ?;';
@@ -586,7 +553,8 @@ router.get('/mypage', function (req, res, next) {
       // console.log(saleprice);
       res.render('mypage', {
         title: "마이 페이지",
-        rows: rows
+        rows: rows,
+        name: req.session.user.name
       });
       connection.release();
     });
@@ -638,7 +606,8 @@ router.get('/notice', function (req, res, next) {
       // console.log(saleprice);
       res.render('customer_notice', {
         title: "공지사항",
-        notices: row
+        notices: row,
+        name: req.session.user.name
       });
       connection.release();
     });
@@ -663,7 +632,8 @@ router.get('/notice_detail/:Ntime', function (req, res, next) {
       // console.log(saleprice);
       res.render('customer_notice_detail', {
         title: "공지사항",
-        notice: row[0]
+        notice: row[0],
+        name: req.session.user.name
       });
       connection.release();
     });
@@ -678,19 +648,21 @@ router.get('/qna', function (req, res) {
     res.redirect('/');
   }
   pool.getConnection(function (err, connection) {
-    var userInfo_sql = 'SELECT * FROM qna_info';
+    var userInfo_sql = 'select * from qna_info as q join (select RID, Rname from register_info) as r on q.Q_RID=RID;';
     connection.query(userInfo_sql, function (err, row) {
       if (err) console.error("err : " + err);
       // console.log("질문답변 접속 : ", row);
       // console.log(saleprice);
       res.render('customer_qna', {
         title: "질문과 답변",
-        row: row
+        row: row,
+        name: req.session.user.name
       });
       connection.release();
     });
   });
 });
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////// buy product /////////////////////////////////////////////////////
@@ -717,7 +689,8 @@ router.get('/qna_detail/:Qtime', function (req, res, next) {
         res.render('customer_qna_detail', {
           title: "질문과 답변",
           row: row[0],
-          myqna: myqna
+          myqna: myqna,
+          name: req.session.user.name
         });
       });
       connection.release();

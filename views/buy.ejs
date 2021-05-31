@@ -8,7 +8,11 @@
 
 <body>
     <div>
+        <% if (name != "비회원") { %>
+        <%-header2%>
+        <% } else { %>
         <%-header%>
+        <% } %>
     </div>
     <p><img src="/<%=product.Pimage%>" /></p>
     <p><%=product.Pname%></p>
