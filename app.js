@@ -47,7 +47,7 @@ var adminRouter = require('./routes/admin');
 var joinFormRouter = require('./routes/joinForm');
 
 var loginRouter = require('./routes/login');
-
+var logoutRouter = require('./routes/logout');
 var app = express();
 app.use(
     session({
@@ -73,7 +73,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/images')));
 app.use('/', customer);
 app.use('/customer', customer);
-
 global.headerFormat = fs.readFileSync(
     "./views/header.html",
     "utf8"
@@ -82,7 +81,7 @@ global.header = ejs.render(headerFormat);
 global.headerFormat2 = fs.readFileSync(
     "./views/header2.html",
     "utf8"
-  );
+);
 global.header2 = ejs.render(headerFormat2);
 global.headerFormat3 = fs.readFileSync(
     "./views/header3.html",
@@ -95,6 +94,7 @@ app.use('/index', indexRouter);
 app.use('/users', usersRouter);
 app.use('/test', testRouter);
 app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
 app.route(/^\/admin(?:\/(.*))?$/).all(function(req, res, next) {
     var path = req.params[0];
     console.log(path);

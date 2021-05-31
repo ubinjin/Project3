@@ -16,6 +16,7 @@ var pool = mysql.createPool({
 });
 
 router.get('/', function(req, res, next) {
+    console.log(req.session);
     if (req.session.user) {
         if (req.session.user.Ucase == "0") {
             if (req.session.user.name === "비회원") {
@@ -44,7 +45,6 @@ router.get('/', function(req, res, next) {
 
 router.post("/", function(req, res, next) {
 
-    console.log(req.session.user);
     if (req.session.user) {
         if (req.session.user.name === "비회원") {
             next();
@@ -67,14 +67,17 @@ router.post("/", function(req, res, next) {
 router.post("/", function(req, res, next) {
     var in_id = req.body.id;
     var in_passwd = req.body.passwd;
-    var not_member_ID = req.session.id;
-    var not_member_name = req.session.name;
+    var not_member_ID = req.session.user.id;
+    var not_member_name = req.session.user.name;
+    console.log(req.session.user);
     var salt = Math.round((new Date().valueOf() + Math.random())) + "";
     var hashPassword = crypto.createHash("sha512").update(in_passwd + salt).digest("hex");
+
     if (in_id && in_passwd) {
         pool.getConnection(function(err, connection) {
             var sqlForIDPW = "select * from register_info where RID =? and password = ?";
             connection.query(sqlForIDPW, [in_id, in_passwd], function(error, results, fields) {
+                console.log(JSON.stringify(results));
                 if (error) {
                     console.error("err: " + error);
                     console.log(results);
@@ -96,9 +99,10 @@ router.post("/", function(req, res, next) {
                         //0 구매자
                         console.log(results[0].Ucase);
                         if (results[0].Ucase == "0") {
-                            if (not_member_name == "비회원") {
+                            console.log(not_member_ID);
+                            console.log(not_member_name);
+                            if (not_member_name === "비회원") {
                                 console.log(not_member_ID);
-                                console.log(JSON.stringify(rows));
                                 var sqlForRegDeletion = "delete from register_info where RID=?"; //기존 비회원 register 삭제
                                 var sqlForCartPaste = "update cart_info set C_RID=? where C_RID=?"; //회원이 담은것으로 변경
                                 var merged_sql = sqlForRegDeletion + sqlForCartPaste;
