@@ -67,33 +67,39 @@
     
         <!-- Page Content Holder -->
         <div id="content">
-            <img src='/<%=row.Pimage%>' alt="no image" />
-            <p style="color:black">
-                <%=row.Pname%>
-                    <% var current_price=0; current_price=row.Price * (100 - row.Salerate) / 100%>
-            </p>
-            <p style="color:black">판매가격: <%=row.Price%>
-            </p>
-            <p style="color:black">할인가격: <%=current_price%>
-            </p>
-            <% if (row.Stock> 5) { %>
-                <p style="color:black">잔여수량: <%=row.Stock%>
+            <table style = "margin-left:auto;margin-right:auto">
+            <tr><td><img src='/<%=row.Pimage%>' alt="no image" width="300" /></td></tr>
+            <tr><td><p style="color:black;font-size: 30px;font-weight: bold"><%=row.Pname%></p></td></tr>
+                    <% var current_price=0; 
+                    current_price=row.Price * (100 - row.Salerate) / 100;
+                    if (row.Salerate == 0) {%>
+                        <tr><td><p style="color:black">판매가격: <span style="font-size: 30px;font-weight: bold;"><%=Number(row.Price).toLocaleString('en')%></span>원
+            </p></td></tr>
+            <tr><td><p style="color:black">할인가격: <span style="font-size: 30px;font-weight: bold;">원가</span>
+            </p></td></tr>
+            <%} else { %>
+                <tr><td><p style="color:black">판매가격: <del style="color:gray"><span style="font-size: 30px;font-weight: bold;color:gray"><%=Number(row.Price).toLocaleString('en')%></span></del>원
+            </p></td></tr>
+            <tr><td><p style="color:black">할인가격: <span style="font-size: 30px;font-weight: bold;"><%=Number(current_price).toLocaleString('en')%></span>원
+            </p></td></tr>
+            <%}
+             if (row.Stock> 5) { %>
+                <tr><td><p style="color:black">잔여수량: <span style="font-size: 30px;font-weight: bold;"><%=row.Stock%></span>
                         <% } else { %>
-                            <p style="color:red">잔여수량: <%=row.Stock%>
+                            <tr><td><p style="color:black">잔여수량: <span style="font-size: 30px;font-weight: bold;color:red;"><%=row.Stock%></span>
                                     <% } %>
-                            </p>
-                            <p style="color:black">설명</p>
-                            <p style="color:black"><%-row.Pdesc%></p>
-                                <p style="color:black">원산지: 국내산</p>
-                                <p style="color:black">출시일: <%=row.Ptime%>
-                                </p>
-                                <form action="/admin/seller_update/<%=row.PID%>" method="get" style="display:inline"><button
-                                        type='submit'>상품
-                                        수정</button></form>
-                                <form action="/admin/seller_read/<%=row.PID%>" method="post" style="display:inline"><button
-                                        type='submit'>상품
-                                        삭제</button></form>
-    
+                            </p></td></tr>
+                            <tr><td><p style="color:black">설명: <%-row.Pdesc%></p></td></tr>
+                            <tr><td><p style="color:black">원산지: 국내산</p></td></tr>
+                                <tr><td><p style="color:black">출시일: <%=row.Ptime%>
+                                </p></td></tr>
+                                <tr><td><form action="/admin/seller_update/<%=row.PID%>" method="get" style="display:inline"><button
+                                    type='submit'>상품
+                                    수정</button></form></td>
+                            <td><form action="/admin/seller_read/<%=row.PID%>" method="post" style="display:inline"><button
+                                    type='submit'>상품
+                                    삭제</button></form></td></tr>
+            </table>
         </div>
     </div>
 

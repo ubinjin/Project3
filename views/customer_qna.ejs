@@ -12,11 +12,13 @@
 
 <body>
     <div>
+
         <% if (name != "비회원") { %>
         <%-header2%>
         <% } else { %>
         <%-header%>
         <% } %>
+
     </div>
     
 <div style="text-align: center">
@@ -57,6 +59,7 @@
                 <%=oneItem.QTitle%>
             </td>
             <td>
+
                 <%=oneItem.Rname%>
             </td>
             <td>
@@ -87,7 +90,7 @@
                 <tr style="border-top: black solid 1px;">
                     <td>작성자</td>     
                     <td>
-                        <%=my_name%>
+                        <%=name%>
                     </td>
                 </tr>
                 <tr style="border-top: black solid 1px;">

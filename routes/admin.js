@@ -90,6 +90,7 @@ router.get('/client_list/:page', function(req, res, next) {
         var sqlClientsList = "select RID,Rname, Address, Phone, Ucase FROM register_info";
         connection.query(sqlClientsList, function(err, rows) {
             if (err) console.error("err : " + err);
+            console.log(rows)
             res.render('client_list', {
                 title: '회원 관리',
                 clients: rows,
