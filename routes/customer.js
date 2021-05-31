@@ -46,6 +46,7 @@ router.get('/', function (req, res, next) {
 router.get('/tab', function (req, res, next) {
   page = 0;
   var user_id = "2016722036";
+  console.log(JSON.stringify(req.session));
   pool.getConnection(function (err, connection) {
     var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID ORDER BY sum desc;" +
       "SELECT * FROM product_info ORDER BY Salerate desc;" +
@@ -134,6 +135,8 @@ router.post('/recommend', function (req, res) {
 ////////////////////////////////////////////////// watch product detail info ///////////////////////////////////
 router.get('/detail/:PID', function (req, res) {
   var Product_idx = req.params.PID;
+  var user_id = req.session.user.id;
+  console.log(user_id);
   var Saleprice = 0;
   pool.getConnection(function (err, connection) {
     var Productinfo_sql = 'SELECT * FROM product_info where PID=?';
@@ -160,6 +163,7 @@ router.get('/detail/:PID', function (req, res) {
 /////////////////////////////////////// buy product //////////////////////////////////////////
 router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
   var now = new Date();
+  var user_id = req.session.user.id;
   now = date_to_str(now);
   /* to deal_info table */
   var Product_idx = req.params.PID;
@@ -177,40 +181,46 @@ router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
   console.log(Stock);
   console.log(Rest_stock);
   //console.log(Rest_cash);
-  var datas = [DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate, Number(Rest_cash), Number(Rest_stock), D_PID];
-  if(Dquantity > 0){
-    if(Rest_stock >= 0){
-      pool.getConnection(function (err, connection) {
-        var InsertdealandUpdateCash_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate) values(?,?,?,?,?,?,?);" +
-          "update register_info set cash = ? where RID = '2016722036';" + 
-          "update product_info set stock = ? where PID = ?;";
-        connection.query(InsertdealandUpdateCash_multisql, datas, function (err, result) {
-          if (err) console.error(err);
-         //console.log(result);
-         res.send("<script>alert('결제 완료!');window.location='http://localhost:1001/customer/mypage';window.reload(true);</script>");
-          connection.release();
+  var datas = [DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate, Number(Rest_cash), user_id, Number(Rest_stock), D_PID];
+  if(Rest_cash >= 0){
+    if(Dquantity > 0){
+      if(Rest_stock >= 0){
+        pool.getConnection(function (err, connection) {
+          var InsertdealandUpdateCash_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate) values(?,?,?,?,?,?,?);" +
+            "update register_info set cash = ? where RID = ?;" + 
+            "update product_info set stock = ? where PID = ?;";
+          connection.query(InsertdealandUpdateCash_multisql, datas, function (err, result) {
+            if (err) console.error(err);
+           //console.log(result);
+           res.send("<script>alert('결제 완료!');window.location='http://localhost:1001/customer/mypage';window.reload(true);</script>");
+            connection.release();
+          });
         });
-      });
+      }
+      else{
+        res.send("<script>alert('현재 상품은 수량이 "+ Stock +"개 남아 "+ Dquantity +"개를 구매할 수 없습니다.');window.location='http://localhost:1001/customer/detail/"+ Product_idx + "/buy';window.reload(true);</script>");
+      }
     }
     else{
-      res.send("<script>alert('현재 상품은 수량이 "+ Stock +"개 남아 "+ Dquantity +"개를 구매할 수 없습니다.');window.location='http://localhost:1001/customer/detail/"+ Product_idx + "/buy';window.reload(true);</script>");
+      res.send("<script>alert('수량을 추가하세요!');window.location='http://localhost:1001/customer/detail/"+ Product_idx + "/buy';window.reload(true);</script>");
     }
-
   }
   else{
-    res.send("<script>alert('수량을 추가하세요!');window.location='http://localhost:1001/customer/detail/"+ Product_idx + "/buy';window.reload(true);</script>");
+    res.send("<script>alert('돈을 충전하세요!');window.location='http://localhost:1001/customer/mypage';window.reload(true);</script>");
   }
+
 });
 
 router.get('/detail/:PID/buy', function (req, res) {
   var Cart_now = new Date();
   Cart_now = date_to_str(Cart_now);
+  var user_id = req.session.user.id;
   var Product_idx = req.params.PID;
   var Saleprice = 0;
   pool.getConnection(function (err, connection) {
     if (err) console.error("커넥션 객체 얻어오기 에러 : ", err);
-    var ProductandRegisterinfo_sql = 'select * from product_info as p, register_info as r where p.PID=? and r.RID = 2016722036';
-    connection.query(ProductandRegisterinfo_sql, [Product_idx], function (err, product) {
+    var ProductandRegisterinfo_sql = 'select * from product_info as p, register_info as r where p.PID=? and r.RID = ?';
+    connection.query(ProductandRegisterinfo_sql, [Product_idx, user_id], function (err, product) {
       if (err) console.error(err);
       console.log("update에서 1개 글 조회 결과 확인 : ", product);
       console.log(Cart_now);
@@ -220,7 +230,8 @@ router.get('/detail/:PID/buy', function (req, res) {
         product: product[0],
         saleprice: Saleprice,
         date: beauty_date_to_str(new Date(product[0].Ptime)),
-        cart_time: Cart_now
+        cart_time: Cart_now,
+        user_id: user_id
       });
       connection.release();
     });
@@ -256,10 +267,11 @@ router.post('/detail/:PID/review', upload.single('image'), function (req, res, n
 
 router.get('/detail/:PID/review', function (req, res) {
   var Product_idx = req.params.PID;
+  var user_id = req.session.user.id;
   pool.getConnection(function (err, connection) {
     if (err) console.error("커넥션 객체 얻어오기 에러 : ", err);
-    var ProductandDealinfo_sql = 'select * from product_info as p, deal_info as d where d.P_RID = 2016722036 and p.PID = d.D_PID and D_PID = ?';
-    connection.query(ProductandDealinfo_sql, [Product_idx], function (err, rows) {
+    var ProductandDealinfo_sql = 'select * from product_info as p, deal_info as d where d.P_RID = ? and p.PID = d.D_PID and D_PID = ?';
+    connection.query(ProductandDealinfo_sql, [user_id, Product_idx], function (err, rows) {
       if (err) console.error(err);
       res.render('write_review', {
         title: "리뷰 작성",
@@ -275,6 +287,7 @@ router.get('/detail/:PID/review', function (req, res) {
 router.post('/cart/pay', function (req, res) {
   var now = new Date();
   now = date_to_str(now);
+  var user_id = req.session.user.id;
   var D_PID = req.body.D_PID;
   var Dquantity = req.body.Dquantity;
   var Ctime = req.body.Ctime;
@@ -329,12 +342,12 @@ router.post('/cart/pay', function (req, res) {
   Rest_cash = Arr_Cash - pay_price;
   var datas = [];
   for (var i=0;i<Arr_D_PID.length;i++){
-    datas[i] = [Arr_DID[i], P_RID, S_RID, Arr_D_PID[i], Dtime, Arr_Dquantity[i], Dstate, Number(Rest_cash), Arr_D_PID[i], Arr_Stock[i], Arr_D_PID[i]];
+    datas[i] = [Arr_DID[i], P_RID, S_RID, Arr_D_PID[i], Dtime, Arr_Dquantity[i], Dstate, Number(Rest_cash), user_id, Arr_D_PID[i], Arr_Stock[i], Arr_D_PID[i]];
     console.log(datas[i]);
   }
   pool.getConnection(function (err, connection) {
     var InsertdealandUpdateCashandDeletecart_multisql = "insert into deal_info(DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate) values(?,?,?,?,?,?,?);" +
-      "update register_info set cash = ? where RID = '2016722036';" +
+      "update register_info set cash = ? where RID = ?;" +
       "delete from cart_info where C_PID=?;" +
       "update product_info set stock = ? where PID = ?;";
     for (var i=0;i<datas.length;i++){
@@ -352,7 +365,7 @@ router.post('/cart/add', upload.single('image'), function (req, res) {
   var now = new Date();
   now = date_to_str(now);
   //console.log(req.body);
-  var datas = [now, 2016722036, PID, Cquantity];
+  var datas = [now, req.session.user.id, PID, Cquantity];
   console.log(Cquantity);
   if(Cquantity > 0){
     pool.getConnection(function (err, connection) {
@@ -385,38 +398,40 @@ router.post('/cart/delete', upload.single('image'), function (req, res) {
 });
 
 router.get('/cart', upload.single('image'), function (req, res, next) {
+  var user_id = req.session.user.id;
   pool.getConnection(function (err, connection) {
-    var Cartinfo_sql = "select * from cart_info as c, product_info as p, register_info as r where p.PID = c.C_PID and r.RID = c.C_RID and c.C_RID=2016722036";
-    var Priceinfo_sql = "select Price, Salerate from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=2016722036";
-    var Quantityinfo_sql = "select Cquantity from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=2016722036";
-    var Stockinfo_sql = "select Stock from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=2016722036";
-    var GetCash_sql = "select Cash from register_info where RID=2016722036";
+    var Cartinfo_sql = "select * from cart_info as c, product_info as p, register_info as r where p.PID = c.C_PID and r.RID = c.C_RID and c.C_RID=?";
+    var Priceinfo_sql = "select Price, Salerate from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=?";
+    var Quantityinfo_sql = "select Cquantity from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=?";
+    var Stockinfo_sql = "select Stock from cart_info as c, product_info as p where p.PID = c.C_PID and c.C_RID=?";
+    var GetCash_sql = "select Cash from register_info where RID=?";
     var Priceinfo = [];
     var Quantityinfo = [];
     var Stockinfo=[];
     var Cash = 0;
     var Pay_price = 0;
-    connection.query(Priceinfo_sql, function (err, price) {
+    console.log(user_id);
+    connection.query(Priceinfo_sql, user_id, function (err, price) {
       if (err) console.error("err : " + err);
       Priceinfo = price;
       console.log(Priceinfo);
     });
-    connection.query(Quantityinfo_sql, function (err, Quantity) {
+    connection.query(Quantityinfo_sql, user_id, function (err, Quantity) {
       if (err) console.error("err : " + err);
       Quantityinfo = Quantity;
       console.log(Quantityinfo);
     });
-    connection.query(Stockinfo_sql, function (err, Stock) {
+    connection.query(Stockinfo_sql, user_id, function (err, Stock) {
       if (err) console.error("err : " + err);
       Stockinfo = Stock;
       console.log(Stockinfo);
     });
-    connection.query(GetCash_sql, function (err, cash) {
+    connection.query(GetCash_sql, user_id, function (err, cash) {
       if (err) console.error("err : " + err);
       Cash = cash[0].Cash;
       // console.log(cash[0].Cash);
     });
-    connection.query(Cartinfo_sql, function (err, cart) {
+    connection.query(Cartinfo_sql, [user_id], function (err, cart) {
       if (err) console.error("err : " + err);
       res.render('cart', {
         title: "장바구니",
@@ -425,7 +440,8 @@ router.get('/cart', upload.single('image'), function (req, res, next) {
         price: Priceinfo,
         quantity: Quantityinfo,
         stock: Stockinfo,
-        pay_price: Pay_price
+        pay_price: Pay_price,
+        user_id: user_id
       });
       connection.release();
     });
@@ -451,7 +467,7 @@ router.post('/search', function (req, res) {
 
 
 router.post('/qna_write', image_upload.single('Qimage'), function (req, res, next) {
-  var Q_RID = "2016722036";
+  var Q_RID = req.session.user.id;;
   var Qtitle = req.body.Qtitle;
   var Question = req.body.Question;
   var Qimage = null;
