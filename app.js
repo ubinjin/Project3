@@ -47,7 +47,9 @@ var adminRouter = require('./routes/admin');
 var joinFormRouter = require('./routes/joinForm');
 
 var loginRouter = require('./routes/login');
+
 var logoutRouter = require('./routes/logout');
+
 var app = express();
 app.use(
     session({
@@ -73,6 +75,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public/images')));
 app.use('/', customer);
 app.use('/customer', customer);
+
 global.headerFormat = fs.readFileSync(
     "./views/header.html",
     "utf8"
@@ -97,8 +100,8 @@ app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.route(/^\/admin(?:\/(.*))?$/).all(function(req, res, next) {
     var path = req.params[0];
-    console.log(path);
-
+    console.log("좆됐다 ㅋㅋ");
+    console.log(req.session.user);
     if (req.session.user) {
         if (req.session.user.Ucase == "1")
             next();
