@@ -50,8 +50,7 @@ router.get('/', function (req, res, next) {
     };
     pool.getConnection(function (err, connection) {
       var nonmember_sql = 'insert into register_info values(?, ?, ?, ?, ?, ?, ?, ?)';
-      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, '-', 0], function(err,res) {
-        console.log("비회원 넣음", res);
+      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, req.session.user.id, 0], function(err,res) {
       });
     });
   }
@@ -70,7 +69,8 @@ router.get('/tab', function (req, res, next) {
     };
     pool.getConnection(function (err, connection) {
       var nonmember_sql = 'insert into register_info values(?, ?, ?, ?, ?, ?, ?, ?)';
-      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, '-', 0]);
+      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, req.session.user.id, 0], function(err, res) {
+      });
     });
   }
   let user_id = req.session.user.id;
