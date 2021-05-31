@@ -84,6 +84,11 @@ global.headerFormat2 = fs.readFileSync(
     "utf8"
   );
 global.header2 = ejs.render(headerFormat2);
+global.headerFormat3 = fs.readFileSync(
+    "./views/header3.html",
+    "utf8"
+  );
+global.header3 = ejs.render(headerFormat3);
 app.use('/upload', express.static(path.join(__dirname + '/upload')));
 
 app.use('/index', indexRouter);
