@@ -10,20 +10,32 @@
   <div>
     <%-header%>
   </div>
-  <div style="text-align: left; float:left; "><img src="/<%=product.Pimage%>" width=300px height=300px />
+  <div style="text-align: center;">
+    <table border="1" align="center" style="margin-left: auto; margin-right: auto;">
+      <tr>
+        <td rowspan="5" align "center"><img src="/<%=product.Pimage%>" width=300px height=300px /></td>
+        <td><%=product.Pname%></td>
+      </tr>
+      <tr>
+        <td>판매가격</td>
+        <td><%=product.Price%></td>
+      </tr>
+      <tr>
+        <td>할인가격</td>
+        <td><%=saleprice%></td>
+      </tr>
+      <tr>
+        <td>원산지</td>
+        <td>국내산</td>
+      </tr>
+      <tr>
+        <td>출시일</td>
+        <td><%=date%></td>
+      </tr>
+    </table>
+    <button onclick="window.location.href = '/customer/detail/<%=product.PID%>/buy'">구매하기</button>
   </div>
-  <div sytle="text-align: right;">
-    <div style="color: brown;">
-      <h1><%=product.Pname%></h1>
-    </div>
-    <div style="font-size:30px">판매가격: <%=product.Price%></div>
-    <div style="font-size:30px">할인가격: <%=saleprice%></div>
-    <hr>
-    <div style="font-size:30px">원산지: 국내산</div>
-    <div style="font-size:30px">출시일: <%=date%></div>
-    <div><button onclick="window.location.href = '/customer/detail/<%=product.PID%>/buy'">구매하기</button>
-    </div>
-  </div>
+
   <hr>
   <section>
     <p>
