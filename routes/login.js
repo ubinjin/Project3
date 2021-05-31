@@ -64,7 +64,9 @@ router.post("/", function(req, res, next) {
                         //0 구매자
                         console.log(results[0].Ucase);
                         if (results[0].Ucase == "0") {
-                            res.redirect('/tab');
+                            res.redirect('/customer');
+
+
                         }
                         else if (results[0].Ucase == "1") {
                             res.redirect('/admin');

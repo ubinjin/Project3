@@ -40,13 +40,42 @@ var image_upload = multer({
 
 
 router.get('/', function (req, res, next) {
+  if (req.session.user == undefined) {
+    req.session.user = {
+      id: req.sessionID,
+      pw: '0',
+      name: "비회원",
+      Ucase: 0,
+      authorized: true
+    };
+    pool.getConnection(function (err, connection) {
+      var nonmember_sql = 'insert into register_info values(?, ?, ?, ?, ?, ?, ?, ?)';
+      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, '-', 0], function(err,res) {
+        console.log("비회원 넣음", res);
+      });
+    });
+  }
   res.redirect('/tab');
 });
 
 router.get('/tab', function (req, res, next) {
-  page = 0;
-  var user_id = "2016722036";
-  console.log(JSON.stringify(req.session));
+  let page = 0;
+  if (req.session.user == undefined) {
+    req.session.user = {
+      id: req.sessionID,
+      pw: '0',
+      name: "비회원",
+      Ucase: 0,
+      authorized: true
+    };
+    pool.getConnection(function (err, connection) {
+      var nonmember_sql = 'insert into register_info values(?, ?, ?, ?, ?, ?, ?, ?)';
+      connection.query(nonmember_sql, [req.session.user.id, req.session.user.name, req.session.user.pw, '-', '-', 0, '-', 0]);
+    });
+  }
+  let user_id = req.session.user.id;
+  console.log("user: ", req.session.user.id);
+
   pool.getConnection(function (err, connection) {
     var ProductList_sql = "SELECT * FROM product_info as p join (SELECT SUM(Dquantity) as sum, D_PID FROM deal_info, product_info GROUP BY D_PID) as d on p.PID = d.D_PID ORDER BY sum desc;" +
       "SELECT * FROM product_info ORDER BY Salerate desc;" +
@@ -69,7 +98,7 @@ router.get('/tab', function (req, res, next) {
 
 router.get('/tab/:page', function (req, res, next) {
   var page = req.params.page;
-  var user_id = "2016722036";
+  var user_id = req.session.user.id;
   var where = "";
   if (page == 0) {
     where = "";
@@ -108,7 +137,7 @@ router.post('/recommend', function (req, res) {
   var link = req.body.link;
   var location = req.body.locatoin;
   console.log(location);
-  var user_id = "2016722036";
+  var user_id = req.session.user.id;
   pool.getConnection(function (err, connection) {
     if (opt == 0) {
       var unRecommend_sql = "DELETE FROM recommend_info WHERE rec_PID = ? and rec_RID = ?";
@@ -175,12 +204,13 @@ router.post('/detail/:PID/buy', upload.single('image'), function (req, res) {
   var Dquantity = req.body.Dquantity;
   var Dstate = '결제완료';
   /* to register_info table(update customer's cash) */
-  var Rest_cash = Number(req.body.Cash) - Number(req.body.Price) * Number(req.body.Dquantity); 
+  var Rest_cash = Number(req.body.Cash) - Number(req.body.Price) * Number(req.body.Dquantity);
   var Rest_stock = Number(req.body.Stock) - Number(req.body.Dquantity);
   var Stock = req.body.Stock;
   console.log(Stock);
   console.log(Rest_stock);
   //console.log(Rest_cash);
+
   var datas = [DID, P_RID, S_RID, D_PID, Dtime, Dquantity, Dstate, Number(Rest_cash), user_id, Number(Rest_stock), D_PID];
   if(Rest_cash >= 0){
     if(Dquantity > 0){
@@ -224,7 +254,7 @@ router.get('/detail/:PID/buy', function (req, res) {
       if (err) console.error(err);
       console.log("update에서 1개 글 조회 결과 확인 : ", product);
       console.log(Cart_now);
-      Saleprice = product[0].Price * (100-product[0].Salerate) / 100;
+      Saleprice = product[0].Price * (100 - product[0].Salerate) / 100;
       res.render('buy', {
         title: "결제",
         product: product[0],
@@ -302,7 +332,7 @@ router.post('/cart/pay', function (req, res) {
   var Arr_Stock = [];
   var Arr_Price = [];
   var Arr_Cash = [];
-  if(req.body.D_PID instanceof Array){
+  if (req.body.D_PID instanceof Array) {
     console.log("배열이다.");
     Arr_D_PID = D_PID;
     Arr_Dquantity = Dquantity;
@@ -310,8 +340,7 @@ router.post('/cart/pay', function (req, res) {
     Arr_Stock = Stock;
     Arr_Price = Price;
     Arr_Cash = Cash;
-  }
-  else{
+  } else {
     console.log("변수다.");
     Arr_D_PID.push(D_PID);
     Arr_Dquantity.push(Dquantity);
@@ -322,25 +351,26 @@ router.post('/cart/pay', function (req, res) {
   }
   //console.log(Arr_Cash);
   // var Arr_Ctime = [];
-  for (var i=0;i<req.body.D_PID.length;i++){
+  for (var i = 0; i < req.body.D_PID.length; i++) {
     Arr_Ctime[i] = date_to_str(new Date(Arr_Ctime[i]));
   }
   var Arr_DID = [];
-  for (var i=0;i<req.body.D_PID.length;i++){
-    Arr_DID[i] = P_RID + "_" +Arr_D_PID[i] + "_" + Arr_Ctime[i];
+  for (var i = 0; i < req.body.D_PID.length; i++) {
+    Arr_DID[i] = P_RID + "_" + Arr_D_PID[i] + "_" + Arr_Ctime[i];
   }
   var Dtime = now;
   var Dstate = '결제완료';
   var Rest_cash = 0;
   var pay_price = 0;
-  for (var i=0;i<Arr_D_PID.length;i++){
+  for (var i = 0; i < Arr_D_PID.length; i++) {
     pay_price += Number(Arr_Dquantity[i] * Arr_Price[i]);
     Arr_Stock[i] = Arr_Stock[i] - Arr_Dquantity[i];
-    
+
   }
   console.log(pay_price);
   Rest_cash = Arr_Cash - pay_price;
   var datas = [];
+
   for (var i=0;i<Arr_D_PID.length;i++){
     datas[i] = [Arr_DID[i], P_RID, S_RID, Arr_D_PID[i], Dtime, Arr_Dquantity[i], Dstate, Number(Rest_cash), user_id, Arr_D_PID[i], Arr_Stock[i], Arr_D_PID[i]];
     console.log(datas[i]);
@@ -350,7 +380,7 @@ router.post('/cart/pay', function (req, res) {
       "update register_info set cash = ? where RID = ?;" +
       "delete from cart_info where C_PID=?;" +
       "update product_info set stock = ? where PID = ?;";
-    for (var i=0;i<datas.length;i++){
+    for (var i = 0; i < datas.length; i++) {
       connection.query(InsertdealandUpdateCashandDeletecart_multisql, datas[i]);
     }
     //res.redirect('/customer/mypage');
@@ -417,7 +447,7 @@ router.get('/cart', upload.single('image'), function (req, res, next) {
     var GetCash_sql = "select Cash from register_info where RID=?";
     var Priceinfo = [];
     var Quantityinfo = [];
-    var Stockinfo=[];
+    var Stockinfo = [];
     var Cash = 0;
     var Pay_price = 0;
     console.log(user_id);
@@ -477,7 +507,8 @@ router.post('/search', function (req, res) {
 
 
 router.post('/qna_write', image_upload.single('Qimage'), function (req, res, next) {
-  var Q_RID = req.session.user.id;;
+  var Q_RID = req.session.user.id;
+
   var Qtitle = req.body.Qtitle;
   var Question = req.body.Question;
   var Qimage = null;
@@ -496,21 +527,20 @@ router.post('/qna_write', image_upload.single('Qimage'), function (req, res, nex
 /* GET my page. */
 router.get('/mypage', function (req, res, next) {
   // Session ID 가져오기
-  var user_id = "2016722036";
+  var user_id = req.session.user.id;
   if (user_id == null) {
     res.send('<script type="text/javascript">alert("로그인 후 이용 바랍니다.");</script>');
-    res.redirect('/');
   }
   pool.getConnection(function (err, connection) {
-    var userInfo_sql = 'SELECT * FROM register_info where RID=?;';
+    var userInfo_sql = 'SELECT * FROM register_info where RID = ?;';
     var userdealInfo_sql = 'SELECT * FROM product_info as p, deal_info as d WHERE d.P_RID = ? and p.PID = d.D_PID order by Dtime desc;';
     var userqna_sql = 'SELECT * FROM qna_info WHERE Q_RID = ?;';
     var userreview_sql = 'SELECT * FROM review_info as r JOIN product_info as p ON r.R_PID = p.PID WHERE r.R_RID = ?;';
-    var recommend_sql = 'select * from recommend_info as r, product_info as p where r.rec_RID = "2016722036" and r.rec_RID = "2016722036" and r.rec_PID = p.PID;';
+    var recommend_sql = 'select * from recommend_info as r, product_info as p where r.rec_RID = ? and r.rec_RID = ? and r.rec_PID = p.PID;';
     var merged_sql = userInfo_sql + userdealInfo_sql + userqna_sql + userreview_sql + recommend_sql;
-    connection.query(merged_sql, [user_id, user_id, user_id, user_id, user_id, user_id, user_id], function (err, rows) {
+    connection.query(merged_sql, [user_id, user_id, user_id, user_id, user_id, user_id], function (err, rows) {
       if (err) console.error("err : " + err);
-      console.log(rows[0][0]);
+      console.log(rows[0]);
       // console.log(saleprice);
       res.render('mypage', {
         title: "마이 페이지",
@@ -523,7 +553,7 @@ router.get('/mypage', function (req, res, next) {
 
 router.post('/cash_add', function (req, res, next) {
   var cash = req.body.cash;
-  var user_id = "2016722036";
+  var user_id = req.session.user.id;
   pool.getConnection(function (err, connection) {
     var cashAdd_sql = 'UPDATE register_info SET Cash = Cash + ? WHERE RID = ?';
     connection.query(cashAdd_sql, [cash, user_id], function (err, result) {
@@ -535,7 +565,7 @@ router.post('/cash_add', function (req, res, next) {
 });
 
 router.post('/register_edit', function (req, res, next) {
-  var user_id = "2016722036";
+  var user_id = req.session.user.id;
   var Rname = req.body.Rname;
   var password = req.body.password;
   var Address = req.body.Address;
@@ -553,7 +583,7 @@ router.post('/register_edit', function (req, res, next) {
 
 router.get('/notice', function (req, res, next) {
   // Session ID 가져오기
-  var user_id = "2016722036";
+  var user_id = req.session.user.id;
   if (user_id == null) {
     res.send('<script type="text/javascript">alert("로그인 후 이용 바랍니다.");</script>');
     res.redirect('/');
@@ -576,7 +606,7 @@ router.get('/notice', function (req, res, next) {
 router.get('/notice_detail/:Ntime', function (req, res, next) {
   // Session ID 가져오기
   var Ntime = req.params.Ntime;
-  var user_id = "2016722036";
+  var user_id = req.session.user.id;
   if (user_id == null) {
     res.send('<script type="text/javascript">alert("로그인 후 이용 바랍니다.");</script>');
     res.redirect('/');
@@ -600,7 +630,7 @@ router.get('/notice_detail/:Ntime', function (req, res, next) {
 
 router.get('/qna', function (req, res) {
   // Session ID 가져오기
-  var user_id = "2016722036";
+  var user_id = req.session.user.id;
   if (user_id == null) {
     res.send('<script type="text/javascript">alert("로그인 후 이용 바랍니다.");</script>');
     res.redirect('/');
@@ -627,7 +657,7 @@ router.get('/qna', function (req, res) {
 router.get('/qna_detail/:Qtime', function (req, res, next) {
   // Session ID 가져오기
   var Qtime = req.params.Qtime;
-  var user_id = "2016722036";
+  var user_id = req.session.user.id;
   if (user_id == null) {
     res.send('<script type="text/javascript">alert("로그인 후 이용 바랍니다.");</script>');
     res.redirect('/');
