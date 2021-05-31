@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <script type="text/javascript">
+        function selectSort() {
+            var select = document.getElementById("select").value;
+            if (select == "BEST 순") {
+                val = 0;
+            } else if (select == "할인율 순") {
+                val = 1;
+            } else if (select == "추천 순") {
+                val = 2;
+            } else if (select == "리뷰 순") {
+                val = 3;
+            } else {
+                val = 4;
+            }
+            for (i = 0; i < 5; i++) {
+                var tb = document.getElementById('tab_' + i);
+                if (i != val) tb.style.display = "none";
+                else tb.style.display = "block";
+            }
+        }
+
+        function formSubmit(PID, opt) {
+            var form = document.formRecommend;
+            form.PID.value = PID;
+            form.opt.value = opt;
+            form.link.value = window.location.href;
+            form.action = "/customer/recommend";
+            form.method = "post";
+            form.submit();
+        };
+
+    </script>
+    <div>
+        <%-header%>
+    </div>
+    <div style="text-align: center">
+        <table class="tab_table">
+            <tr>
+                <% if (page == 0) { %>
+                <td width=50 class="tab_select">
+                    <% } else { %>
+                <td width=50 class="tab_noselect">
+                    <% } %>
+                    <a href="/customer/tab">전체메뉴</a></td>
+                <% if (page == 1) { %>
+                <td width=50 class="tab_select">
+                    <% } else { %>
+                <td width=50 class="tab_noselect">
+                    <% } %>
+                    <a href="/customer/tab/1">새우장</a></td>
+                <% if (page == 2) { %>
+                <td width=50 class="tab_select">
+                    <% } else { %>
+                <td width=50 class="tab_noselect">
+                    <% } %>
+                    <a href="/customer/tab/2">게장</a></td>
+                <% if (page == 3) { %>
+                <td width=50 class="tab_select">
+                    <% } else { %>
+                <td width=50 class="tab_noselect">
+                    <% } %>
+                    <a href="/customer/tab/3">계란장</a></td>
+                <% if (page == 4) { %>
+                <td width=50 class="tab_select">
+                    <% } else { %>
+                <td width=50 class="tab_noselect">
+                    <% } %>
+                    <a href="/customer/tab/4" onclick="fnMove()">김치</a></td>
+                <td width=50px></td>
+                <td width=50 class="tab_noselect"><a href="/customer/notice">공지사항</a></td>
+                <td width=50 class="tab_noselect"><a href="/customer/qna">질문답변</a></td>
+            </tr>
+        </table>
+        <img src="/main_border.png" style="width: 90%; height: 1%; overflow: hidden;">
+    </div>
+    <% if (page == 0) { %>
+    <div class="slidiv" id="slide">
+        <input type="radio" name="pos" id="pos1" checked>
+        <input type="radio" name="pos" id="pos2">
+        <input type="radio" name="pos" id="pos3">
+        <input type="radio" name="pos" id="pos4">
+        <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+        <p class="pos">
+            <label for="pos1"></label>
+            <label for="pos2"></label>
+            <label for="pos3"></label>
+            <label for="pos4"></label>
+        </p>
+    </div>
+    <br><br>
+    <div style="text-align: center; margin: 0;">
+        <table class="tab_table">
+            <tr>
+                <% if (page == 0) { %>
+                <td style="font-size: 23px;">전체 상품</td>
+                <% } else if (page < 0 && page > 4) { %>
+                <td style="font-size: 23px;">검색 상품</td>
+                <% } %>
+            </tr>
+        </table>
+        <img src="/main_border.png" style="width: 90%; overflow: hidden;">
+    </div>
+    <% } %>
+    <br><br><br>
+    <div style="text-align: right; width: 90%;" id="main_div">
+        <form action="/customer/search" method="post" style="display:inline;">
+            <input type="text" name="search" placeholder="ex) 게장" style="width: 90px; height: 20px">
+            <input type="submit" value="검색">
+        </form>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <select id="select" onchange="selectSort()">
+            <option>BEST 순</option>
+            <option>할인율 순</option>
+            <option>추천 순</option>
+            <option>리뷰 순</option>
+        </select>
+        <form name="formRecommend">
+            <input type="hidden" name="PID">
+            <input type="hidden" name="opt">
+            <input type="hidden" name="link">
+        </form>
+    </div>
+    <div style="text-align: center; display: block;" id="tab_0">
+        <table class="tab_table" style="padding-left: 10%; padding-right: 10%; font-size: 15px; border-spacing: 15px;">
+            <%
+    for(var i=0; i<rows[0].length; i++)
+    {
+        var oneItem = rows[0][i];
+        var recom = 0;
+        if (i % 3== 0) {
+%>
+            <tr>
+                <%
+        }
+%>
+                <%
+        if (oneItem.Stock > 1) {
+%>
+                <td width=45>
+                    <a href="/customer/detail/<%=oneItem.PID%>">
+                        <img src="/<%=oneItem.Pimage%>" height="190" width="190" /><br><br>
+                        <%=oneItem.Pname%><br>
+                        <%=oneItem.Price%>원
+                    </a>
+                    <% for (var j=0; j < rows[4].length; j++) {
+                    if (rows[4][j].PID == oneItem.PID)
+                        recom = 1;
+                }
+                if (recom == 1) { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } else { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } %>
+                </td>
+                <%      } else {    %>
+                <td width=45>
+                    <a href="/customer/detail/<%=oneItem.PID%>" style="color: rgb(126, 126, 126);">
+                        <img src="/<%=oneItem.Pimage%>" height="190" width="190" style="opacity:0.3;" /><br><br>
+                        품절
+                        <%=oneItem.Pname%><br>
+                        <%=oneItem.Price%>원
+                    </a>
+                    <% for (var j=0; j < rows[4].length; j++) {
+                        if (rows[4][j].PID == oneItem.PID)
+                            recom = 1;
+                    }
+                    if (recom == 1) { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } else { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } %>
+                </td>
+                </td>
+                <%
+        }
+        if (i % 3== 2) {
+%>
+            </tr>
+            <%
+        }
+    }
+%>
+        </table>
+    </div>
+    <div style="text-align: center; display: none;" id="tab_1">
+        <table class="tab_table" style="padding-left: 10%; padding-right: 10%; font-size: 15px">
+            <%
+    for(var i=0; i<rows[1].length; i++)
+    {
+        var oneItem = rows[1][i];
+        var recom = 0;
+        if (i % 3== 0) {
+%>
+            <tr>
+                <%
+        }
+%>
+                <%
+                if (oneItem.Stock > 1) {
+                    %>
+                <td width=45>
+                    <a href="/customer/detail/<%=oneItem.PID%>">
+                        <img src="/<%=oneItem.Pimage%>" height="190" width="190" /><br><br>
+                        <%=oneItem.Pname%><br>
+                        <%=oneItem.Price%>원
+                    </a>
+                    <% for (var j=0; j < rows[4].length; j++) {
+                                        if (rows[4][j].PID == oneItem.PID)
+                                            recom = 1;
+                                    }
+                                    if (recom == 1) { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } else { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } %>
+                </td>
+                <%      } else {    %>
+                <td width=45>
+                    <a href="/customer/detail/<%=oneItem.PID%>" style="color: rgb(126, 126, 126);">
+                        <img src="/<%=oneItem.Pimage%>" height="190" width="190" style="opacity:0.3;" /><br><br>
+                        품절
+                        <%=oneItem.Pname%><br>
+                        <%=oneItem.Price%>원
+                    </a>
+                    <% for (var j=0; j < rows[4].length; j++) {
+                                            if (rows[4][j].PID == oneItem.PID)
+                                                recom = 1;
+                                        }
+                                        if (recom == 1) { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } else { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } %>
+                </td>
+                </td>
+                <%
+                            }
+                            if (i % 3== 2) {
+                    %>
+            </tr>
+            <%
+                            }
+                        }
+                    %>
+        </table>
+    </div>
+    <div style="text-align: center; display: none;" id="tab_2">
+        <table class="tab_table" style="padding-left: 10%; padding-right: 10%; font-size: 15px">
+            <%
+    for(var i=0; i<rows[2].length; i++)
+    {
+        var oneItem = rows[2][i];
+        var recom = 0;
+        if (i % 3== 0) {
+%>
+            <tr>
+                <%
+        }
+%>
+                <%
+                if (oneItem.Stock > 1) {
+                    %>
+                <td width=45>
+                    <a href="/customer/detail/<%=oneItem.PID%>">
+                        <img src="/<%=oneItem.Pimage%>" height="190" width="190" /><br><br>
+                        <%=oneItem.Pname%><br>
+                        <%=oneItem.Price%>원
+                    </a>
+                    <% for (var j=0; j < rows[4].length; j++) {
+                                        if (rows[4][j].PID == oneItem.PID)
+                                            recom = 1;
+                                    }
+                                    if (recom == 1) { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } else { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } %>
+                </td>
+                <%      } else {    %>
+                <td width=45>
+                    <a href="/customer/detail/<%=oneItem.PID%>" style="color: rgb(126, 126, 126);">
+                        <img src="/<%=oneItem.Pimage%>" height="190" width="190" style="opacity:0.3;" /><br><br>
+                        품절
+                        <%=oneItem.Pname%><br>
+                        <%=oneItem.Price%>원
+                    </a>
+                    <% for (var j=0; j < rows[4].length; j++) {
+                                            if (rows[4][j].PID == oneItem.PID)
+                                                recom = 1;
+                                        }
+                                        if (recom == 1) { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } else { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } %>
+                </td>
+                </td>
+                <%
+                            }
+                            if (i % 3== 2) {
+                    %>
+            </tr>
+            <%
+                            }
+                        }
+                    %>
+        </table>
+    </div>
+    <div style="text-align: center; display: none;" id="tab_3">
+        <table class="tab_table" style="padding-left: 10%; padding-right: 10%; font-size: 15px">
+            <%
+    for(var i=0; i<rows[3].length; i++)
+    {
+        var oneItem = rows[3][i];
+        var recom = 0;
+        if (i % 3== 0) {
+%>
+            <tr>
+                <%
+        }
+%>
+                <%
+        if (oneItem.Stock > 1) {
+%>
+                <td width=45>
+                    <a href="/customer/detail/<%=oneItem.PID%>">
+                        <img src="/<%=oneItem.Pimage%>" height="190" width="190" /><br><br>
+                        <%=oneItem.Pname%><br>
+                        <%=oneItem.Price%>원
+                    </a>
+                    <% for (var j=0; j < rows[4].length; j++) {
+                    if (rows[4][j].PID == oneItem.PID)
+                        recom = 1;
+                }
+                if (recom == 1) { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } else { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } %>
+                </td>
+                <%      } else {    %>
+                <td width=45>
+                    <a href="/customer/detail/<%=oneItem.PID%>" style="color: rgb(126, 126, 126);">
+                        <img src="/<%=oneItem.Pimage%>" height="190" width="190" style="opacity:0.3;" /><br><br>
+                        품절
+                        <%=oneItem.Pname%><br>
+                        <%=oneItem.Price%>원
+                    </a>
+                    <% for (var j=0; j < rows[4].length; j++) {
+                        if (rows[4][j].PID == oneItem.PID)
+                            recom = 1;
+                    }
+                    if (recom == 1) { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 0)"><img src="/redHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } else { %>
+                    <a href="javascript:formSubmit(<%=oneItem.PID%>, 1)"><img src="/grayHeart.png" width=13px
+                            height=13px>(<%=oneItem.Recommend%>)</a>
+                    <% } %>
+                </td>
+                </td>
+                <%
+        }
+        if (i % 4 == 2) {
+%>
+            </tr>
+            <%
+        }
+    }
+%>
+        </table>
+    </div>
+</body>
+
+</html>

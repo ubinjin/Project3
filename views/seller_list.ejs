@@ -16,7 +16,6 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
 
 </head>
-
 <body>
     <h2>
         <font color="black">
@@ -66,16 +65,23 @@
         <!-- Page Content Holder -->
         <div id="content">
             <form action="/admin/seller_list" method="post" onsubmit="">
-                <table class='table table-striped'>
+                <table class='table' style="margin-bottom: 0px;font-size:17px">
+                    <thead class="thead-dark" style="text-align: center;"></thead>
+                    <style>
+                        td.tdc {
+                            vertical-align: middle;
+                        }
+                    </style>
                     <tr>
                         <td></td>
-                        <td>썸네일</td>
-                        <td>상품명</td>
-                        <td>상품 가격</td>
-                        <td>분류</td>
-                        <td>재고</td>
-                        <td>할인율</td>
+                        <th scope="col">썸네일</th>
+                        <th scope="col">상품명</th>
+                        <th scope="col">상품 가격</th>
+                        <th scope="col">분류</th>
+                        <th scope="col">재고</th>
+                        <th scope="col">할인율</th>
                     </tr>
+                    </thead>
                     <% var page = page; 
                            var length = 0;
                            var array_page = 0;
@@ -84,92 +90,108 @@
                            else if (rows.length - (page - 1) * 10 < 10) length = rows.length;
                            else if (rows.length - (page - 1) * 10 >= 10) length = page * 10;
                            for(var i= (page-1) * 10; i<length; i++) { var oneItem=rows[i]; %>
-                        <tr>
+                            <tr>
                             <td>
                                 <!-- <input name="box_chk" type="checkbox" value="<%=oneItem.PID%>"> -->
                             </td>
-                            <td>
-                                <img src="/<%=oneItem.Pimage%>" width="100" />
+                            <td class='tdc'>
+                                <a href="/admin/seller_read/<%=oneItem.PID%>"><img src="/<%=oneItem.Pimage%>" width="100" /></a>
                             </td>
-                            <td>
+                            <td class='tdc'>
                                 <a href="/admin/seller_read/<%=oneItem.PID%>">
                                     <%=oneItem.Pname%>
                                 </a>
                             </td>
-                            <td>
-                                <%=oneItem.Price%>원
+                            <td class='tdc'>
+                                <a href="/admin/seller_read/<%=oneItem.PID%>"><%=Number(oneItem.Price).toLocaleString('en')%>원</a>
                             </td>
-                            <td>
-                                <%=oneItem.Pcategory%>
+                            <td class='tdc'>
+                                <a href="/admin/seller_read/<%=oneItem.PID%>"><%=oneItem.Pcategory%></a>
                             </td>
                             <% if (oneItem.Stock > 5) { %>
-                            <td style="color:black"><%=oneItem.Stock%>
-                            <% }
+                                <td class='tdc' style="color:black">
+                                    <a href="/admin/seller_read/<%=oneItem.PID%>"><%=oneItem.Stock%></a>
+                                        <% }
                                 else { %>
-                            <td style="color:red"><%=oneItem.Stock%>
-                            <% } %>
-                            </td>
-                            <td>
-                                <%=oneItem.Salerate%>%
-                            </td>
+                                            <td class='tdc' style="color:red">
+                                                <a href="/admin/seller_read/<%=oneItem.PID%>"><%=oneItem.Stock%></a>
+                                                    <% } %>
+                                            </td>
+                                            <td class='tdc'>
+                                                <a href="/admin/seller_read/<%=oneItem.PID%>"><%=oneItem.Salerate%>%</a>
+                                            </td>
                         </tr>
                         <% } %>
                 </table>
                 <!-- <input type="submit" value="삭제"/> -->
             </form>
-            <form action="/admin/seller_register" method="get" style="display:inline"><button type='submit'>+추가</button></form>
-            <form action="/admin/seller_state/1" method="get" style="display:inline"><button type='submit'>주문확인</button></form>
-            <table align="center">
-                <tr style="text-align: center">
-                    <% if (rows.length/10 <= 10) array_length = parseInt((rows.length - 1)/10) + 1;
-                       else {
-                            array_page = parseInt((page - 1)/10);
-                            if (rows.length/10 > (array_page + 1) * 10)
-                                array_length = array_page * 10 + 10;
-                            else array_length = parseInt((rows.length-1)/10 + 1);
-                       }
-                       for(var i= array_page * 10 + 1; i < array_length + 1; i++) { 
-                        if (page != 1 && i == array_page * 10 + 1)
-                        { %>
-                        <td><a href="/admin/seller_list/<%=Number(page)-1%>">prev</a></td>
-                        <% } 
-                        else if (page == 1 && i == array_page * 10 + 1) {%>
-                        <td><pre>     </pre></td>
-                        <% } %>
-                        <td><pre>       </pre></td>
-                        <% if (i == page) { %>
-                            <td style = "color: rgb(0, 0, 0)"><a href="/admin/seller_list/<%=i%>"><%=i%></a></td>
-                        <% } 
-                        else { %>
-                            <td style = "color: rgb(199, 199, 199)"><a href="/admin/seller_list/<%=i%>"><%=i%></a></td>
-                        <% }
-                        if (i == array_length && page != parseInt((rows.length - 1)/10) + 1) {%>
-                        <td><pre>       </pre></td>
-                        <td><a href="/admin/seller_list/<%=Number(page)+1%>">next</a></td>
-                        <% } %>
-                       <% } %>
-                </tr>
-            </table>   
 
         </div>
     </div>
-
-    <!-- jQuery CDN - Slim version (=without AJAX) -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <!-- Popper.JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#sidebarCollapse').on('click', function() {
-                $('#sidebar').toggleClass('active');
-                $(this).toggleClass('active');
-            });
-        });
-    </script>
+    <table style = "margin-left:auto;margin-right:auto">
+        <tr style="text-align: center">
+            <% if (rows.length/10 <= 10) array_length = parseInt((rows.length - 1)/10) + 1;
+               else {
+                    array_page = parseInt((page - 1)/10);
+                    if (rows.length/10 > (array_page + 1) * 10)
+                        array_length = array_page * 10 + 10;
+                    else array_length = parseInt((rows.length-1)/10 + 1);
+               }
+               for(var i= array_page * 10 + 1; i < array_length + 1; i++) { 
+                if (page != 1 && i == array_page * 10 + 1)
+                { %>
+                <td><a href="/admin/seller_list/<%=Number(page)-1%>">prev</a></td>
+                <% } 
+                else if (page == 1 && i == array_page * 10 + 1) {%>
+                    <td><pre>     </pre></td>
+                    <% } %>
+                        <td><pre>       </pre></td>
+                        <% if (i == page) { %>
+                            <td style="color: rgb(0, 0, 0)">
+                                <a href="/admin/seller_list/<%=i%>">
+                                    <%=i%>
+                                </a>
+                            </td>
+                            <% } 
+                else { %>
+                                <td style="color: rgb(199, 199, 199)">
+                                    <a href="/admin/seller_list/<%=i%>">
+                                        <%=i%>
+                                    </a>
+                                </td>
+                                <% }
+                if (i == array_length && page != parseInt((rows.length - 1)/10) + 1) {%>
+                                    <td><pre>       </pre></td>
+                                    <td><a href="/admin/seller_list/<%=Number(page)+1%>">next</a></td>
+                                    <% } %>
+                                        <% } %>
+                                            <div id="button-class" style="align-items: flex-end;">
+                                                <td>
+                                                    <form action="/admin/seller_register" method="get" style="display:inline;"><button type='submit'>+추가</button></form>
+                                                </td>
+                                                <td>
+                                                    <form action="/admin/seller_state/1" method="get" style="display:inline;"><button type='submit'>주문확인</button></form>
+                                                </td>
+                                            </div>
+        </tr>
+    </table>
 
 </body>
+
+<!-- jQuery CDN - Slim version (=without AJAX) -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<!-- Popper.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#sidebarCollapse').on('click', function() {
+            $('#sidebar').toggleClass('active');
+            $(this).toggleClass('active');
+        });
+    });
+</script>
 
 </html>
