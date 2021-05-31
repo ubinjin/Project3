@@ -364,23 +364,33 @@ router.post('/cart/add', upload.single('image'), function (req, res) {
   var Cquantity = req.body.Qquantity;
   var now = new Date();
   now = date_to_str(now);
+  var Stock = req.body.Stock;
+  var Rest_stock = Number(Stock) - Cquantity;
+  console.log(Rest_stock);
   //console.log(req.body);
   var datas = [now, req.session.user.id, PID, Cquantity];
   console.log(Cquantity);
-  if(Cquantity > 0){
-    pool.getConnection(function (err, connection) {
-      var InsertCart_sql = "insert into cart_info(Ctime, C_RID, C_PID, Cquantity) values(?,?,?,?)";
-      connection.query(InsertCart_sql, datas, function (err, result) {
-        if (err) console.error(err);
-        // console.log(result);
-        res.redirect('/customer/cart');
-        connection.release();
+  console.log(req.body);
+  if(Rest_stock > 0){
+    if(Cquantity > 0){
+      pool.getConnection(function (err, connection) {
+        var InsertCart_sql = "insert into cart_info(Ctime, C_RID, C_PID, Cquantity) values(?,?,?,?)";
+        connection.query(InsertCart_sql, datas, function (err, result) {
+          if (err) console.error(err);
+          // console.log(result);
+          res.redirect('/customer/cart');
+          connection.release();
+        });
       });
-    });
+    }
+    else{
+      res.send("<script>alert('수량을 추가하세요!');window.location='http://localhost:1001/customer/detail/"+ PID + "/buy';window.reload(true);</script>");
+    }
   }
   else{
-    res.send("<script>alert('수량을 추가하세요!');window.location='http://localhost:1001/customer/detail/"+ PID + "/buy';window.reload(true);</script>");
+    res.send("<script>alert('현재 상품은 수량이 "+ Stock +"개 남아 "+ Cquantity +"개를 구매할 수 없습니다.');window.location='http://localhost:1001/customer/detail/"+ PID + "/buy';window.reload(true);</script>");
   }
+
 });
 
 router.post('/cart/delete', upload.single('image'), function (req, res) {
