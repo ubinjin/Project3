@@ -3,6 +3,11 @@ body {
     padding-top: 0px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+.body {
+  padding: 20px;
+  padding-top: 0px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
 
 a {
     color: black;

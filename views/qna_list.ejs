@@ -91,24 +91,30 @@
                            for(var i= (page-1) * 10; i < length; i++) {
                         var oneItem = qnas[i];
                 %>
-                        <tr style="cursor:pointer;" onClick="location.href='/admin/qna_detail/<%=oneItem.Q_RID%>&<%=oneItem.Qtime%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
-                            <th scope="row">
-                                <%=i+1%>
-                            </th>
-                            <td>
-                                <%=oneItem.QTitle%>
-                            </td>
-                            <td>
-                                <%=oneItem.Rname%>
-                            </td>
-                            <td>
-                                <%=oneItem.Qtime%>
-                            </td>
-                            <td>
-                                <%=oneItem.Qhit%>
-                            </td>
-                        </tr>
-                        <%
+                 <tr style="cursor:pointer;" onClick="location.href='/admin/qna_detail/<%=oneItem.Q_RID%>&<%=oneItem.Qtime%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
+                        <th scope="row">
+                            <%=i+1%>
+                        </th>
+                        <% if (oneItem.Answer != null) {%>
+                        <td>
+                            <span style="color:rgb(7, 0, 224)">[답변완료] </span><%=oneItem.QTitle%>
+                        <% } else { %>
+                        <td>
+                            <%=oneItem.QTitle%>
+                        <% } %>
+                        </td>
+                        <td>
+                            <%=oneItem.Rname%>
+                        </td>
+                        <td>
+                            <%=oneItem.Qtime%>
+                        </td>
+                        <td>
+                            <%=oneItem.Qhit%>
+                        </td>
+                    </tr>
+                    <%
+
                 }
                 %>
                 </tbody>
