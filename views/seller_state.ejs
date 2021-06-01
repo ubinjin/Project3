@@ -27,7 +27,7 @@
         </button>
     </div> -->
     <p></p>
-    <div class="wrapper">
+    <div class="wrapper" style="position: relative;">
         <!-- Sidebar Holder -->
         <nav id="sidebar">
 
@@ -204,10 +204,12 @@
 
 
         </div>
+        <button style="position: absolute; right: 30px; bottom:-30px;" class="btn btn-primary" type="submit" name="submit" value="확인">확인</button>
+
     </div>
 
 
-    <table style="margin-left:auto;margin-right:auto">
+    <table style="margin-left:auto;margin-right:auto;">
         <tr style="text-align: center">
             <% if (row.length/10 <= 10) array_length = parseInt((row.length - 1)/10) + 1;
                    else {
@@ -245,8 +247,7 @@
                                     <% } %>
 
                                         <% } %>
-                                            <td>
-                                                <pre style="margin-left">    <button type="submit" name="submit" value="확인" style="border-radius: 15px;">확인</button></pre></td>
+                                            <td colspan="6"> </td>
 
         </tr>
 

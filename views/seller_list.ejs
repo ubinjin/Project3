@@ -132,6 +132,9 @@
             </form>
 
         </div>
+        <form action="/admin/seller_register" method="get" style="display:inline;">
+            <button style="position: absolute; right: 120px; bottom: -32px;" class="btn btn-primary" type='submit'>+추가</button>
+        </form>
     </div>
     <table style="margin-left:auto;margin-right:auto">
 
@@ -171,14 +174,7 @@
                                     <td><a href="/admin/seller_list/<%=Number(page)+1%>">next</a></td>
                                     <% } %>
                                         <% } %>
-                                            <div id="button-class" style="align-items: flex-end;">
-                                                <td>
-                                                    <form action="/admin/seller_register" method="get" style="display:inline;"><button type='submit'>+추가</button></form>
-                                                </td>
-                                                <td>
-                                                    <form action="/admin/seller_state/1" method="get" style="display:inline;"><button type='submit'>주문확인</button></form>
-                                                </td>
-                                            </div>
+
         </tr>
     </table>
 
