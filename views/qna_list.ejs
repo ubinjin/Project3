@@ -97,8 +97,13 @@
                         <th scope="row">
                             <%=i+1%>
                         </th>
+                        <% if (oneItem.Answer != null) {%>
+                        <td>
+                            <span style="color:rgb(7, 0, 224)">[답변완료] </span><%=oneItem.QTitle%>
+                        <% } else { %>
                         <td>
                             <%=oneItem.QTitle%>
+                        <% } %>
                         </td>
                         <td>
                             <%=oneItem.Rname%>

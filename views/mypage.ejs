@@ -16,7 +16,11 @@
 </script>
 <body>
     <div>
+        <% if (name != "비회원") { %>
+        <%-header2%>
+        <% } else { %>
         <%-header%>
+        <% } %>
     </div>
 
     <br><br>
@@ -57,7 +61,8 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </td>
                 <td style=" padding-right: 50px; padding-left: 50px">
-                    <%= rows[0][0].Rname %> 님 환영합니다! <br>
+
+                    <%= name %> 님 환영합니다! <br>
                 </td>
                 <td style="text-align:center;  padding-right: 50px; padding-left: 50px;">
                     주문/배송<br>
@@ -89,22 +94,22 @@
         <div style="text-align: center;">
             <table class="tab_table" style="padding-left: 10%; padding-right: 10%; font-size: 15px" id = "buy_list">
                 <tr style="border-bottom: 1px solid black; border-top: 1px solid black;">
-                    <td width=30>
+                    <th width=30>
                         사진
                     </td>
-                    <td width=30>
+                    <th width=30>
                         상품명(옵션)
                     </td>
-                    <td width=30>
+                    <th width=30>
                         판매가
                     </td>
-                    <td width=30>
+                    <th width=30>
                         수량
                     </td>
-                    <td width=30>
+                    <th width=30>
                         구매일자
                     </td>
-                    <td width=30>
+                    <th width=30>
                         주문상태
                     </td>
                 </tr>
@@ -124,24 +129,24 @@
         var oneItem = rows[1][i];
         total += oneItem.Price * oneItem.Dquantity;
             %>
-                <tr style="border-bottom-color:rgba(211, 211, 211, 0.755);">
-                    <td width=30>
+                <tr style="border-bottom: 5px solid rgba(211, 211, 211, 0.755); border-spacing: 15px;">
+                    <td style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                         <a href="/customer/detail/<%=oneItem.PID%>"><img src="/<%=oneItem.Pimage%>" width=100
                                 height=100></a>
                     </td>
-                    <td width=30>
+                    <td width=30 style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                         <a href="/customer/detail/<%=oneItem.PID%>"><%=oneItem.Pname%></a>
                     </td>
-                    <td width=30>
+                    <td width=30 style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                         <%=oneItem.Price%>
                     </td>
-                    <td width=30>
+                    <td width=30 style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                         <%=oneItem.Dquantity%>
                     </td>
-                    <td width=30>
+                    <td width=30 style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                         <%=oneItem.Dtime%>
                     </td>
-                    <td width=30>
+                    <td width=30 style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                         <%=oneItem.Dstate%>
                     </td>
                 </tr>
@@ -181,7 +186,7 @@
         </table>
     </div>
     <div id="tab_2" style="width: 100%; display: none;">
-        <table style="border-spacing: 15px;">
+        <table class="tab_table" style="border-spacing: 15px; text-align: left;">
             <tr>
                 <td>
                     제목
@@ -204,19 +209,19 @@
                 var oneItem = rows[2][i];
             %>
             <tr>
-                <td>
+                <td style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                     <a href="/customer/qna_detail/<%=oneItem.Qtime%>"><%=oneItem.QTitle%></a>
                 </td>
-                <td>
+                <td style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                     <a href="/customer/qna_detail/<%=oneItem.Qtime%>"><%=oneItem.Question%></a>
                 </td>
-                <td>
+                <td style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                     <a href="/customer/qna_detail/<%=oneItem.Qtime%>"><%=oneItem.Answer%></a>
                 </td>
-                <td>
+                <td style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                     <a href="/customer/qna_detail/<%=oneItem.Qtime%>"><%=oneItem.Qtime%></a>
                 </td>
-                <td>
+                <td style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                     <a href="/customer/qna_detail/<%=oneItem.Qtime%>"><img src="/<%=oneItem.Qimage%>" width=50
                             height=50></a>
                 </td>
@@ -225,7 +230,7 @@
         </table>
     </div>
     <div id="tab_3" style="width: 100%; display: none;">
-        <table style="border-spacing: 15px;">
+        <table class="tab_table" style="border-spacing: 15px; text-align: left">
             <tr>
                 <td>
                     상품명
@@ -248,21 +253,21 @@
                 var oneItem = rows[3][i];
             %>
             <tr>
-                <td>
+                <td style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                     <a href="/customer/detail/<%=oneItem.R_PID%>"><%=oneItem.Pname%></a>
                 </td>
-                <td>
+                <td style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                     <a href="/customer/detail/<%=oneItem.R_PID%>"><%=oneItem.Review%></a>
                 </td>
-                <td>
+                <td style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                     <% for(var j = 0; j < oneItem.Star; j++) { %>
                     ★
                     <% } %>
                 </td>
-                <td>
+                <td style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                     <%=oneItem.Rtime%>
                 </td>
-                <td>
+                <td style="border-bottom: 1px solid rgba(211, 211, 211, 0.755);">
                     <img src="/<%=oneItem.Rimage%>" width=50 height=50>
                 </td>
             </tr>

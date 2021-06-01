@@ -118,6 +118,7 @@
                         if (oneItem.Dstate == "결제완료"){
                         %>
                             <tr style="background-color:rgba(248, 211, 194, 0.3)">
+
                                 <%
                         }
                         else if (oneItem.Dstate == "배송준비"){
@@ -128,11 +129,13 @@
                         else if (oneItem.Dstate == "배송중"){
                         %>
                                             <tr style="background-color:rgba(230, 255, 255, 0.3)">
+
                                                 <%
                         }
                         else {
                         %>
                                                     <tr style="background-color:rgba(223, 255, 208, 0.3)">
+
                                                         <%
                         }
                         %>
@@ -157,6 +160,7 @@
                                                             </td>
                                                             <td class='tdc'>
                                                                 <%=oneItem.Dphone%>
+
                                                             </td>
                                                             <td class='tdc'>
                                                                 <%=oneItem.Dtime%>
@@ -166,6 +170,7 @@
                                     if (oneItem.Dstate == "결제완료"){
                                         %>
                                                                     <select name="Dstate" id="Dstate" style='font-weight:bold'>
+
                                             <option selected>결제완료</option>
                                             <option>배송준비</option>
                                             <option>배송중</option>
@@ -245,7 +250,7 @@
 
                                         <% } %>
                                             <td>
-                                                <pre style="margin: 0px">    <button type="submit" name="submit" value="확인" style="border-radius: 15px;">확인</button></pre></td>
+                                                <pre style="margin-left">    <button type="submit" name="submit" value="확인" style="border-radius: 15px;">확인</button></pre></td>
 
         </tr>
 

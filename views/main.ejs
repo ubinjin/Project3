@@ -40,7 +40,11 @@
 
     </script>
     <div>
+        <% if (name != "비회원") { %>
+        <%-header2%>
+        <% } else { %>
         <%-header%>
+        <% } %>
     </div>
     <div style="text-align: center">
         <table class="tab_table">

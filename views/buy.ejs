@@ -8,7 +8,12 @@
 
 <body>
     <div>
+
+        <% if (name != "비회원") { %>
+        <%-header2%>
+        <% } else { %>
         <%-header%>
+        <% } %>
     </div>
     <p><img src="/<%=product.Pimage%>" /></p>
     <p><%=product.Pname%></p>
@@ -24,22 +29,25 @@
         <p>사이버머니:
             <%=product.Cash%></p>
         <form action="/customer/detail/<%=product.PID%>/buy" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="P_RID" id="P_RID" value="2016722036" />
-            <input type="hidden" name="S_RID" id="S_RID" value="2016722966" />
+
+            <input type="hidden" name="P_RID" id="P_RID" value="<%=user_id%>" />
+            <input type="hidden" name="S_RID" id="S_RID" value="admin" />
             <input type="hidden" name="D_PID" id="D_PID" value="<%=product.PID%>" />
             수량:
             <button type="button" onclick="sub_quantity()">-</button>
             <input readonly type="text" name="Dquantity" id="Dquantity" value=0 required="required" />
             <button type="button" onclick="add_quantity()">+</button>
-            <button type="submit">결제</button>
+            <p>전화번호:<input type="text" name="DphoneNum" id="PhoneNum" value="<%=product.Adress%>" required /></p>
+            <p>배송지:<input type="text" name="Daddress" id="Daddress" value="<%=product.Phone%>" required /></p>
             <input type="hidden" name="Cash" id="Cash" value="<%=product.Cash%>" />
             <input type="hidden" name="Price" id="Price" value="<%=saleprice%>" />
             <input type="hidden" name="Stock" id="Stock" value="<%=product.Stock%>" />
+            <button type="submit">결제</button>
         </form>
         <form action="/customer/cart/add" method="post" enctype="multipart/form-data">
-            장바구니:
             <input type="hidden" name="PID" id="PID" value="<%=product.PID%>" />
             <input type="hidden" name="Qquantity" id="Qquantity" value=0 />
+            <input type="hidden" name="Stock" id="Stock" value="<%=product.Stock%>" />
             <button type="submit">장바구니</button>
         </form>
 </body>
