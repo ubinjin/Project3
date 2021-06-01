@@ -16,7 +16,6 @@ var pool = mysql.createPool({
 });
 
 router.get('/', function(req, res, next) {
-    console.log(req.session);
     if (req.session.user) {
         if (req.session.user.Ucase == "0") {
             if (req.session.user.name === "비회원") {
@@ -75,9 +74,10 @@ router.post("/", function(req, res, next) {
 
     if (in_id && in_passwd) {
         pool.getConnection(function(err, connection) {
-            var sqlForIDPW = "select * from register_info where RID =? and password = ?";
+            var sqlForIDPW = "select * from register_info where RID =? and password = ?;";
             connection.query(sqlForIDPW, [in_id, in_passwd], function(error, results, fields) {
-                console.log(JSON.stringify(results));
+                console.log(JSON.stringify(JSON.stringify(results)));
+                console.log(JSON.stringify(JSON.stringify(fields)));
                 if (error) {
                     console.error("err: " + error);
                     console.log(results);
