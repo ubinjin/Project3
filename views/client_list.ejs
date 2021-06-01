@@ -15,22 +15,18 @@
     <script src="/javascripts/jquery-3.6.0.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
-
+    <%-headerFormat3 %>
 </head>
 
 <body>
-    <h2>
-        <font color="black">
-            <%= title %>
-        </font>
-    </h2>
+
     <div class="wrapper">
         <!-- Sidebar Holder -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>단골찬</h3>
-                <h3>관리자 메뉴</h3>
-
+                <h2>
+                    <%= title %>
+                </h2>
             </div>
 
             <ul class="list-unstyled components">
@@ -74,16 +70,16 @@
             <!-- 여기에 넣으세요 -->
             <table class="table">
                 <thead class="thead-dark" style="text-align: center;">
-                <tr>
-                    <th scope="col">번호</th>
-                    <th scope="col">구분</th>
-                    <th scope="col">이름</th>
-                    <th scope="col">전화번호</th>
-                    <th scope="col">주소</th>
-                </tr>
+                    <tr>
+                        <th scope="col">번호</th>
+                        <th scope="col">구분</th>
+                        <th scope="col">이름</th>
+                        <th scope="col">전화번호</th>
+                        <th scope="col">주소</th>
+                    </tr>
                 </thead>
                 <tbody style="text-align: center;">
-                <% var page = page;
+                    <% var page = page;
                            var clientlength = 0;
                            for(var i = 0; i < clients.length; i++) {
                             var oneItem = clients[i];
@@ -102,32 +98,32 @@
                         j++;
                         if (oneItem.Rname != "비회원") {
                 %>
-                    <tr style="cursor:pointer;" onClick="location.href='/admin/client_detail/<%=oneItem.RID%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
-                        <th scope="row">
-                            <%=i+1%>
-                        </th>
-                        <td>
-                            <%if(oneItem.Ucase=="0"){%>
+                        <tr style="cursor:pointer;" onClick="location.href='/admin/client_detail/<%=oneItem.RID%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
+                            <th scope="row">
+                                <%=i+1%>
+                            </th>
+                            <td>
+                                <%if(oneItem.Ucase=="0"){%>
 
-                                구매자
-                                <%}else{%>
-                                    판매자
-                                    <%}%>
-                        </td>
-                        <td>
-                            <%=oneItem.Rname%>
-                        </td>
-                        <td>
-                            <%=oneItem.Phone%>
-                        </td>
-                        <td>
-                            <%=oneItem.Address%>
-                        </td>
-                    </tr>
-                    <% i++;
+                                    구매자
+                                    <%}else{%>
+                                        판매자
+                                        <%}%>
+                            </td>
+                            <td>
+                                <%=oneItem.Rname%>
+                            </td>
+                            <td>
+                                <%=oneItem.Phone%>
+                            </td>
+                            <td>
+                                <%=oneItem.Address%>
+                            </td>
+                        </tr>
+                        <% i++;
                 } 
             }%>
-            </tbody>
+                </tbody>
             </table>
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
@@ -135,7 +131,7 @@
 
         </div>
     </div>
-    <table style = "margin-left:auto;margin-right:auto">
+    <table style="margin-left:auto;margin-right:auto">
         <tr style="text-align: center">
             <% if (clientlength/10 <= 10) array_length = parseInt((clientlength - 1)/10) + 1;
                else {

@@ -15,21 +15,19 @@
     <script src="/javascripts/jquery-3.6.0.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <%-headerFormat3 %>
 
 </head>
 
 <body>
-    <h2>
-        <font color="black">
-            <%= title %>
-        </font>
-    </h2>
+
     <div class="wrapper">
         <!-- Sidebar Holder -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>단골찬</h3>
-                <h3>관리자 메뉴</h3>
+                <h2>
+                    <%= title %>
+                </h2>
             </div>
 
             <ul class="list-unstyled components">
@@ -119,7 +117,10 @@
     let sold_at_quarter_with_age = {};
     let sold_at_quarter_all_age = {};
     for (var i = 0; i < rows.length; i++) {
-        let age = ("2021" - rows[i]["RRN"].slice(0, 4));
+        let age;
+        if (rows[i]["RRN"].length > 19) {
+            age = "비회원";
+        } else age = ("2021" - rows[i]["RRN"].slice(0, 4));
         let age_width = {};
         let date = rows[i]["Dtime"];
         let year = date.slice(0, 4);
@@ -134,7 +135,10 @@
         } else {
             quarter = year + " 4분기";
         }
-        if (age <= "30") {
+        if (age == "비회원") {
+            key = "비회원 주문"
+            console.log("age", key);
+        } else if (age <= "30") {
             key = "10대~20대";
         } else if (age <= "50") {
             key = "30대~40대";
@@ -161,7 +165,6 @@
         }
     }
     for (var i = 0; i < rows.length; i++) {
-        let age = ("2021" - rows[i]["RRN"].slice(0, 4));
         let age_width = {};
         let date = rows[i]["Dtime"];
         let year = date.slice(0, 4);
@@ -225,6 +228,7 @@
                 data.addColumn('number', '10대~20대');
                 data.addColumn('number', '30대~40대');
                 data.addColumn('number', '50대 이상');
+                data.addColumn('number', '비회원 주문');
                 data.addColumn('number', '전체');
 
                 //그래프에 표시할 데이터
@@ -233,7 +237,7 @@
                 for (var i = 0; i < keys.length; i++) { //랜덤 데이터 생성
                     let result_for_quarter = [];
                     let quarter = keys[i];
-                    var iter = ["10대~20대", "30대~40대", "50대 이상"];
+                    var iter = ["10대~20대", "30대~40대", "50대 이상", "비회원 주문"];
                     result_for_quarter.push(new Date(quarter.slice(0, 4), quarter.slice(5, 6) * 2.98));
                     let age_width = Object.keys(sold_at_quarter_with_age[quarter]);
                     console.log(keys);

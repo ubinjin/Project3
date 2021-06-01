@@ -98,17 +98,17 @@ app.use('/users', usersRouter);
 app.use('/test', testRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
-app.route(/^\/admin(?:\/(.*))?$/).all(function (req, res, next) {
+app.route(/^\/admin(?:\/(.*))?$/).all(function(req, res, next) {
     var path = req.params[0];
     console.log("좆됐다 ㅋㅋ");
     console.log(req.session.user);
     if (req.session.user) {
-        if (req.session.user.Ucase == 1) {
-            console.log("좆됐다 ㅋㅋ");
+        if (req.session.user.Ucase == "1")
             next();
-        } else
-           return res.redirect('/');
-    } else {
+        else
+            return res.redirect('/');
+    }
+    else {
         var fullUrl = req.protocol + '://' + req.headers.host + req.originalUrl;
         console.log(fullUrl);
         console.log('로그인 정보 없음 리다이렉트');
@@ -128,12 +128,12 @@ var connection = mysql.createConnection(options); // or mysql.createPool(options
 var sessionStore = new MySQLStore({} /* session store options */ , connection);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
     next(createError(404));
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

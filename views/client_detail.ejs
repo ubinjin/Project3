@@ -18,22 +18,19 @@
     <script src="/javascripts/jquery-3.6.0.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <%-headerFormat3 %>
 
 </head>
 
 <body>
-    <h2>
-        <font color="black">
-            <%= title %>
-        </font>
-    </h2>
+
     <div class="wrapper">
         <!-- Sidebar Holder -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>단골찬</h3>
-                <h3>관리자 메뉴</h3>
-
+                <h2>
+                    <%= title %>
+                </h2>
             </div>
 
             <ul class="list-unstyled components">
@@ -70,16 +67,20 @@
         </nav>
 
         <!-- Page Content Holder -->
-        <div id="content">
+        <div id="content" style="padding-left:50px; width:75%;">
 
+            <!-- 여기에 넣으세요 -->
+            <!-- 여기에 넣으세요 -->
+            <!-- 여기에 넣으세요 -->
+            <!-- 여기에 넣으세요 -->
 
-            <!-- 여기에 넣으세요 -->
-            <!-- 여기에 넣으세요 -->
-            <!-- 여기에 넣으세요 -->
-            <!-- 여기에 넣으세요 -->
-            <form action="/admin/client_delete" method="POST" onsubmit="">
+            <form action="/admin/client_delete" method="POST" onsubmit=" ">
 
-                <table border="1">
+                <table border="1" class="table table-hover" style="margin-bottom: 0px;">
+                    <colgroup>
+                        <col style="width:15%">
+                        <col style="width:40%">
+                    </colgroup>
                     <tr>
                         <td>아이디</td>
                         <td>
@@ -129,17 +130,20 @@
                         </td>
                     </tr>
                 </table>
-                <tr>
-                    <td colspan="2">
-                        <button type="submit" name="delete">회원 삭제</button>
-                </tr>
-            </form>
-            <!-- 여기에 넣으세요 -->
-            <!-- 여기에 넣으세요 -->
-            <!-- 여기에 넣으세요 -->
+
+                <!-- 여기에 넣으세요 -->
+                <!-- 여기에 넣으세요 -->
+                <!-- 여기에 넣으세요 -->
 
         </div>
     </div>
+    <table style="margin: auto; margin-top:20px;">
+        <tr>
+            <td colspan="2">
+                <button type="submit" name="delete" class="btn btn-primary">회원 삭제</button>
+        </tr>
+    </table>
+    </form>
 
     <!-- jQuery CDN - Slim version (=without AJAX) -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

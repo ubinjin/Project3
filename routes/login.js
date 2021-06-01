@@ -105,11 +105,10 @@ router.post("/", function(req, res, next) {
                                 console.log(not_member_ID);
                                 var sqlForRegDeletion = "delete from register_info where RID=?;"; //기존 비회원 register 삭제
                                 var sqlForCartPaste = "update cart_info set C_RID=? where C_RID=?;"; //회원이 담은것으로 변경
-                                var merged_sql1 =sqlForCartPaste + sqlForRegDeletion;
+                                var merged_sql = sqlForCartPaste + sqlForRegDeletion;
                                 //update만 하는것으로 수정
-                                connection.query(merged_sql1, [in_id, not_member_ID, not_member_ID], function(error, results, fields) {
-                                    console.log(error);
-                                    console.log("로그인 결과: ", JSON.stringify(results));
+                                connection.query(merged_sql, [in_id, not_member_ID, not_member_ID], function(error, results, fields) {
+
                                 });
                             }
                             res.redirect('/');
@@ -117,9 +116,9 @@ router.post("/", function(req, res, next) {
                         else if (results[0].Ucase == "1") {
                             var sqlForCartDeletion = "delete from cart_info where C_RID=?;"; //회원이 담은것으로 변경
                             var sqlForRegDeletion = "delete from register_info where RID=?"; //기존 비회원 register 삭제
-                            var merged_sql2 =sqlForCartDeletion + sqlForRegDeletion;
+                            var merged_sql2 = sqlForCartDeletion + sqlForRegDeletion;
 
-                            connection.query(merged_sql2, [not_member_ID,not_member_ID], function(error, res) {
+                            connection.query(merged_sql2, [not_member_ID, not_member_ID], function(error, res) {
                                 console.log(error);
                             });
                             res.redirect('/admin');

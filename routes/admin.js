@@ -62,7 +62,7 @@ router.get('/seller_list/:page', function(req, res, next) {
             if (err) console.error("err : " + err);
             console.log("rows : " + JSON.stringify(rows));
             res.render('seller_list', {
-                title: '판매자 메인페이지',
+                title: '상품 목록',
                 rows: rows,
                 page: req.params.page
 
@@ -92,7 +92,7 @@ router.get('/client_list/:page', function(req, res, next) {
             if (err) console.error("err : " + err);
             console.log(rows)
             res.render('client_list', {
-                title: '회원 관리',
+                title: '고객 관리',
                 clients: rows,
                 page: req.params.page
             });
@@ -412,7 +412,7 @@ router.get('/notice_list/:page', function(req, res, next) {
         connection.query(sqlNoticesList, function(err, rows) {
             if (err) console.error("err : " + err);
             res.render('notice_list', {
-                title: '공지사항 관리',
+                title: '공지 관리',
                 notices: rows,
                 page: req.params.page
             });
@@ -491,7 +491,7 @@ router.get('/seller_state/:page', thumb_nail.single('pimage'), (req, res, next) 
         connection.query(sql, function(err, rows) {
             if (err) console.error(err);
             res.render('seller_state', {
-                title: "주문 확인",
+                title: "주문 목록",
                 row: rows,
                 page: req.params.page
             });

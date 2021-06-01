@@ -15,21 +15,19 @@
     <script src="/javascripts/jquery-3.6.0.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <%-headerFormat3 %>
 
 </head>
 
 <body>
-    <h2>
-        <font color="black">
-            <%= title %>
-        </font>
-    </h2>
+
     <div class="wrapper">
         <!-- Sidebar Holder -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>단골찬</h3>
-                <h3>관리자 메뉴</h3>
+                <h2>
+                    <%= title %>
+                </h2>
             </div>
 
             <ul class="list-unstyled components">
@@ -74,16 +72,16 @@
             <!-- 여기에 넣으세요 -->
             <table class="table">
                 <thead class="thead-dark" style="text-align: center;">
-                <tr>
-                    <th scope="col">번호</th>
-                    <th scope="col">제목</th>
-                    <th scope="col">작성자</th>
-                    <th scope="col">작성 시간</th>
-                    <th scope="col">조회수</th>
-                </tr>
+                    <tr>
+                        <th scope="col">번호</th>
+                        <th scope="col">제목</th>
+                        <th scope="col">작성자</th>
+                        <th scope="col">작성 시간</th>
+                        <th scope="col">조회수</th>
+                    </tr>
                 </thead>
                 <tbody style="text-align: center;">
-                <% var page = page; 
+                    <% var page = page; 
                            var length = 0;
                            var array_page = 0;
                            var array_length = 0;
@@ -93,7 +91,7 @@
                            for(var i= (page-1) * 10; i < length; i++) {
                         var oneItem = qnas[i];
                 %>
-                    <tr style="cursor:pointer;" onClick="location.href='/admin/qna_detail/<%=oneItem.Q_RID%>&<%=oneItem.Qtime%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
+                 <tr style="cursor:pointer;" onClick="location.href='/admin/qna_detail/<%=oneItem.Q_RID%>&<%=oneItem.Qtime%>' " onMouseOver=" window.status = '<%=oneItem.RID%>' " onMouseOut=" window.status = '' ">
                         <th scope="row">
                             <%=i+1%>
                         </th>
@@ -116,17 +114,18 @@
                         </td>
                     </tr>
                     <%
+
                 }
                 %>
-            </tbody>
+                </tbody>
             </table>
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
-             
+
         </div>
     </div>
-    <table style = "margin-left:auto;margin-right:auto">
+    <table style="margin-left:auto;margin-right:auto">
         <tr style="text-align: center">
             <% if (qnas.length/10 <= 10) array_length = parseInt((qnas.length - 1)/10) + 1;
                else {
@@ -141,20 +140,28 @@
                 <td><a href="/admin/qna_list/<%=Number(page)-1%>">prev</a></td>
                 <% } 
                 else if (page == 1 && i == array_page * 10 + 1) {%>
-                <td><pre>     </pre></td>
-                <% } %>
-                <td><pre>       </pre></td>
-                <% if (i == page) { %>
-                    <td style = "color: rgb(0, 0, 0)"><a href="/admin/qna_list/<%=i%>"><%=i%></a></td>
-                <% } 
+                    <td><pre>     </pre></td>
+                    <% } %>
+                        <td><pre>       </pre></td>
+                        <% if (i == page) { %>
+                            <td style="color: rgb(0, 0, 0)">
+                                <a href="/admin/qna_list/<%=i%>">
+                                    <%=i%>
+                                </a>
+                            </td>
+                            <% } 
                 else { %>
-                    <td style = "color: rgb(199, 199, 199)"><a href="/admin/qna_list/<%=i%>"><%=i%></a></td>
-                <% }
+                                <td style="color: rgb(199, 199, 199)">
+                                    <a href="/admin/qna_list/<%=i%>">
+                                        <%=i%>
+                                    </a>
+                                </td>
+                                <% }
                 if (i == array_length && page != parseInt((qnas.length-1)/10) + 1) {%>
-                <td><pre>       </pre></td>
-                <td><a href="/admin/qna_list/<%=Number(page)+1%>">next</a></td>
-                <% } %>
-               <% } %>
+                                    <td><pre>       </pre></td>
+                                    <td><a href="/admin/qna_list/<%=Number(page)+1%>">next</a></td>
+                                    <% } %>
+                                        <% } %>
         </tr>
     </table>
     <!-- jQuery CDN - Slim version (=without AJAX) -->
