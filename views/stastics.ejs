@@ -16,7 +16,14 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
     <%-headerFormat3 %>
+        <div class="container-fluid">
 
+            <button type="button" id="sidebarCollapse" class="navbar-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
 </head>
 
 <body>
@@ -64,31 +71,22 @@
 
         <!-- Page Content Holder -->
         <div id="content">
-
-            <div class="container-fluid">
-
-                <button type="button" id="sidebarCollapse" class="navbar-btn">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-            </div>
-
-            <!-- 여기에 넣으세요 -->
-            <!-- 여기에 넣으세요 -->
-            <!-- 여기에 넣으세요 -->
-            <!-- 여기에 넣으세요 -->
-            <form action="/admin/notice_delete" method="POST">
-                <div id="Line_Controls_Chart">
-                    <!-- 라인 차트 생성할 영역 -->
-                    <div id="lineChartArea" style="padding:0px 20px 0px 0px;"></div>
-                    <!-- 컨트롤바를 생성할 영역 -->
-                    <div id="controlsArea" style="padding:0px 20px 0px 0px;"></div>
-                </div>
-            </form>
-            <!-- 여기에 넣으세요 -->
-            <!-- 여기에 넣으세요 -->
-            <!-- 여기에 넣으세요 -->
+            <%=title%>
+                <!-- 여기에 넣으세요 -->
+                <!-- 여기에 넣으세요 -->
+                <!-- 여기에 넣으세요 -->
+                <!-- 여기에 넣으세요 -->
+                <form action="/admin/notice_delete" method="POST">
+                    <div id="Line_Controls_Chart">
+                        <!-- 라인 차트 생성할 영역 -->
+                        <div id="lineChartArea" style="padding:0px 20px 0px 0px;"></div>
+                        <!-- 컨트롤바를 생성할 영역 -->
+                        <div id="controlsArea" style="padding:0px 20px 0px 0px;"></div>
+                    </div>
+                </form>
+                <!-- 여기에 넣으세요 -->
+                <!-- 여기에 넣으세요 -->
+                <!-- 여기에 넣으세요 -->
 
         </div>
     </div>
