@@ -15,22 +15,19 @@
     <script src="/javascripts/jquery-3.6.0.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <%-headerFormat3 %>
 
 </head>
 
 <body>
-    <h2>
-        <font color="black">
-            <%= title %>
-        </font>
-    </h2>
+
     <div class="wrapper">
         <!-- Sidebar Holder -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>단골찬</h3>
-                <h3>관리자 메뉴</h3>
-
+                <h2>
+                    <%= title %>
+                </h2>
             </div>
 
             <ul class="list-unstyled components">
@@ -72,7 +69,7 @@
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
             <form action="/admin/notice_update" method="POST" onsubmit="return onWriteSubmit()" enctype="multipart/form-data">
-                <table border="1">
+                <table border="1" class="table table-hover" style="margin-bottom: 0px;">
                     <input type="hidden" name="time" id="time" value="<%=notice.Ntime%>" />
                     <tr>
                         <td>작성자</td>
@@ -85,16 +82,16 @@
                     <tr>
                         <td>내용</td>
                         <td>
-                            <pre><textarea type="text" class="form-control" name="content2" id="content2" cols="30" notices="10" required/><%-notice.Ntext%></textarea></pre>
+                            <pre><textarea type="text" class="form-control" name="content2" id="content2" cols="30" rows="17" required/><%-notice.Ntext%></textarea></pre>
                         </td>
                     </tr>
                     <tr>
                         <td>이미지</td>
-                        <td><input type="file" name="image" id="image" accept="image/*" /></td>
+                        <td><input class="btn btn-outline-dark" type="file" name="image" id="image" accept="image/*" /></td>
                     </tr>
-                    <tr>
-                        <td colspan="2 ">
-                            <button type="submit " name="update ">글 쓰기</button>
+                    <tr align="right">
+                        <td colspan="2">
+                            <button class="btn btn-outline-dark" type="submit" name="update">글 쓰기</button>
                     </tr>
                 </table>
             </form>

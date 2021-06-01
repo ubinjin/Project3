@@ -20,22 +20,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <%-headerFormat3 %>
 
 </head>
 
 <body>
-    <h2>
-        <font color="black">
-            <%= title %>
-        </font>
-    </h2>
+
     <div class="wrapper">
         <!-- Sidebar Holder -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>단골찬</h3>
-                <h3>관리자 메뉴</h3>
-
+                <h2>
+                    <%= title %>
+                </h2>
             </div>
 
             <ul class="list-unstyled components">
@@ -79,7 +76,7 @@
             <!-- 여기에 넣으세요 -->
             <!-- 여기에 넣으세요 -->
             <form action="/admin/notice_write" method="POST" onsubmit="return onWriteSubmit()" enctype="multipart/form-data">
-                <table border="1">
+                <table border="1" class="table table-hover" style="margin-bottom: 0px;">
                     <tr>
                         <td>작성자</td>
                         <td>관리자</td>
@@ -90,15 +87,15 @@
                     </tr>
                     <tr>
                         <td>내용</td>
-                        <td><textarea class="form-control" type="text" name="content2" id="content2" cols="30" rows="10"></textarea></td>
+                        <td><textarea class="form-control" type="text" name="content2" id="content2" cols="30" rows="50" style="height: 500px;"></textarea></td>
                     </tr>
                     <tr>
                         <td>이미지</td>
-                        <td><input type="file" name="image" id="image" accept="image/*" /></td>
+                        <td><input class="btn btn-outline-dark" type="file" name="image" id="image" accept="image/*" /></td>
                     </tr>
-                    <tr>
+                    <tr align="right">
                         <td colspan="2">
-                            <button type="submit">글쓰기</button>
+                            <button type="submit" class="btn btn-outline-dark">글쓰기</button>
                         </td>
                     </tr>
                 </table>
